@@ -52,11 +52,28 @@ int main(int argc, char * argv[])
 
     //Need to do only one pass!
     // Need to strip white spaces, how to?
-    //DFAs? get from Joey or discuss
+    //DFAs? get from Joey or discuss -> DFAs requiring a check of id, constants or keywords
     //What was that joey blabbering about reading in blocks?
     
     while(input = fgetc(ip))
-    {
+    {   
+        if(input == ' ') //stripping out extra white spaces 
+        {
+          do
+          {
+            input = fgetc(ip);
+
+          }while(input==' ');
+        }
+        if(input == '@')  //stripping out comments
+        {
+          do
+          {
+            input = fgetc(ip);
+          }while(input!='@');
+          continue;
+        }
+
 
 
     }

@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <string.h>
-
+#include <ctype.h>
 //TODO: hash table of keywords
 enum Token {
   
   tk_eof ,
-  tk_ main, //main
+  tk_main, //main
   tk_lbrace, //{
   tk_rbrace, //}
   tk_lpara, //(
@@ -109,7 +109,57 @@ int main(int argc, char * argv[])
             //error handling routine TODO
           }
         }
+        if(isalnum(input)) //could be several things...
+        { 
+          if(isalpha(input))
+          {
+            char inp[101]; //max size of identifier is 100
+            int i = 0;
+            do
+            {
+              inp[i++] = input;
+              if(i > 100)
+              {
+                printf("identifier too big!\n");
+                exit(1);
+              }
+            }while(input=fgetc(ip)!=' ');
+            inp[i] = '/0';
 
+            if(strcmp(inp,"main") == 0) return tk_main;
+            else if(strcmp(inp,"struct") == 0) return tk_struct;
+            else if(strcmp(inp,"boolean") == 0) return tk_bool;
+            else if(strcmp(inp,"Bot") == 0) return tk_bot ;
+            else if(strcmp(inp,"Velocity") == 0) return tk_velocity;
+            else if(strcmp(inp,"int") == 0) return tk_int;
+            else if(strcmp(inp,"float") == 0) return tk_float;
+            else if(strcmp(inp,"function") == 0) return tk_func;
+            else if(strcmp(inp,"return") == 0) return tk_return;
+            else if(strcmp(inp,"rt") == 0) return tk_rt;
+            else if(strcmp(inp,"addV") == 0) return tk_addv ;
+            else if(strcmp(inp,"true") == 0) return tk_true ;
+            else if(strcmp(inp,"false") == 0) return tk_false ;
+            else if(strcmp(inp,"fw") == 0) return tk_fw ;
+            else if(strcmp(inp,"Point") == 0) return tk_point ;
+            else if(strcmp(inp,"void") == 0) return tk_void ;
+            else if(strcmp(inp,"readi") == 0) return tk_readi ;
+            else if(strcmp(inp,"break") == 0) return tk_break ;
+            else if(strcmp(inp,"continue") == 0) return tk_continue ;
+            else if(strcmp(inp,"exit") == 0) return tk_exit ;
+            else if(strcmp(inp,"rt") == 0) return tk_rt ;
+            else if(strcmp(inp,"for") == 0) return tk_for ;
+            else if(strcmp(inp,"if") == 0) return tk_if ;
+            else if(strcmp(inp,"else") == 0) return tk_else ;
+            else return tk_id;
+          }
+
+
+          if(isnum(input))
+          {
+            char inp[100];
+            //check for num, rnum or illegal identifier like 12ab
+          }
+        }
         if(input == '{')
         {
           return tk_lbrace;

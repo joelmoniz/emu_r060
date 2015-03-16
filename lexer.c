@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-//TODO: hash table of keywords
+
 enum Token {
   
   tk_eof ,
@@ -58,9 +58,23 @@ enum Token {
   tk_for, //for
   tk_if, //if
   tk_else, //else
+  tk_plus, //+
+  tk_minus, //-
+  tk_mul, //*
+  tk_div // /
   
 };
 
+int isSymbol(char input)
+{
+  if(input!=' ' || input!='+' || input!='-' || input!='*' || input!='/' || input!='[' || input!=']' ||
+      input!='{' || input!='}' || input!='(' || input!=')' || input!='@' || input!=';' || input!='=' ||
+      input!='.' || input!='-' || input!=':' || input!='-' || input!='|' || input!='&' || input!='>' ||
+      input!='<' || input!='_') return 1;
+    else
+      return 0;
+
+}
 int main(int argc, char * argv[])
 {   
     if(argc!=2)
@@ -81,7 +95,7 @@ int main(int argc, char * argv[])
     //Need to do only one pass!
     //DFAs? get from Joey or discuss -> DFAs requiring a check of id, constants or keywords
     //What was that joey blabbering about reading in blocks?
-    
+    // even signs could be delimiters eg 4+3, a+b .etc
     while(input = fgetc(ip))
     {   
         if(input == ' ') //stripping out extra white spaces 
@@ -109,7 +123,7 @@ int main(int argc, char * argv[])
             //error handling routine TODO
           }
         }
-        if(isalnum(input)) //could be several things...
+        if(isalnum(input)) //could be several things... //TODO possible different delimiters
         { 
           if(isalpha(input))
           {
@@ -123,8 +137,10 @@ int main(int argc, char * argv[])
                 printf("identifier too big!\n");
                 exit(1);
               }
-            }while(input=fgetc(ip)!=' ');
+              input = fgetc(ip);
+            }while(isSymbol(input)!=1);
             inp[i] = '/0';
+            fseek(ip,-1,SEEK_CUR);
 
             if(strcmp(inp,"main") == 0) return tk_main;
             else if(strcmp(inp,"struct") == 0) return tk_struct;
@@ -154,7 +170,7 @@ int main(int argc, char * argv[])
           }
 
 
-          if(isnum(input))
+          if(isnum(input)) //TODO
           {
             char inp[100];
             //check for num, rnum or illegal identifier like 12ab
@@ -218,13 +234,10 @@ int main(int argc, char * argv[])
           {
             return tk_col_assign;
           }
-          else if (next == ' ')
+          else 
           {
+            fseek(ip,-1, SEEK_CUR);
             return tk_colon;
-          }
-          else
-          {
-            //error handling 
           }
         }
 
@@ -234,15 +247,9 @@ int main(int argc, char * argv[])
           {
             return tk_log_eq;
           }
-
-          else if (next == ' ')
+          else 
           {
             return tk_assign_op;
-          }
-
-          else
-          {
-            //error handling 
           } 
         }
 
@@ -277,16 +284,12 @@ int main(int argc, char * argv[])
           }
         }
 
-        if(input == '+')  //TODO: just + ??
+        if(input == '+')  
         {
           next = fgetc(ip);
           if(next == '+')
           {
             return tk_unary_inc;
-          }
-          else if(next == ' ')
-          {
-            //its a + sign fags, TODO
           }
           else if(next == '=')
           {
@@ -294,52 +297,53 @@ int main(int argc, char * argv[])
           }
           else
           {
-            //error handling
+            fseek(ip,-1, SEEK_CUR);
+            return tk_plus;
           }
         }
 
-        if(input == '-')  //TODO: just + ??
+        if(input == '-')  
         {
           next = fgetc(ip);
           if(next == '-')
           {
             return tk_unary_dec;
           }
-          else if(next == ' ')
-          {
-            //its a - sign fags, TODO
-          }
           else
           {
-            //error handling
+            fseek(ip,-1, SEEK_CUR);
+            return tk_minus;
           }
+        }
+
+        if(input == '*')
+        {
+          return tk_mul;
+        }
+
+        if(input == '/')
+        {
+          return tk_mul;
         }
 
         if(input == '<')
         {
-          next = fgetc(ip);
-          if(next == ' ')
-          {
-            return tk_lt;
-          }
-          else if(next == '=')
+          if(next == '=')
           {
             return tk_lte;
           }
           else
           {
-            //error handle
+            fseek(ip,-1, SEEK_CUR);
+            return tk_lt;
           }
         }
 
         if(input == '>')
         {
           next = fgetc(ip);
-          if(next == ' ')
-          {
-            return tk_gt;
-          }
-          else if(next == '=')
+
+          if(next == '=')
           {
             return tk_gte;
           }
@@ -349,11 +353,10 @@ int main(int argc, char * argv[])
           }
           else
           {
-            //error handle
+            fseek(ip,-1, SEEK_CUR);
+            return tk_gt;
           }
         }
-
     }
-
     return 0;
 }

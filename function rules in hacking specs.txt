@@ -1,4 +1,4 @@
-<program> 		-> <globalVars> <otherFunctions> <mainFunction> 
+<program> 		-> <global_vars> <otherFunctions> <mainFunction> 
 <mainFunction>		-> <stmts> 
 <stmts> 			-> <stmt> <stmts> | RBRACE
 <stmt>			-> <gen_stmt> | <condnal_stmt>

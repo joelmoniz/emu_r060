@@ -1,5 +1,5 @@
 <program> 		-> <globalVars> <otherFunctions> <mainFunction> 
-<mainFunction>		-> <stmts> | RBRACE
+<mainFunction>		-> <stmts> 
 <stmts> 			-> <stmt> <stmts> | RBRACE
 <stmt>			-> <gen_stmt> | <condnal_stmt>
 <loop_stmts> 		-> <loop_stmt> <loop_stmts>  | RBRACE

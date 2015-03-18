@@ -297,7 +297,7 @@ enum Token lexer(FILE * ip, FILE * op)
             else if(strcmp(inp,"for") == 0){ writeTofile(op,tk_for) ; continue;}
             else if(strcmp(inp,"if") == 0) { writeTofile(op,tk_if) ; continue;}
             else if(strcmp(inp,"else") == 0){ writeTofile(op,tk_else) ; continue;}
-            else { writeTofile(op,tk_id); continue;}
+            else { writeTofile(op,tk_id); add_ID_to_sym_table(inp, line_no, column_no); continue;}
           }
 
 
@@ -526,9 +526,9 @@ int main(int argc, char * argv[])
     lexer(ip,op);
     fclose(ip);
     fclose(op);
-    add_ID_to_sym_table("joel", 3, 7);
-    add_ID_to_sym_table("gokul", 2, 2);
-    add_ID_to_sym_table("test", 42, 42);
+//    add_ID_to_sym_table("joel", 3, 7);
+//    add_ID_to_sym_table("gokul", 2, 2);
+//    add_ID_to_sym_table("test", 42, 42);
     print__symbol_table();
     return 0;
 }

@@ -3,6 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "symbol_table.h"
+#include "parse_table.h"
 
 //Need to do only one pass!
 //What was that joey blabbering about reading in blocks?

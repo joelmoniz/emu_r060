@@ -30,8 +30,8 @@
 <type_more>		-> COMMA <type> <type_more> | ID
 <primitive_type>	-> INT | FLOAT |  BOOLEAN
 <bot_type>		-> POINT | BOT 
-<assignment_stmt>  	-> <var> <lefthandSide1> 
-<lefthandSide1>  	-> <assign_operators> <rightHandSide> | COMMA <var> <lefthandSideMultiple> | COL_ASSIGN LBRACE <bot_point1> 
+<assignment_stmt>  	-> <var> <leftHandSide1> 
+<leftHandSide1>  	-> <assign_operators> <rightHandSide> | COMMA <var> <lefthandSideMultiple> | COL_ASSIGN LBRACE <bot_point1> 
 <bot_point1> 		-> ID COMMA <idNum> <bot_or_point>  | NUM COMMA <idNum> RBRACE SEMI_CL 
 <bot_or_point>      -> RBRACE SEMI_CL | COMMA <idNum> COMMA <idBool> RBRACE SEMI_CL                     
 <idNum>			-> ID | NUM 

@@ -2,14 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <symbol_table.h>
+#include "symbol_table.h"
 
 //Need to do only one pass!
 //What was that joey blabbering about reading in blocks?
 // even signs could be delimiters eg 4+3, a+b .etc - taken care of 
 // what about ! and != ??
 // @~ is a multi-line comment
-    
+
 int isSymbol(char input)
 {
   if(input==' ' || input=='+' || input=='-' || input=='*' || input=='/' || input=='[' || input==']' ||
@@ -431,6 +431,83 @@ enum Token lexer(FILE * ip, FILE * op)
     }
   }
 
+void init_symbol_table() {
+  int i;
+  for (i = 0; i < hash_size; i++) {
+    symbol_table_hash[i] = NULL;
+  }
+}
+
+void add_ID_to_sym_table(char *name, int declared_line, int declared_position) {
+  int index = get_hash_value(name);
+  symbol_entry *s = symbol_table_hash[index];
+  symbol_entry *prev = NULL;
+
+  referred *r = (referred *) malloc(sizeof(referred));
+  r->line = declared_line;
+  r->loc = declared_position;
+
+  while ( s != NULL) {
+    if (strcmp(name, s->name)) {
+      prev = s;
+      s = s->next;
+    }
+    else {// entry found => add occurance to symbol table
+      r->next = s->refd;
+      s->refd = r;
+      return;
+    }
+  }
+
+  s = (symbol_entry *) malloc(sizeof(symbol_entry));
+  s->name = name;
+  s->token_type = tk_id;
+  s->dtype = dt_unk;
+  s->has_value = 0;
+  s->scope = -1;
+  s->declared_line = declared_line;
+  s->declared_position = declared_position;
+  s->refd = NULL;
+  s->misc = vt_unk;
+  s->next = symbol_table_hash[index];
+
+  symbol_table_hash[index] = s;
+}
+
+//temporary
+int get_hash_value(char *name) {
+  return 1;
+}
+
+void print__symbol_table() {
+  int i = 0;
+  referred *r;
+  symbol_entry *s;
+
+  for (i = 0;i < hash_size; i++) {
+    if (symbol_table_hash[i] != NULL) {
+      printf("%d\n", i);
+      printf("===\n\n");
+      
+      s = symbol_table_hash[i];
+      while (s != NULL) {
+        printf("name: %s\n token: %d\n type: %d\n has_val: %d\n scope: %d\n line: %d\n posn: %d\n refd: ", 
+          s->name, s->token_type, s->dtype, s->has_value, 
+          s->scope, s->declared_line, s->declared_position);
+        r = s->refd;
+        while (r != NULL) {
+          printf("<%d, %d>", r->line, r->loc);
+          if (r->next != NULL)
+            printf(", ");
+          r = r->next;
+        }
+        printf("\n misc: %d\n\n", s->misc);
+        s = s->next;
+      }
+    }
+  }
+}
+
 
 int main(int argc, char * argv[])
 {   
@@ -449,5 +526,9 @@ int main(int argc, char * argv[])
     lexer(ip,op);
     fclose(ip);
     fclose(op);
+    add_ID_to_sym_table("joel", 3, 7);
+    add_ID_to_sym_table("gokul", 2, 2);
+    add_ID_to_sym_table("test", 42, 42);
+    print__symbol_table();
     return 0;
 }

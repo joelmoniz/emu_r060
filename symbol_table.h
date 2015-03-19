@@ -1,3 +1,8 @@
+#ifndef PARSE_TABLE_H
+#define PARSE_TABLE_H
+#include "parse_table.h"
+#endif
+
 #define hash_size  1000
 
 typedef union _data_val {

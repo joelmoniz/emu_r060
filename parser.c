@@ -1,7 +1,14 @@
+#include "symbol_table.h"
+
+#ifndef PARSE_TABLE_H
+#define PARSE_TABLE_H
 #include "parse_table.h"
-//#include "symbol_table.h"
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
+
+
 
 stack initialize_stack(int size) {
   stack s;
@@ -51,9 +58,21 @@ void test_stack() {
   print_stack(s);
 }
 
+void parser(FILE * ip) {
+  int token;
+  stack s;
+  push(&s, start_state);
+  int row, col;
+  while(fscanf(ip,"%d",&token) != EOF) {
+    ;
+  }
+}
+/*
 int main()
 {
   //printf("%d",parse_table[0][0]);
-  test_stack();
+  //test_stack();
+  FILE * ip = fopen("_test123","r");
+  parser(ip);
   return 0;
-}
+} */

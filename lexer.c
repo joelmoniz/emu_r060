@@ -2,8 +2,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+
 #include "symbol_table.h"
+
+#ifndef PARSE_TABLE_H
+#define PARSE_TABLE_H
 #include "parse_table.h"
+#endif
+
+void add_ID_to_sym_table(char *name, int declared_line, int declared_position);
 
 //Need to do only one pass!
 //What was that joey blabbering about reading in blocks?
@@ -447,9 +454,10 @@ void add_ID_to_sym_table(char *name, int declared_line, int declared_position) {
   referred *r = (referred *) malloc(sizeof(referred));
   r->line = declared_line;
   r->loc = declared_position;
+  r->next = NULL;
 
   while ( s != NULL) {
-    if (strcmp(name, s->name)) {
+    if (strcmp(name, s->name) != 0) {
       prev = s;
       s = s->next;
     }
@@ -461,7 +469,8 @@ void add_ID_to_sym_table(char *name, int declared_line, int declared_position) {
   }
 
   s = (symbol_entry *) malloc(sizeof(symbol_entry));
-  s->name = name;
+  s->name = (char *) malloc(sizeof(name));
+  strcpy(s->name, name);
   s->token_type = tk_id;
   s->dtype = dt_unk;
   s->has_value = 0;
@@ -487,7 +496,7 @@ void print__symbol_table() {
 
   for (i = 0;i < hash_size; i++) {
     if (symbol_table_hash[i] != NULL) {
-      printf("%d\n", i);
+      printf("\n\n%d\n", i);
       printf("===\n\n");
       
       s = symbol_table_hash[i];
@@ -518,6 +527,7 @@ int main(int argc, char * argv[])
         exit(1);
     }
 */
+    init_symbol_table();
     FILE * ip = fopen("test.txt","r");
     FILE * op = fopen("test.lexer","w"); //WARNING: argv[1] is changed here
     if (ip == NULL || op == NULL)

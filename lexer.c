@@ -17,6 +17,8 @@ void add_ID_to_sym_table(char *name, int declared_line, int declared_position);
 // even signs could be delimiters eg 4+3, a+b .etc - taken care of 
 // what about ! and != ??
 // @~ is a multi-line comment
+//TODO: uncomment the code to read in a text file, right now its defaulting to test.txt
+//changes made here: writing into op (.lexer output) as integer so its easier to read out 
 
 int isSymbol(char input)
 {
@@ -29,8 +31,9 @@ int isSymbol(char input)
 
 }
 
-void writeTofile(FILE* op, enum Token token) //TODO
+void writeTofile(FILE* op, enum Token token)
 {
+  fputc(token,op);
   switch(token)
   {
    case tk_main:

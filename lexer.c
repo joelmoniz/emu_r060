@@ -519,27 +519,27 @@ void print__symbol_table() {
 }
 
 
-int main(int argc, char * argv[])
-{   
-   /* if(argc!=2)
-    {
-        printf("FATAL ERROR!! : No input specified or too many parameters \n");
-        exit(1);
-    }
-*/
-    init_symbol_table();
-    FILE * ip = fopen("test.txt","r");
-    FILE * op = fopen("test.lexer","w"); //WARNING: argv[1] is changed here
-    if (ip == NULL || op == NULL)
-    {
-        printf("Error opening file, check permissions! \n");
-    }
-    lexer(ip,op);
-    fclose(ip);
-    fclose(op);
-//    add_ID_to_sym_table("joel", 3, 7);
-//    add_ID_to_sym_table("gokul", 2, 2);
-//    add_ID_to_sym_table("test", 42, 42);
-    print__symbol_table();
-    return 0;
-}
+// int main(int argc, char * argv[])
+// {   
+//    /* if(argc!=2)
+//     {
+//         printf("FATAL ERROR!! : No input specified or too many parameters \n");
+//         exit(1);
+//     }
+// */
+//     init_symbol_table();
+//     FILE * ip = fopen("test.txt","r");
+//     FILE * op = fopen("test.lexer","w"); //WARNING: argv[1] is changed here
+//     if (ip == NULL || op == NULL)
+//     {
+//         printf("Error opening file, check permissions! \n");
+//     }
+//     lexer(ip,op);
+//     fclose(ip);
+//     fclose(op);
+// //    add_ID_to_sym_table("joel", 3, 7);
+// //    add_ID_to_sym_table("gokul", 2, 2);
+// //    add_ID_to_sym_table("test", 42, 42);
+//     print__symbol_table();
+//     return 0;
+// }

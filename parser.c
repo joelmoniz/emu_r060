@@ -157,16 +157,63 @@ void test_stack() {
   print_stack(s);
 }
 
+/*
+Test
+E -> int + E | X
+X -> float * X | bool
+*/
+int parse_table_test[][5] = {{0, -1, 1, -1, 1}, {-1, -1, 2, -1, 3}};
+int rule_test[][4] = {{2, 3, 0, -1}, {1,-1}, {4,5,1,-1}, {6,-1}};
 void parser(FILE * ip) {
   int token;
-  stack s;
+  stack s = initialize_stack(2);
+  push(&s, end_marker);
   push(&s, start_state);
   int row, col;
+  int top;
+  int rule_no;
+  int rule_token_no;
+  print_stack(s);
   while(fscanf(ip,"%d",&token) != EOF) {
-    ;
+    top = pop(&s);
+    while (!is_token(top) && !is_error(top)) {
+      rule_no = parse_table_test[top][token - FIRST_TOKEN];
+      printf("Rule: %d\n", rule_no);
+      rule_token_no = 0;
+      if (rule_no != -1) {
+        while (rule_test[rule_no][rule_token_no] != -1)
+          rule_token_no++;
+        rule_token_no--;
+        while (rule_token_no >= 0) {
+          push(&s, rule_test[rule_no][rule_token_no]);
+          rule_token_no--;
+        }
+      }
+      else
+        printf("Error\n");
+      print_stack(s);
+      top = pop(&s);
+    }
+    if (top != token) {
+      //TODO: handle error
+      printf("Error\n");
+    }
+    print_stack(s);
   }
+  int x = pop(&s);
+  if (x != end_marker)
+    printf("Error\n");
+  printf("Parsing successful\n");
 }
-/*
+
+int is_token(int t) {
+  return (t>=2);
+}
+
+int is_error(int t) {
+  return 0;
+}
+
 int main()
 {
   //printf("%d",parse_table[0][0]);
@@ -174,4 +221,4 @@ int main()
   FILE * ip = fopen("_test123","r");
   parser(ip);
   return 0;
-} */
+} 

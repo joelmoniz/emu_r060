@@ -1,5 +1,8 @@
 #define stack_size 500
 #define start_state 0
+#define end_marker 200
+#define error 184
+#define FIRST_TOKEN 2
 
 typedef enum Token {  
   tk_main, //main
@@ -61,6 +64,8 @@ typedef enum Token {
 } TOK;
 
 extern int parse_table[][53];
+int is_token(int);
+int is_error(int);
 
 typedef struct _stack {
 	int *stk;

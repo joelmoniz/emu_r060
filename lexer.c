@@ -502,9 +502,9 @@ int get_hash_value(unsigned char *name) //the djb2 hash function from http://www
   int hash = 5381;
   int c;
 
-  while (c = *name++) 
+  while ((c = *name++) != '\0')
     hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
-  return hash;
+  return (hash%hash_size);
 }
 
 void print__symbol_table() {

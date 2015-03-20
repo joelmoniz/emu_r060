@@ -516,7 +516,7 @@ int rule_test[][4] = {{2, 3, 0, -1}, {1,-1}, {4,5,1,-1}, {6,-1}};
 // TODO: Make error checking proper
 void parser(FILE * ip) {
   int token;
-  stack s = initialize_stack(2);
+  stack s = initialize_stack(1000);
   push(&s, end_marker);
   push(&s, start_state);
   parse_root = initialize_parse_tree_node(NULL, start_state);
@@ -530,7 +530,7 @@ void parser(FILE * ip) {
     top = pop(&s);
 
     while (!is_token(top) && !is_error(top)) {
-      rule_no = parse_table_test[top][token - FIRST_TOKEN];
+      rule_no = parse_table[top][token - FIRST_TOKEN];
       printf("Rule: %d\n", rule_no);
       rule_token_no = 0;
 
@@ -588,8 +588,10 @@ void parser(FILE * ip) {
     print_stack(s);
   }
   int x = pop(&s);
+
   if (x != end_marker)
     printf("Error\n");
+
   printf("Parsing successful\n");
   printf("\n\nParse tree:\n");
   current = parse_root;

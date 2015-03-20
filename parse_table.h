@@ -28,9 +28,9 @@ If that terminal is in follow(that non-terminal), the error is a POP error. Else
 */
 
 
-extern enum Token states [][MAX_TOKENS + 1];
-
+extern enum Token states[][MAX_TOKENS + 1];
 extern int parse_table[][53];
+
 int is_token(int);
 int is_error(int);
 

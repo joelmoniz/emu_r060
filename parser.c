@@ -214,12 +214,14 @@ void parser(FILE * ip) {
   print_stack(s);
   while(fscanf(ip,"%d",&token) != EOF) {
     top = pop(&s);
+
     while (!is_token(top) && !is_error(top)) {
       rule_no = parse_table_test[top][token - FIRST_TOKEN];
       printf("Rule: %d\n", rule_no);
       rule_token_no = 0;
-      if (rule_no != -1) {
-        while (rule_test[rule_no][rule_token_no] != -1) {
+
+      if (rule_no != -1) { // TODO: Change this to scan vs pop errors
+        while (rule_test[rule_no][rule_token_no] != -1) { // TODO: change this to tk_null
           current->children[rule_token_no] = initialize_parse_tree_node(current, rule_test[rule_no][rule_token_no]);
           current->num_child++;
           rule_token_no++;
@@ -227,12 +229,13 @@ void parser(FILE * ip) {
 
         current = current->children[0];
         rule_token_no--;
+
         while (rule_token_no >= 0) {
           push(&s, rule_test[rule_no][rule_token_no]);
           rule_token_no--;
         }
       }
-      else
+      else // TODO: Handle pop vs scan errors separately
         printf("Error\n");
 
       print_stack(s);
@@ -240,22 +243,31 @@ void parser(FILE * ip) {
 
       top = pop(&s);
     }
+
     if (top != token) {
-      //TODO: handle error
-      printf("Error\n");
+      printf("Expecting ");
+      print_token(token);
+      printf("but found ");
+      print_token(top);
+      printf("\n");
     }
+
     while (1) {
       if (current == NULL)
         break;
+
       if (current->num_child == 0) {
         current = current->parent;
         continue;
       }
+
       current->visited_child++;
+
       if (current->visited_child >= current->num_child) {
         current = current->parent;
         continue;
       }
+
       current = current->children[current->visited_child];
       break;
     }

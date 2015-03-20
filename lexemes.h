@@ -59,3 +59,4 @@ typedef enum Token {
   tk_div // /
 } TOK;
 
+void print_token(enum Token token);

@@ -34,6 +34,10 @@ int isSymbol(char input)
 void writeTofile(FILE* op, enum Token token)
 {
   fputc(token,op);
+  print_token(token);
+}
+
+void print_token(enum Token token) {
   switch(token)
   {
    case tk_main:

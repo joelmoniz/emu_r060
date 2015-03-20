@@ -5,6 +5,11 @@
 #include "parse_table.h"
 #endif
 
+#ifndef LEXEMES_H
+#define LEXEMES_H
+#include "lexemes.h"
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -167,6 +172,7 @@ typedef struct _parse_tree_node {
   int token_id;
 } parse_tree_node;
 */
+
 parse_tree_node *initialize_parse_tree_node(parse_tree_node *parent, int token) {
   parse_tree_node *p = (parse_tree_node *) malloc(sizeof(parse_tree_node));
   p->token_id = token;
@@ -182,17 +188,77 @@ parse_tree_node *initialize_parse_tree_node(parse_tree_node *parent, int token) 
 void print_parse_tree(parse_tree_node *node, int lv) {
   if (node == NULL)
     return;
-  printf("%d -> %d\n", lv, node->token_id);
+  printf("%d -> ", lv);
+  print_token(node->token_id);
+  //printf("%d", node->token_id);
+  printf("\n");
   if (node->num_child == 0) {
     return;
   }
   int i;
-  for (i=0; i<node->num_child; i++) {
+  for (i=0; i < node->num_child; i++) {
     print_parse_tree(node->children[i], lv+1);
   }
 }
 
+int is_unecessary_node(int i) {
+  return (enum Token)i == tk_lbrace || (enum Token)i == tk_rbrace || 
+    (enum Token)i == tk_lpara || (enum Token)i == tk_rpara || 
+    (enum Token)i == tk_lsquare || (enum Token)i == tk_rsquare || 
+    (enum Token)i == tk_semi_cl;
+}
+
+void remove_unecessary_nodes(parse_tree_node *node) {
+  int i, j;
+  for (i=0; i < node->num_child; i++) {
+    remove_unecessary_nodes(node->children[i]);
+
+    if (node->children[i]->num_child == 0 
+      && is_unecessary_node(node->children[i]->token_id)) {
+
+      free(node->children[i]);
+      
+      for (j=i; j < node->num_child - 1; j++)
+        node->children[j] = node->children[j+1];
+
+      node->num_child--;
+    }
+  }
+}
+
+parse_tree_node *fold_and_assign(parse_tree_node *node) {
+  int i;
+  for (i=0; i < node->num_child; i++) {
+    node->children[i] = fold_and_assign(node->children[i]);
+  }
+  if (node->num_child == 1) {// fold // && node->children[0]->num_child == 0)
+    parse_tree_node *temp = node->children[0];
+    node->children[0]->parent = node->parent;
+    free(node);
+    return temp;
+  }
+  else
+    return node;
+}
+
+void fold_tree() {
+  int i;
+  for (i=0; i < parse_root->num_child; i++) {
+    parse_root->children[i] = fold_and_assign(parse_root->children[i]);
+  }
+}
+
+void parse_tree_to_AST() {
+  remove_unecessary_nodes(parse_root);
+  printf("\n\nUnecessary Removed:\n");
+  print_parse_tree(parse_root, 0);
+  fold_tree(parse_root);
+  printf("\n\nFolded:\n");
+  print_parse_tree(parse_root, 0);
+}
+
 /*
+E = 0, X = 1, int = 2, + = 3, float = 4, * = 5, bool = 6
 Test
 E -> int + E | X
 X -> float * X | bool
@@ -280,6 +346,10 @@ void parser(FILE * ip) {
   printf("\n\nParse tree:\n");
   current = parse_root;
   printf("\n/\\\n");
+  print_parse_tree(current, 0);
+
+  parse_tree_to_AST();
+  printf("\n\nAbstract Syntax tree:\n");
   print_parse_tree(current, 0);
 }
 

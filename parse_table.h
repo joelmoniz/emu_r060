@@ -1,5 +1,10 @@
 #define stack_size 500
+
+#ifndef LEXEMES_H
+#define LEXEMES_H
 #include "lexemes.h"
+#endif
+
 #define start_state 0
 #define end_marker 200
 #define error 184
@@ -237,3 +242,4 @@ typedef struct _parse_tree_node {
 parse_tree_node *parse_root;
 parse_tree_node *initialize_parse_tree_node(parse_tree_node *parent, int token);
 void print_parse_tree(parse_tree_node *node, int lv);
+void parse_tree_to_AST();

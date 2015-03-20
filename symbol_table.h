@@ -3,6 +3,11 @@
 #include "parse_table.h"
 #endif
 
+#ifndef LEXEMES_H
+#define LEXEMES_H
+#include "lexemes.h"
+#endif
+
 #define hash_size  1000
 
 typedef union _data_val {

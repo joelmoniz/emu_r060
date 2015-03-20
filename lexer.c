@@ -10,6 +10,12 @@
 #include "parse_table.h"
 #endif
 
+#ifndef LEXEMES_H
+#define LEXEMES_H
+#include "lexemes.h"
+#endif
+
+
 void add_ID_to_sym_table(char *name, int declared_line, int declared_position);
 
 //Need to do only one pass!

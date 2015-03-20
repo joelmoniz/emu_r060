@@ -39,7 +39,7 @@ int isSymbol(char input)
 
 void writeTofile(FILE* op, enum Token token)
 {
-  fputc(token,op);
+  fprintf(op, "%d ", token);
   print_token(token);
 }
 
@@ -497,6 +497,25 @@ void add_ID_to_sym_table(char *name, int declared_line, int declared_position) {
   symbol_table_hash[index] = s;
 }
 
+void free_symbol_table() {
+  int i;
+  for (i = 0; i < hash_size; i++) {
+    while (symbol_table_hash[i] != NULL) {
+      symbol_entry *s = symbol_table_hash[i];
+      symbol_table_hash[i] = s->next;
+      free(s->name);
+
+      while (s->refd != NULL) {
+        referred *r = s->refd;
+        s->refd = r->next;
+        free(r);
+      }
+
+      free(s);
+    }
+  }
+}
+
 int get_hash_value(unsigned char *name) //the djb2 hash function from http://www.cse.yorku.ca/~oz/hash.html
 {
   int hash = 5381;
@@ -559,5 +578,6 @@ void print__symbol_table() {
 // //    add_ID_to_sym_table("gokul", 2, 2);
 // //    add_ID_to_sym_table("test", 42, 42);
 //     print__symbol_table();
+//     free_symbol_table();
 //     return 0;
 // }

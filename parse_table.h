@@ -5,12 +5,12 @@
 #include "lexemes.h"
 #endif
 
-#define start_state 0
+#define START_STATE 0
 #define end_marker 200
 #define error 184
-#define FIRST_TOKEN 2
-#define POP_error 183
-#define SCAN_error 184
+#define FIRST_TOKEN 0
+#define POP_ERROR 183
+#define SCAN_ERROR 184
 #define MAX_TOKENS 14
 
 // "RBRACE",

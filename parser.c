@@ -305,15 +305,26 @@ enum Token parse_table[][53] =
 stack initialize_stack(int size) {
   stack s;
   s.stk = (int *) malloc(size*sizeof(int));
+  if (s.stk == NULL) {
+    printf("Error!! Malloc failed in initialize_stack()\n");
+    exit(1);
+  }
   s.top = -1;
   s.size = size;
   return s;
 }
 
 void push(stack *s, int num) {
+  int a;
   if (s->top == s->size - 1) {
+    // print_stack(*s);
   	s->size = (int)(1.5*s->size + 1);
   	s->stk = (int *) realloc(s->stk, s->size*sizeof(int));
+    if (s->stk == NULL) {
+      printf("Error!! Realloc failed in initialize_stack()\n");
+      exit(1);
+    }
+    a = 0; //dummy to debug
   }
   s->top++;
   s->stk[s->top] = num;
@@ -352,6 +363,12 @@ void test_stack() {
 
 parse_tree_node *initialize_parse_tree_node(parse_tree_node *parent, int token) {
   parse_tree_node *p = (parse_tree_node *) malloc(sizeof(parse_tree_node));
+
+  if (p == NULL) {
+    printf("Error!! Malloc failed in initialize_parse_tree_node()\n");
+    exit(1);
+  }
+
   p->token_id = token;
   p->parent = parent;
   p->num_child = 0;
@@ -475,6 +492,13 @@ void elevate_symbols(parse_tree_node *node) {
   // tk_break, tk_continue, tk_comma dont need to 
   // be handled explicitly- done by fold_tree()
   
+  /*
+  TODO: Handle case-by-case
+  tk_for
+  tk_if // !handle else
+  tk_func  
+  tk_readi
+  */
   if (node == NULL || node->num_child == 0)
     return;
 
@@ -516,10 +540,10 @@ int rule_test[][4] = {{2, 3, 0, -1}, {1,-1}, {4,5,1,-1}, {6,-1}};
 // TODO: Make error checking proper
 void parser(FILE * ip) {
   int token;
-  stack s = initialize_stack(1000);
+  stack s = initialize_stack(500);
   push(&s, end_marker);
-  push(&s, start_state);
-  parse_root = initialize_parse_tree_node(NULL, start_state);
+  push(&s, START_STATE);
+  parse_root = initialize_parse_tree_node(NULL, START_STATE);
   parse_tree_node *current = parse_root;
   int row, col;
   int top;
@@ -529,13 +553,23 @@ void parser(FILE * ip) {
   while(fscanf(ip,"%d",&token) != EOF) {
     top = pop(&s);
 
+    if (top == end_marker) {
+      printf("Error: Extra tokens found: \n");
+      print_token(token);
+      while(fscanf(ip,"%d",&token) != EOF) {
+        print_token(token);
+      }
+      printf("\n");
+      break;
+    }
+
     while (!is_token(top) && !is_error(top)) {
       rule_no = parse_table[top][token - FIRST_TOKEN];
-      printf("Rule: %d\n", rule_no);
+      printf("Rule: %d Top: %d Token: %d\n", rule_no, top, token);
       rule_token_no = 0;
 
-      if (rule_no != -1) { // TODO: Change this to scan vs pop errors
-        while (states[rule_no][rule_token_no] != -1) { // TODO: change this to tk_null
+      if (rule_no != POP_ERROR && rule_no != SCAN_ERROR) { // TODO: Change this to scan vs pop errors
+        while (states[rule_no][rule_token_no] != tk_null) {
           current->children[rule_token_no] = initialize_parse_tree_node(current, states[rule_no][rule_token_no]);
           current->num_child++;
           rule_token_no++;
@@ -589,10 +623,10 @@ void parser(FILE * ip) {
   }
   int x = pop(&s);
 
-  if (x != end_marker)
+  if (x != end_marker && top != end_marker)
     printf("Error\n");
 
-  printf("Parsing successful\n");
+  printf("Parsing completed.\n");
   printf("\n\nParse tree:\n");
   current = parse_root;
   printf("\n/\\\n");
@@ -604,18 +638,18 @@ void parser(FILE * ip) {
 }
 
 int is_token(int t) {
-  return (t>=2);
+  return (t>=0 && (t<=55));
 }
 
 int is_error(int t) {
-  return 0;
+  return (t == end_marker || t == tk_null || t < 0);
 }
 
 int main()
 {
   //printf("%d",parse_table[0][0]);
   //test_stack();
-  FILE * ip = fopen("_test123","r");
+  FILE * ip = fopen("test.lexer","r");
   parser(ip);
   return 0;
 } 

@@ -11,7 +11,7 @@
 #define FIRST_TOKEN 2
 #define POP_error 183
 #define SCAN_error 184
-#define MAX_TOKENS 10
+#define MAX_TOKENS 14
 
 // "RBRACE",
 // "BREAK",
@@ -57,3 +57,9 @@ parse_tree_node *parse_root;
 parse_tree_node *initialize_parse_tree_node(parse_tree_node *parent, int token);
 void print_parse_tree(parse_tree_node *node, int lv);
 void parse_tree_to_AST();
+
+int is_unecessary_node(int i);
+int is_bool_operator(int i);
+int is_singleton_operator(int i);
+int is_datatype(int i);
+int is_all_alone(int i);

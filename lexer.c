@@ -61,11 +61,8 @@ void writeTofile(FILE* op, enum Token token)
    case tk_struct:
    printf( "<tk_struct> " );
    break;
-   case tk_cmnt_begin:
-   printf( "<tk_cmnt_begin> " );
-   break;
-   case tk_cmnt_end:
-   printf( "<tk_cmnt_end> " );
+   case tk_comment:
+   printf( "<tk_comment> " );
    break;
    case tk_semi_cl:
    printf( "<tk_semi_cl> " );
@@ -249,6 +246,9 @@ enum Token lexer(FILE * ip, FILE * op)
             continue;
           }
         }
+        // TODO:
+        // 1. Make sure comment stops at ~@, not at @
+        // 2. Throw an error if file ends without a closing comment symbol
 
         if(isalnum(input)) //could be several things... 
         { 

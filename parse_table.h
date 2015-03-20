@@ -6,6 +6,7 @@
 #define FIRST_TOKEN 2
 #define POP_error 183
 #define SCAN_error 184
+#define MAX_TOKENS 10
 
 // "RBRACE",
 // "BREAK",
@@ -21,68 +22,8 @@ If that terminal is in follow(that non-terminal), the error is a POP error. Else
     SCAN error code = # of predict table productions + 2
 */
 
-typedef enum Token {  
-  tk_null = -1,
-  tk_rbrace, //}
-  tk_break, //break
-  tk_semi_cl,// ;
-  tk_continue,  //continue
-  
-  tk_main, //main
-  tk_lbrace, //{
-  tk_lpara, //(
-  tk_rpara, //)
-  tk_lsquare, //[
-  tk_rsquare,//]
-  tk_struct, // struct
-  tk_cmnt_begin, // @~
-  tk_cmnt_end, // ~@
-  tk_assign_op, // =
-  tk_id, // [A­Z a­z] [A­Z a­z _ 0­9]* identifier
-  tk_comma, // , 
-  tk_num, //integer [1­9][0­9]* | [0] 
-  tk_rnum, // [0­9]+”.”[0­9]+ 
-  tk_bool, // boolean
-  tk_bot, //Bot
-  tk_velocity, //Velocity
-  tk_col_assign, // :=
-  tk_int, // int
-  tk_float, // float
-  tk_dot, // .
-  tk_colon, // :
-  tk_log_or, // ||
-  tk_log_and, // &&
-  tk_lt, // <
-  tk_gt, // > 
-  tk_log_eq, // ==
-  tk_lte, // <=
-  tk_gte, // >=
-  tk_func, // function
-  tk_return, // return
-  tk_rt, // rt
-  tk_addv, // addV
-  tk_pl_eq, // +=
-  tk_true, // true
-  tk_false, // false
-  tk_inpop, // >>
-  tk_unary_inc, // ++
-  tk_unary_dec, // --
-  tk_undersc, // _
-  tk_fw, // fw
-  tk_point, // Point
-  tk_void, //void
-  tk_readi, //readi
-  tk_exit, //exit
-  tk_for, //for
-  tk_if, //if
-  tk_else, //else
-  tk_plus, //+
-  tk_minus, //-
-  tk_mul, //*
-  tk_div // /
-} TOK;
-
-enum Token states [][11] = 
+/*
+enum Token states [][MAX_TOKENS + 1] = 
 {
 {tk_global_vars,tk_otherFunctions,tk_mainFunction,tk_null}
 {tk_stmts, tk_null},  
@@ -267,7 +208,7 @@ enum Token states [][11] =
 {tk_assignment_stmt},
 {tk_unary_stmts}
 };
-
+*/
 extern int parse_table[][53];
 int is_token(int);
 int is_error(int);
@@ -284,3 +225,15 @@ stack initialize_stack(int size);
 void push(stack *s, int num);
 int pop(stack *s);
 void print_stack(stack s);
+
+typedef struct _parse_tree_node {
+  struct _parse_tree_node *parent;
+  struct _parse_tree_node *children[MAX_TOKENS];
+  int num_child;
+  int visited_child;
+  int token_id;
+} parse_tree_node;
+
+parse_tree_node *parse_root;
+parse_tree_node *initialize_parse_tree_node(parse_tree_node *parent, int token);
+void print_parse_tree(parse_tree_node *node, int lv);

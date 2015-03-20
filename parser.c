@@ -159,17 +159,54 @@ void test_stack() {
 }
 
 /*
+typedef struct _parse_tree_node {
+  struct _parse_tree_node *parent;
+  struct _parse_tree_node *children[MAX_TOKENS];
+  int num_child;
+  int visited_child;
+  int token_id;
+} parse_tree_node;
+*/
+parse_tree_node *initialize_parse_tree_node(parse_tree_node *parent, int token) {
+  parse_tree_node *p = (parse_tree_node *) malloc(sizeof(parse_tree_node));
+  p->token_id = token;
+  p->parent = parent;
+  p->num_child = 0;
+  p->visited_child = 0;
+  int i = 0;
+  for (; i<MAX_TOKENS; i++)
+    p->children[i] = NULL;
+  return p;
+}
+
+void print_parse_tree(parse_tree_node *node, int lv) {
+  if (node == NULL)
+    return;
+  printf("%d -> %d\n", lv, node->token_id);
+  if (node->num_child == 0) {
+    return;
+  }
+  int i;
+  for (i=0; i<node->num_child; i++) {
+    print_parse_tree(node->children[i], lv+1);
+  }
+}
+
+/*
 Test
 E -> int + E | X
 X -> float * X | bool
 */
 int parse_table_test[][5] = {{0, -1, 1, -1, 1}, {-1, -1, 2, -1, 3}};
 int rule_test[][4] = {{2, 3, 0, -1}, {1,-1}, {4,5,1,-1}, {6,-1}};
+// TODO: Make error checking proper
 void parser(FILE * ip) {
   int token;
   stack s = initialize_stack(2);
   push(&s, end_marker);
   push(&s, start_state);
+  parse_root = initialize_parse_tree_node(NULL, start_state);
+  parse_tree_node *current = parse_root;
   int row, col;
   int top;
   int rule_no;
@@ -182,8 +219,13 @@ void parser(FILE * ip) {
       printf("Rule: %d\n", rule_no);
       rule_token_no = 0;
       if (rule_no != -1) {
-        while (rule_test[rule_no][rule_token_no] != -1)
+        while (rule_test[rule_no][rule_token_no] != -1) {
+          current->children[rule_token_no] = initialize_parse_tree_node(current, rule_test[rule_no][rule_token_no]);
+          current->num_child++;
           rule_token_no++;
+        }
+
+        current = current->children[0];
         rule_token_no--;
         while (rule_token_no >= 0) {
           push(&s, rule_test[rule_no][rule_token_no]);
@@ -192,12 +234,30 @@ void parser(FILE * ip) {
       }
       else
         printf("Error\n");
+
       print_stack(s);
+      //print_parse_tree(parse_root, 0);
+
       top = pop(&s);
     }
     if (top != token) {
       //TODO: handle error
       printf("Error\n");
+    }
+    while (1) {
+      if (current == NULL)
+        break;
+      if (current->num_child == 0) {
+        current = current->parent;
+        continue;
+      }
+      current->visited_child++;
+      if (current->visited_child >= current->num_child) {
+        current = current->parent;
+        continue;
+      }
+      current = current->children[current->visited_child];
+      break;
     }
     print_stack(s);
   }
@@ -205,6 +265,10 @@ void parser(FILE * ip) {
   if (x != end_marker)
     printf("Error\n");
   printf("Parsing successful\n");
+  printf("\n\nParse tree:\n");
+  current = parse_root;
+  printf("\n/\\\n");
+  print_parse_tree(current, 0);
 }
 
 int is_token(int t) {

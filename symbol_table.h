@@ -54,4 +54,4 @@ typedef struct _symbol_entry {
 
 symbol_entry *symbol_table_hash[hash_size];
 
-int get_hash_value(char *name);
+int get_hash_value(unsigned char *name);

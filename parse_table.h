@@ -27,7 +27,7 @@ If that terminal is in follow(that non-terminal), the error is a POP error. Else
     SCAN error code = # of predict table productions + 2
 */
 
-/*
+
 enum Token states [][MAX_TOKENS + 1] = 
 {
 {tk_global_vars,tk_otherFunctions,tk_mainFunction,tk_null}
@@ -213,7 +213,7 @@ enum Token states [][MAX_TOKENS + 1] =
 {tk_assignment_stmt},
 {tk_unary_stmts}
 };
-*/
+
 extern int parse_table[][53];
 int is_token(int);
 int is_error(int);
@@ -319,7 +319,6 @@ enum Token parse_table[][53] =
 {184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 180, 184},
 {184, 184, 184, 184, 181, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 183, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 182, 182, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184}
 };
-
 
 
 typedef struct _stack {

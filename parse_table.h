@@ -16,7 +16,7 @@
 // "RBRACE",
 // "BREAK",
 // "SEMI_CL",
-// "CONTINUE","ID","ASSIGN_OP","<other_stm","<comment>","COMMA","LSQUARE","<NUM>","RSQUARE","LBRACE","POINT","COL_ASSIGN","BOT","PL_EQ","VOID","INT","FLOAT","BOOLEAN","NUM","COLON","LPARA","RPARA","TRUE","FALSE","RNUM","IF","ELSE","LOG_OR","LOG_AND","LT","GT","LOG_EQ","LTE","RTE","PLUS","MINUS","MULTIPLY","DIVIDE","UNARY_INCR","UNARY_DECR","MAIN","FUNCTION","RETURN","READI","INPOP","ADDV","FW","RT","FOR","$"],
+// "CONTINUE","ID","ASSIGN_OP","<other_stm","<comment>","COMMA","LSQUARE","<NUM>","RSQUARE","LBRACE","POINT","COL_ASSIGN","BOT","PL_EQ","VOID","INT","FLOAT","BOOLEAN","NUM","COLON","LPARA","RPARA","TRUE","FALSE","RNUM","IF","ELSE","LOG_OR","LOG_AND","LT","GT","LOG_EQ","LTE","GTE","PLUS","MINUS","MULTIPLY","DIVIDE","UNARY_INCR","UNARY_DECR","MAIN","FUNCTION","RETURN","READI","INPOP","ADDV","FW","RT","FOR","$"],
 /*
 NOTE:
 If a terminal is absent from a non-terminal's predict set, 
@@ -169,7 +169,7 @@ enum Token states [][MAX_TOKENS + 1] =
 {tk_gt,tk_null},
 {tk_log_eq,tk_null},
 {tk_lte,tk_null},
-{tk_rte,tk_null},
+{tk_gte,tk_null},
 {tk_mul_div_expr,tk_add_sub_expr1,tk_null},
 {tk_sum_ops,tk_mul_div_expr,tk_add_sub_expr1,tk_null},
 {tk_eps,tk_null},

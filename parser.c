@@ -399,7 +399,7 @@ int is_unecessary_node(int i) {
   return (enum Token)i == tk_lbrace || (enum Token)i == tk_rbrace || 
     (enum Token)i == tk_lpara || (enum Token)i == tk_rpara || 
     (enum Token)i == tk_lsquare || (enum Token)i == tk_rsquare || 
-    (enum Token)i == tk_semi_cl;
+    (enum Token)i == tk_semi_cl || (enum Token)i == tk_inpop;
 }
 
 void remove_unecessary_nodes(parse_tree_node *node) {
@@ -458,13 +458,13 @@ int is_bool_operator(int i) {
     i ==  tk_plus || i ==  tk_minus || i == tk_addv || 
     i ==  tk_mul || i ==  tk_div || i == tk_fw ||
     i == tk_col_assign || i == tk_assign_op ||
-    i == tk_colon || i == tk_dot);
+    i == tk_colon || i == tk_dot || tk_comma);
 }
 
-int is_singleton(int i) {
+int is_singleton_operator(int i) {
   return (i == tk_rt || i == tk_return || 
     i ==  tk_unary_inc  || i ==  tk_unary_dec  || 
-    i == tk_main);
+    i == tk_readi);
 }
 
 int is_datatype(int i) {
@@ -478,6 +478,11 @@ int is_all_alone(int i) {
     i == tk_rnum || i == tk_true);
 }
 
+int is_flow_construct(int i) { // for, if, func
+  return (i == tk_for || i == tk_if || 
+    i == tk_func);
+}
+
 /*
 typedef struct _parse_tree_node {
   struct _parse_tree_node *parent;
@@ -489,12 +494,12 @@ typedef struct _parse_tree_node {
 */
 void elevate_symbols(parse_tree_node *node) {
   int i, j;
-  // tk_break, tk_continue, tk_comma dont need to 
+  // tk_break, tk_continue dont need to 
   // be handled explicitly- done by fold_tree()
   
   /*
   TODO: Handle case-by-case
-  tk_for
+  tk_for // FOR assignment_stmt <expression> <update_stmt> <loop_stmts>
   tk_if // !handle else
   tk_func  
   tk_readi
@@ -508,16 +513,65 @@ void elevate_symbols(parse_tree_node *node) {
 
   for (i=0; i < node->num_child; i++) {
 
-
-    if (is_bool_operator(parse_root->children[i]->token_id)) {
-      node->token_id = parse_root->children[i]->token_id;
+    if (is_flow_construct(node->children[i]->token_id)) {
+      node->token_id = node->children[i]->token_id;
       node->num_child--;
       free(node->children[i]);
 
       for (j=i; j < node->num_child; j++)
         node->children[j] = node->children[j+1];
+
+      break;
+    }
+    else if (is_datatype(node->children[i]->token_id)) {
+      node->token_id = node->children[i]->token_id;
+      node->num_child--;
+      free(node->children[i]);
+
+      for (j=i; j < node->num_child; j++)
+        node->children[j] = node->children[j+1];
+
+      break;
+    }
+    else if(is_singleton_operator(node->children[i]->token_id)) {
+      node->token_id = node->children[i]->token_id;
+      node->num_child--;
+      free(node->children[i]);
+
+      for (j=i; j < node->num_child; j++)
+        node->children[j] = node->children[j+1];
+
+      break;
+    }
+    else if (is_bool_operator(node->children[i]->token_id)) {
+      node->token_id = node->children[i]->token_id;
+      node->num_child--;
+      free(node->children[i]);
+
+      for (j=i; j < node->num_child; j++)
+        node->children[j] = node->children[j+1];
+
+      break;
     }
   }
+}
+
+void get_final_AST() {
+  int i,j;
+
+  for (i=0; i < parse_root->num_child; i++) {
+    if (parse_root->children[i]->token_id == tk_main) {
+      parse_root->token_id = parse_root->children[i]->token_id;
+      parse_root->num_child--;
+      free(parse_root->children[i]);
+
+      for (j=i; j < parse_root->num_child; j++)
+        parse_root->children[j] = parse_root->children[j+1];
+
+      break;
+    }
+  }
+  get_final_AST(parse_root);
 }
 
 void parse_tree_to_AST() {

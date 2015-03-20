@@ -59,7 +59,9 @@ void print_parse_tree(parse_tree_node *node, int lv);
 void parse_tree_to_AST();
 
 int is_unecessary_node(int i);
+
 int is_bool_operator(int i);
 int is_singleton_operator(int i);
 int is_datatype(int i);
 int is_all_alone(int i);
+int is_flow_construct(int i);

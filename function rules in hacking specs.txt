@@ -13,9 +13,9 @@
 <unary_stmts>        -> <prefix_op> ID <unary_stmt_more>
 <unary_stmt_more>    -> COMMA <prefix_op> ID <unary_stmt_more> | SEMI_CL
 <primitive_declaration_stmt> 	-> <primitive_type> ID <assign_more> 
-<assign_more>		-> ASSIGN_OP <expression> <assign_comma> | LSQUARE <NUM> RSQUARE <array2> | <assign_comma>
+<assign_more>		-> ASSIGN_OP <expression> <assign_comma> | LSQUARE NUM RSQUARE <array2> | <assign_comma>
 <assign_comma>		-> COMMA ID <assign_more> | SEMI_CL
-<array2>			-> ASSIGN_OP <curly_values> <assign_comma> | LSQUARE <NUM> RSQUARE <assign_2d> | <assign_comma>
+<array2>			-> ASSIGN_OP <curly_values> <assign_comma> | LSQUARE NUM RSQUARE <assign_2d> | <assign_comma>
 <assign_2d>		-> ASSIGN_OP <meta_curly>  <assign_comma> |  <assign_comma>
 <curly_values>		-> LBRACE <values> RBRACE
 <meta_curly>		-> LBRACE <curly_values> <more_curliness>
@@ -93,6 +93,6 @@
 <parameter_list>	->	<type> ID <parameter_list_more> | RPARA
 <parameter_list_more> ->	COMMA <type> ID <parameter_list_more> | RPARA
 <io_stmt>			-> READI INPOP ID SEMI_CL 
-<bot_stmt>		-> ADDV ID COMMA ID COMMA SEMI_CL | FW ID COMMA <expression> SEMI_CL | RT ID SEMI_CL | <point_decl_stmt> | <bot_decl_stmt> 
+<bot_stmt>		-> ADDV ID COMMA ID SEMI_CL | FW ID COMMA <expression> SEMI_CL | RT ID SEMI_CL | <point_decl_stmt> | <bot_decl_stmt> 
 <for_stmt> 		-> FOR LPARA <assignment_stmt> <expression> SEMI_CL <update_stmt> RPARA LBRACE <loop_stmts> 
 <update_stmt> ->  <assignment_stmt> | <unary_stmts>

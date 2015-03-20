@@ -491,11 +491,14 @@ void add_ID_to_sym_table(char *name, int declared_line, int declared_position) {
   symbol_table_hash[index] = s;
 }
 
-//temporary
-int get_hash_value(char *name) {
-  return 1;
-}
+int get_hash_value(unsigned char *name) //the djb2 hash function from http://www.cse.yorku.ca/~oz/hash.html
+{
+  int hash = 5381;
+  int c;
 
+  while (c = *str++) hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+  return hash;
+}
 void print__symbol_table() {
   int i = 0;
   referred *r;

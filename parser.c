@@ -15,6 +15,7 @@
 
 enum Token states [][MAX_TOKENS + 1] =
 {
+{},
 {tk_global_vars,tk_otherFunctions,tk_mainFunction,tk_null},
 {tk_stmts, tk_null},  
 {tk_stmt,tk_stmts,tk_null},
@@ -29,7 +30,7 @@ enum Token states [][MAX_TOKENS + 1] =
 {tk_gen_stmt,tk_null},
 {tk_loop_condnal_stmt,tk_null},
 {tk_global_assignment,tk_null},
-{tk_eps,tk_null},
+{/*tk_eps*/tk_null},
 {tk_primitive_type,tk_id,tk_assign_op,tk_const_value,tk_semi_cl,tk_null},
 {tk_id,tk_func_ass,tk_null},
 {tk_other_stmt,tk_null},
@@ -76,7 +77,7 @@ enum Token states [][MAX_TOKENS + 1] =
 {tk_id,tk_null},
 {tk_int,tk_null},
 {tk_float,tk_null},
-{tk_bool,tk_null}, //check!!
+{tk_boolean,tk_null}, //check!!
 {tk_point,tk_null},
 {tk_bot,tk_null},
 {tk_var,tk_leftHandSide1,tk_null},
@@ -96,14 +97,14 @@ enum Token states [][MAX_TOKENS + 1] =
 {tk_semi_cl,tk_null},
 {tk_id,tk_array,tk_null},
 {tk_lsquare,tk_array_arithm_expr,tk_brack_pair1,tk_null},
-{tk_eps,tk_null},
+{/*tk_eps*/tk_null},
 {tk_rsquare,tk_array2d}, //83
 {tk_colon,tk_array_arithm_expr,tk_rsquare,tk_null},
-{tk_eps,tk_null},
+{/*tk_eps*/tk_null},
 {tk_lsquare,tk_array_arithm_expr,tk_rsquare,tk_null},
 {tk_value,tk_values_more,tk_null},
 {tk_comma,tk_values,tk_null},
-{tk_eps,tk_null},
+{/*tk_eps*/tk_null},
 {tk_const_value,tk_null},
 {tk_id,tk_value_rest,tk_null},
 {tk_funcCall_inside_Value,tk_null},
@@ -120,36 +121,36 @@ enum Token states [][MAX_TOKENS + 1] =
 {tk_bool,tk_null},
 {tk_if,tk_lpara,tk_expression,tk_rpara,tk_lbrace,tk_loop_stmts,tk_loop_condnal_stmt_more,tk_null},
 {tk_else,tk_loop_condnal_stmt_even_more,tk_null},
-{tk_eps,tk_null},
+{/*tk_eps*/tk_null},
 {tk_loop_condnal_stmt,tk_null},
 {tk_lbrace,tk_loop_stmts,tk_null},
 {tk_if,tk_lpara,tk_expression,tk_rpara,tk_lbrace,tk_condnal_stmt_suffix,tk_null},
 {tk_stmts,tk_loop_condnal_stmt_more,tk_null},
 {tk_else,tk_loop_condnal_stmt_even_more,tk_null},
-{tk_eps,tk_null},
+{/*tk_eps*/tk_null},
 {tk_condnal_stmt,tk_null},
 {tk_lbrace,tk_stmts,tk_null},
 {tk_expression,tk_more_expression,tk_null},
 {tk_comma,tk_expression,tk_more_expression,tk_null},
-{tk_eps,tk_null},
+{/*tk_eps*/tk_null},
 {tk_arr_mul_div_expr,tk_array_arithm_expr1,tk_null},//<array_arithm_expr'> is  tk_array_arithm_expr1
 {tk_sum_ops,tk_arr_mul_div_expr,tk_array_arithm_expr1,tk_null},
-{tk_eps,tk_null}, //rule 120
+{/*tk_eps*/tk_null}, //rule 120
 {tk_arr_un_expr,tk_arr_mul_div_expr1,tk_null},
 {tk_mul_ops,tk_arr_un_expr,tk_arr_mul_div_expr1,tk_null},
-{tk_eps,tk_null},
+{/*tk_eps*/tk_null},
 {tk_prefix_op,tk_arr_end,tk_null},
 {tk_idNum,tk_null},
 {tk_lpara,tk_array_arithm_expr,tk_rpara,tk_null}, //rule 126
 {tk_and_expr,tk_expression1,tk_null},
 {tk_log_or,tk_and_expr,tk_expression1,tk_null},
-{tk_eps,tk_null},
+{/*tk_eps*/tk_null},
 {tk_reln_expr,tk_and_expr1,tk_null},
 {tk_log_and,tk_reln_expr,tk_and_expr1,tk_null},
-{tk_eps,tk_null},
+{/*tk_eps*/tk_null},
 {tk_add_sub_expr,tk_reln_expr1,tk_null},
 {tk_rel_op,tk_add_sub_expr,tk_reln_expr1,tk_null},
-{tk_eps,tk_null},
+{/*tk_eps*/tk_null},
 {tk_lt,tk_null},
 {tk_gt,tk_null},
 {tk_log_eq,tk_null},
@@ -157,12 +158,12 @@ enum Token states [][MAX_TOKENS + 1] =
 {tk_gte,tk_null},
 {tk_mul_div_expr,tk_add_sub_expr1,tk_null},
 {tk_sum_ops,tk_mul_div_expr,tk_add_sub_expr1,tk_null},
-{tk_eps,tk_null},
+{/*tk_eps*/tk_null},
 {tk_plus,tk_null},
 {tk_minus,tk_null},
 {tk_un_expr,tk_arr_mul_div_expr1,tk_null},
 {tk_mul_ops,tk_un_expr,tk_arr_mul_div_expr1,tk_null},
-{tk_eps,tk_null},
+{/*tk_eps*/tk_null},
 {tk_mul,tk_null},
 {tk_div,tk_null},
 {tk_prefix_op,tk_typcast},
@@ -469,7 +470,7 @@ int is_singleton_operator(int i) {
 
 int is_datatype(int i) {
   return (i == tk_int || i == tk_float ||
-    i == tk_bool || i == tk_bot || 
+    i == tk_boolean || i == tk_bot || 
     i == tk_point || i == tk_void);
 }
 
@@ -619,7 +620,7 @@ void parser(FILE * ip) {
 
     while (!is_token(top) && !is_error(top)) {
       rule_no = parse_table[top][token - FIRST_TOKEN];
-      printf("Rule: %d Top: %d Token: %d\n", rule_no, top, token);
+      printf("Rule: %d Top: %d Token: %d\n", rule_no, top, token-FIRST_TOKEN);
       rule_token_no = 0;
 
       if (rule_no != POP_ERROR && rule_no != SCAN_ERROR) { // TODO: Change this to scan vs pop errors
@@ -692,7 +693,7 @@ void parser(FILE * ip) {
 }
 
 int is_token(int t) {
-  return (t>=0 && (t<=55));
+  return (t >= FIRST_TOKEN && t < NO_OF_TERMINALS + FIRST_TOKEN);
 }
 
 int is_error(int t) {

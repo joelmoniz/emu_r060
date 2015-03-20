@@ -92,8 +92,8 @@ void print_token(enum Token token) {
    case tk_rnum:
    printf( "<tk_rnum> " );
    break;
-   case tk_bool:
-   printf( "<tk_bool> " );
+   case tk_boolean:
+   printf( "<tk_boolean> " );
    break;
    case tk_bot:
    printf( "<tk_bot> " );
@@ -296,7 +296,7 @@ enum Token lexer(FILE * ip, FILE * op)
 
             if(strcmp(inp,"main") == 0) { writeTofile(op, tk_main); continue;} 
             else if(strcmp(inp,"struct") == 0){ writeTofile(op, tk_struct); continue;}
-            else if(strcmp(inp,"boolean") == 0) { writeTofile(op,tk_bool); continue;}
+            else if(strcmp(inp,"boolean") == 0) { writeTofile(op,tk_boolean); continue;}
             else if(strcmp(inp,"Bot") == 0){ writeTofile(op,tk_bot); continue;}
             else if(strcmp(inp,"Velocity") == 0){ writeTofile(op,tk_velocity); continue;}
             else if(strcmp(inp,"int") == 0){ writeTofile(op,tk_int); continue;}

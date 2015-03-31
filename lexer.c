@@ -212,7 +212,9 @@ void print_token(enum Token token) {
    case tk_div:
    printf( "<tk_div> " );
    break;
-    
+   default:
+   printf("%d ", token);
+   break;    
   } 
 }
 

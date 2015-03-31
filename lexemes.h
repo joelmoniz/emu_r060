@@ -2,6 +2,7 @@
 
 typedef enum Token {  
   tk_null = -1,
+  tk_temp,
   tk_program,
   tk_mainFunction,
   tk_stmts,

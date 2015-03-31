@@ -15,7 +15,7 @@
 
 enum Token states [][MAX_TOKENS + 1] =
 {
-{},
+{tk_null},
 {tk_global_vars,tk_otherFunctions,tk_mainFunction,tk_null},
 {tk_stmts, tk_null},  
 {tk_stmt,tk_stmts,tk_null},
@@ -202,6 +202,7 @@ enum Token states [][MAX_TOKENS + 1] =
 
 enum Token parse_table[][53] = 
 {
+  {},
 {184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 1, 1, 1, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 1, 1, 184, 184, 184, 184, 184, 184, 184, 183},
 {2, 184, 184, 184, 2, 184, 2, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 2, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 183},
 {4, 184, 184, 184, 3, 184, 3, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 3, 183, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 183, 184, 184, 184, 184, 184, 184, 183},
@@ -604,8 +605,12 @@ void parser(FILE * ip) {
   int top;
   int rule_no;
   int rule_token_no;
+  printf("\n");
   print_stack(s);
   while(fscanf(ip,"%d",&token) != EOF) {
+    printf("Token: %d  ", token);
+    print_token(token);
+    printf("\n");
     top = pop(&s);
 
     if (top == end_marker) {
@@ -619,8 +624,10 @@ void parser(FILE * ip) {
     }
 
     while (!is_token(top) && !is_error(top)) {
-      rule_no = parse_table[top][token - FIRST_TOKEN];
-      printf("Rule: %d Top: %d Token: %d\n", rule_no, top, token-FIRST_TOKEN);
+      rule_no = parse_table[top][token - FIRST_TOKEN + 2];
+      printf("Rule: %d Top: %d Token no.:%d ", rule_no, top, token - FIRST_TOKEN);
+      print_token(token);
+      printf("\n");
       rule_token_no = 0;
 
       if (rule_no != POP_ERROR && rule_no != SCAN_ERROR) { // TODO: Change this to scan vs pop errors
@@ -637,11 +644,15 @@ void parser(FILE * ip) {
           push(&s, states[rule_no][rule_token_no]);
           rule_token_no--;
         }
+        printf("\n");
+        print_stack(s);
       }
-      else // TODO: Handle pop vs scan errors separately
+      else {// TODO: Handle pop vs scan errors separately}
         printf("Error\n");
+        break;
+      }
 
-      print_stack(s);
+      //print_stack(s);
       //print_parse_tree(parse_root, 0);
 
       top = pop(&s);
@@ -649,9 +660,9 @@ void parser(FILE * ip) {
 
     if (top != token) {
       printf("Expecting ");
-      print_token(token);
-      printf("but found ");
       print_token(top);
+      printf("but found ");
+      print_token(token);
       printf("\n");
     }
 
@@ -674,7 +685,7 @@ void parser(FILE * ip) {
       current = current->children[current->visited_child];
       break;
     }
-    print_stack(s);
+    //print_stack(s);
   }
   int x = pop(&s);
 
@@ -693,13 +704,14 @@ void parser(FILE * ip) {
 }
 
 int is_token(int t) {
-  return (t >= FIRST_TOKEN && t < NO_OF_TERMINALS + FIRST_TOKEN);
+  return (t >= FIRST_TOKEN && t <= 199);
 }
 
 int is_error(int t) {
   return (t == end_marker || t == tk_null || t < 0);
 }
 
+/*
 int main()
 {
   //printf("%d",parse_table[0][0]);
@@ -707,4 +719,4 @@ int main()
   FILE * ip = fopen("test.lexer","r");
   parser(ip);
   return 0;
-} 
+} */

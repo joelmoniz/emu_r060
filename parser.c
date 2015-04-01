@@ -733,8 +733,10 @@ void parser(FILE * ip) {
     while (!is_token(top) && !is_error(top)) {
       
       rule_no = parse_table[top][token - tk_rbrace + 1 ]; //BLING!
-      printf("\n \n \n rule_no used %d \n \n \n",rule_no); //BLING!	
-      printf("Rule: %d Top: %d Token no.:%d ", rule_no, top, token - FIRST_TOKEN); //BLING!
+      printf("\n \n \n rule_no used %d \n \n \n",rule_no); //BLING!
+      printf("\n \n \n token used %d \n \n \n",token); //BLING!
+      	
+      printf("Rule: %d Top: %d Token no.:%d ", rule_no, top, token - FIRST_TOKEN + 1); //BLING!
       print_token(token);
       printf("\n");
       rule_token_no = 0;

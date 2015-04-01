@@ -732,8 +732,8 @@ void parser(FILE * ip) {
 
     while (!is_token(top) && !is_error(top)) {
       
-      rule_no = parse_table[top][token - FIRST_TOKEN ]; //BLING!
-      printf("\n \n \n rule_no used %d \n \n \n",rule_no); //BLING!
+      rule_no = parse_table[top][token - tk_rbrace + 1 ]; //BLING!
+      printf("\n \n \n rule_no used %d \n \n \n",rule_no); //BLING!	
       printf("Rule: %d Top: %d Token no.:%d ", rule_no, top, token - FIRST_TOKEN); //BLING!
       print_token(token);
       printf("\n");
@@ -817,12 +817,12 @@ int is_error(int t) {
   return (t == end_marker || t == tk_null || t < 0);
 }
 
-/*
+
 int main()
 {
   //printf("%d",parse_table[0][0]);
   //test_stack();
-  FILE * ip = fopen("test.lexer","r");
+  FILE * ip = fopen("test.txt.lexer","r");
   parser(ip);
   return 0;
-} */
+} 

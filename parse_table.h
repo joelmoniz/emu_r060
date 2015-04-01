@@ -8,7 +8,7 @@
 #define START_STATE 1
 #define end_marker 200
 #define error 184
-#define FIRST_TOKEN tk_rbrace
+#define FIRST_TOKEN (tk_rbrace - 1)
 #define POP_ERROR 183
 #define SCAN_ERROR 184
 #define MAX_TOKENS 14

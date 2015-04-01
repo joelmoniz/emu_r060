@@ -1,1 +1,2 @@
+int a=5;
 main(){Velocity v;Velocity v2:={2,2};Point p;Bot b := {p,v,1,1,true};fw b, 5;addV b.v v2;fw b,5;} 

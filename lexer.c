@@ -15,6 +15,7 @@
 #include "lexemes.h"
 #endif
 
+#define BUFFER_SIZE 100
 
 void add_ID_to_sym_table(char *name, int declared_line, int declared_position);
 
@@ -218,239 +219,299 @@ void print_token(enum Token token) {
   } 
 }
 
+char buf[2][BUFFER_SIZE];
+int buf_in_use;
+int at_eof;
+int read_size[2];
+int curr_locn;
+
+char read_next_char(FILE * ip) {
+  curr_locn++;
+  if (curr_locn == read_size[buf_in_use] - 1 && read_size[buf_in_use]  < BUFFER_SIZE) 
+    at_eof = 1;
+  else if (curr_locn >= 100) {
+    buf_in_use = !buf_in_use;
+    read_size[buf_in_use] = fread(buf[buf_in_use], BUFFER_SIZE, 1, ip);
+    curr_locn = 0;
+  }
+  return buf[buf_in_use][curr_locn];
+}
+
 enum Token lexer(FILE * ip, FILE * op)
 {
-  char input,next; //our work-horse!
+
+  buf_in_use = 1;
+  at_eof = 0;
+  read_size[0] = read_size[1] = 0;
+  curr_locn = 100;
+
+  char input,next,prev; //our work-horse!
   input = ' ';
-    int line_no, column_no;
-    line_no=1;
-    column_no=0;
-    while(input != EOF)
-    { input = fgetc(ip);
-      if(input == EOF)break;
-      column_no++;
+  int line_no, column_no;
+  line_no=1;
+  column_no=0;
+  prev = '\0';
+
+    while(!at_eof)
+    { 
+      if (prev != '\0')
+        input = prev;
+      else
+        input = read_next_char(ip);
+      
+      if(input == EOF || input == 0)
+        break;
+           
       if(input == '\n')
       {
         line_no++;
         column_no = 0;
+        prev = '\0';
         continue;
       }
 
-        if(input == ' ') //stripping out extra white spaces 
-        { 
-          do
+      if(input == ' ') //stripping out extra white spaces 
+      { 
+        column_no++;
+        prev = '\0';
+        continue;
+      }
+
+      if(input == '@')  //stripping out comments
+      {
+        column_no++;
+        
+        if(read_next_char(ip) == '~')
+        {
+          input = '~';
+          column_no++;
+          while(input != EOF)
           {
-            input = fgetc(ip);
+            input = read_next_char(ip);
             column_no++;
-          }while(input==' ');
-          fseek(ip,-1,SEEK_CUR);
+            if (input == '\n') {
+              column_no = 0;
+              line_no++;
+            }
+            else if (input == '~') {
+              input = read_next_char(ip);
+              column_no++;
+              if (input == '@') {
+                break;
+              }
+            }
+          }
+          if (input == EOF) {
+            printf("\nError: EOF without terminating comment\n");
+            return tk_null;
+          }
+          prev = '\0';
           continue;
         }
+        else {
+          printf("\n%d : %d Unrecognized symbol @\n",line_no,column_no);
+          return tk_null;
+        }
+      }
 
-        if(input == '@')  //stripping out comments
+      if(isalnum(input)) //could be several things... 
+      { 
+        column_no++;
+        if(isalpha(input))
         {
-          if(fgetc(ip) == '~')
+          char inp[101]; //max size of identifier is 100
+          int i = 0;
+         do
+          {
+            inp[i] = input;
+            if(i > 100)
+            {
+              printf("\n%d : %d identifier too big!\n",line_no,column_no);
+              while(isSymbol(input)!=1)
+              {
+                input = read_next_char(ip);
+                column_no++;
+                if(input=='\n')
+                {
+                  column_no = 0;
+                  line_no++;
+                  break;
+                }
+              }
+              prev = input;
+              continue;
+            }
+          
+            input = read_next_char(ip);
+            column_no++;
+            i=i+1;
+          }while(isSymbol(input)==0);
+        
+          inp[i] = '\0';
+          prev = input;
+
+          if(strcmp(inp,"addV") == 0){ writeTofile(op,tk_addv); prev = '\0'; continue;}
+          else if(strcmp(inp,"boolean") == 0) { writeTofile(op,tk_boolean); prev = '\0'; continue;}
+          else if(strcmp(inp,"break") == 0) {writeTofile(op,tk_break); prev = '\0'; continue;}
+          else if(strcmp(inp,"Bot") == 0){ writeTofile(op,tk_bot); prev = '\0'; continue;}
+          else if(strcmp(inp,"continue") == 0) {writeTofile(op,tk_continue); prev = '\0'; continue;}
+          else if(strcmp(inp,"else") == 0){ writeTofile(op,tk_else) ; prev = '\0'; continue;}
+          else if(strcmp(inp,"float") == 0) {writeTofile(op,tk_float); prev = '\0'; continue;}
+          else if(strcmp(inp,"function") == 0) {writeTofile(op,tk_func); prev = '\0'; continue;}
+          else if(strcmp(inp,"false") == 0) {writeTofile(op,tk_false); prev = '\0'; continue;}
+          else if(strcmp(inp,"fw") == 0){ writeTofile(op,tk_fw); prev = '\0'; continue;}
+          else if(strcmp(inp,"for") == 0){ writeTofile(op,tk_for) ; prev = '\0'; continue;}
+          else if(strcmp(inp,"int") == 0){ writeTofile(op,tk_int); prev = '\0'; continue;}
+          else if(strcmp(inp,"if") == 0) { writeTofile(op,tk_if) ; prev = '\0'; continue;}
+          else if(strcmp(inp,"main") == 0) { writeTofile(op, tk_main); prev = '\0'; continue;} 
+          else if(strcmp(inp,"Point") == 0) {writeTofile(op,tk_point); prev = '\0'; continue;}
+          else if(strcmp(inp,"return") == 0) {writeTofile(op,tk_return); prev = '\0'; continue;}
+          else if(strcmp(inp,"rt") == 0) {writeTofile(op,tk_rt); prev = '\0'; continue;}
+          else if(strcmp(inp,"readi") == 0) {writeTofile(op,tk_readi); prev = '\0'; continue;}
+          else if(strcmp(inp,"struct") == 0){ writeTofile(op, tk_struct); prev = '\0'; continue;}
+          else if(strcmp(inp,"true") == 0){ writeTofile(op,tk_true); prev = '\0'; continue;}
+          else if(strcmp(inp,"void") == 0) {writeTofile(op,tk_void); prev = '\0'; continue;}
+          else { writeTofile(op,tk_id); add_ID_to_sym_table(inp, line_no, column_no); prev = '\0'; continue;}
+        }
+
+        if(isdigit(input)) 
+        {
+          column_no++;
+          char inp[100];
+          int i = 0;
+          int flag = 0;
+          //check for num, rnum or illegal identifier like 12ab
+          do
+          {
+            inp[i++]= input;
+            input=read_next_char(ip);
+            column_no++;
+            if(isalpha(input)) //1.3e02 format not supported
+            {
+              flag = 1;
+              printf("\nError,invalid identifier at %d : %d",line_no,column_no);
+              while(isSymbol(input)!=1){input=read_next_char(ip);column_no++;} //scan till delimiter
+            }
+          } while(isSymbol(input)!=1);
+
+          if(!flag && input!='.')
+          {
+            prev = input;
+            writeTofile(op,tk_num);
+            continue;
+          }
+          else if(input == '.')
           {
             do
             {
-              input = fgetc(ip);
-            }while(input!='@' && input != EOF);
+              inp[i++]= input;
+              input=read_next_char(ip);
+              column_no++;
+              if(isalpha(input)) //1.3e02 format not supported
+              {
+                flag = 1;
+                printf("\nError,invalid identifier at %d : %d",line_no,column_no);
+                while(isSymbol(input)!=1){input=read_next_char(ip);column_no++;} //scan till delimiter
+              }
+            }while(isSymbol(input)!=1);
+            prev = input;
+            writeTofile(op,tk_rnum);
             continue;
           }
         }
-        // TODO:
-        // 1. Make sure comment stops at ~@, not at @
-        // 2. Throw an error if file ends without a closing comment symbol
+      }
 
-        if(isalnum(input)) //could be several things... 
-        { 
-          if(isalpha(input))
-          {
-            char inp[101]; //max size of identifier is 100
-            int i = 0;
-           do
-            {
-             
-              inp[i] = input;
-              if(i > 100)
-              {
-                printf("%d : %d identifier too big!\n",line_no,column_no);
-                while(isSymbol(input)!=1)
-                {
-                  input = fgetc(ip);
-                  column_no++;
-                  if(input=='\n')
-                  {
-                    column_no = 0;
-                    line_no++;
-                    break;
-                  }
-                }
-                continue;
-              }
-            
-              input = fgetc(ip);
-              i=i+1;
-            }while(isSymbol(input)==0);
-          
-            inp[i] = '\0';
-            fseek(ip,-1,SEEK_CUR);
+      if(input == '{'){ writeTofile(op,tk_lbrace); prev = '\0'; continue;}
+      if(input == '}'){ writeTofile(op,tk_rbrace); prev = '\0'; continue;}
+      if(input == '('){ writeTofile(op,tk_lpara);prev = '\0'; continue;}
+      if(input == ')'){ writeTofile(op,tk_rpara);prev = '\0'; continue;}
+      if(input == '['){ writeTofile(op,tk_lsquare);prev = '\0'; continue;}
+      if(input == ']'){ writeTofile(op,tk_rsquare);prev = '\0'; continue;}
+      if(input == '['){ writeTofile(op,tk_lsquare);prev = '\0'; continue;}
+      if(input == ';'){ writeTofile(op,tk_semi_cl);prev = '\0'; continue;}
+      if(input == ','){ writeTofile(op,tk_comma);prev = '\0'; continue;}
+      if(input == '.'){ writeTofile(op,tk_dot);prev = '\0'; continue;}
 
-            if(strcmp(inp,"main") == 0) { writeTofile(op, tk_main); continue;} 
-            else if(strcmp(inp,"struct") == 0){ writeTofile(op, tk_struct); continue;}
-            else if(strcmp(inp,"boolean") == 0) { writeTofile(op,tk_boolean); continue;}
-            else if(strcmp(inp,"Bot") == 0){ writeTofile(op,tk_bot); continue;}
-            else if(strcmp(inp,"Velocity") == 0){ writeTofile(op,tk_velocity); continue;}
-            else if(strcmp(inp,"int") == 0){ writeTofile(op,tk_int); continue;}
-            else if(strcmp(inp,"float") == 0) {writeTofile(op,tk_float); continue;}
-            else if(strcmp(inp,"function") == 0) {writeTofile(op,tk_func); continue;}
-            else if(strcmp(inp,"return") == 0) {writeTofile(op,tk_return); continue;}
-            else if(strcmp(inp,"rt") == 0) {writeTofile(op,tk_rt); continue;}
-            else if(strcmp(inp,"addV") == 0){ writeTofile(op,tk_addv); continue;}
-            else if(strcmp(inp,"true") == 0){ writeTofile(op,tk_true); continue;}
-            else if(strcmp(inp,"false") == 0) {writeTofile(op,tk_false); continue;}
-            else if(strcmp(inp,"fw") == 0){ writeTofile(op,tk_fw); continue;}
-            else if(strcmp(inp,"Point") == 0) {writeTofile(op,tk_point); continue;}
-            else if(strcmp(inp,"void") == 0) {writeTofile(op,tk_void); continue;}
-            else if(strcmp(inp,"readi") == 0) {writeTofile(op,tk_readi); continue;}
-            else if(strcmp(inp,"break") == 0) {writeTofile(op,tk_break); continue;}
-            else if(strcmp(inp,"continue") == 0) {writeTofile(op,tk_continue); continue;}
-            else if(strcmp(inp,"exit") == 0){ writeTofile(op,tk_exit); continue;}
-            else if(strcmp(inp,"rt") == 0) {writeTofile(op,tk_rt); continue;}
-            else if(strcmp(inp,"for") == 0){ writeTofile(op,tk_for) ; continue;}
-            else if(strcmp(inp,"if") == 0) { writeTofile(op,tk_if) ; continue;}
-            else if(strcmp(inp,"else") == 0){ writeTofile(op,tk_else) ; continue;}
-            else { writeTofile(op,tk_id); add_ID_to_sym_table(inp, line_no, column_no); continue;}
-          }
+      if(input == ':')
+      {
+        next = read_next_char(ip);
+        column_no++;
+        if(next == '='){ writeTofile(op,tk_col_assign);prev = '\0'; continue;}
+        else{ prev = input;writeTofile(op,tk_colon);continue;}
+      }
 
+      if(input == '=')
+      { next = read_next_char(ip);
+        column_no++;
+        if( next == '='){ writeTofile(op,tk_log_eq);prev = '\0'; continue;}
+        else {prev = input; writeTofile(op,tk_assign_op);continue;} 
+      }
 
-          if(isdigit(input)) 
-          {
-            char inp[100];
-            int i = 0;
-            int flag = 0;
-            //check for num, rnum or illegal identifier like 12ab
-            do
-            {
-              inp[i++]= input;
-              input=fgetc(ip);
-              if(isalpha(input)) //1.3e02 format not supported
-              {
-                flag = 1;
-                printf("Error,invalid identifier at %d : %d",line_no,column_no);
-                while(isSymbol(input)!=1){input=fgetc(ip);} //scan till delimiter
-              }
-            }while(isSymbol(input)!=1);
+      if(input == '_')
+      { writeTofile(op,tk_undersc);prev = '\0'; continue;} 
 
-            if(!flag && input!='.')
-            {
-              fseek(ip,-1,SEEK_CUR);
-              writeTofile(op,tk_num);
-              continue;
-            }
+      if(input == '|')
+      {
+        next = read_next_char(ip);
+        column_no++;
+        if(next == '|')
+        { writeTofile(op,tk_log_or);prev = '\0'; continue;}
+        else { printf("\nError: unknown symbol '|' at %d : %d\n",line_no,column_no ); }
+      }
+      
+      if(input == '&')
+      {
+        next = read_next_char(ip);
+        column_no++;
+        if(next == '&')
+        { writeTofile(op,tk_log_and);prev = '\0'; continue;}
+        else{ printf("\nError: unknown symbol '&' at %d : %d\n",line_no,column_no );}
+      }
 
-            else if(input == '.')
-            {
-              do
-            {
-              inp[i++]= input;
-              input=fgetc(ip);
-              if(isalpha(input)) //1.3e02 format not supported
-              {
-                flag = 1;
-                printf("Error,invalid identifier at %d : %d",line_no,column_no);
-                while(isSymbol(input)!=1){input=fgetc(ip);} //scan till delimiter
-              }
-            }while(isSymbol(input)!=1);
-              writeTofile(op,tk_rnum);
-              continue;
-            }
-            
-          }
-        }
+      if(input == '+')  
+      {
+        next = read_next_char(ip);
+        column_no++;
+        if(next == '+'){ writeTofile(op,tk_unary_inc); prev = '\0'; continue;}
+        else if(next == '='){ writeTofile(op,tk_pl_eq);prev = '\0'; continue;}
+        else { prev = input; writeTofile(op,tk_plus);continue;}
+      }
 
-        if(input == '{'){ writeTofile(op,tk_lbrace); continue;}
-        if(input == '}'){ writeTofile(op,tk_rbrace); continue;}
-        if(input == '('){ writeTofile(op,tk_lpara);continue;}
-        if(input == ')'){ writeTofile(op,tk_rpara);continue;}
-        if(input == '['){ writeTofile(op,tk_lsquare);continue;}
-        if(input == ']'){ writeTofile(op,tk_rsquare);continue;}
-        if(input == '['){ writeTofile(op,tk_lsquare);continue;}
-        if(input == ';'){ writeTofile(op,tk_semi_cl);continue;}
-        if(input == ','){ writeTofile(op,tk_comma);continue;}
-        if(input == '.'){ writeTofile(op,tk_dot);continue;}
+      if(input == '-')  
+      {
+        next = read_next_char(ip);
+        column_no++;
+        if(next == '-'){ writeTofile(op,tk_unary_dec);prev = '\0'; continue;}
+        else{ prev = input; writeTofile(op,tk_minus);continue;}
+      }
 
-        if(input == ':')
-        {
-          next = fgetc(ip);
-          if(next == '='){ writeTofile(op,tk_col_assign);continue;}
-          else{ fseek(ip,-1, SEEK_CUR);writeTofile(op,tk_colon);continue;}
-        }
+      if(input == '*'){ writeTofile(op,tk_mul);prev = '\0'; continue;}
 
-        if(input == '=')
-        { next = fgetc(ip);
-          if( next == '='){ writeTofile(op,tk_log_eq);continue;}
-          else {fseek(ip,-1, SEEK_CUR); column_no--; writeTofile(op,tk_assign_op);continue;} 
-        }
+      if(input == '/'){ writeTofile(op,tk_div);prev = '\0'; continue;}
 
-        if(input == '_')
-        { writeTofile(op,tk_undersc);continue;} 
+      if(input == '<')
+      { next = read_next_char(ip);
+        column_no++;
+        if(next == '='){writeTofile(op,tk_lte);prev = '\0'; continue;}
+        else
+        {prev = input; writeTofile(op,tk_lt);continue;}
+      }
 
-        if(input == '|')
-        {
-          next = fgetc(ip);
-          if(next == '|')
-          { writeTofile(op,tk_log_or);continue;}
-          else { printf("Error: unknown symbol '|' at %d : %d\n",line_no,column_no ); }
-        }
-        
-        if(input == '&')
-        {
-          next = fgetc(ip);
-          if(next == '&')
-          { writeTofile(op,tk_log_and);continue;}
-          else{ printf("Error: unknown symbol '&' at %d : %d\n",line_no,column_no );}
-        }
+      if(input == '>')
+      {
+        next = read_next_char(ip);
+        column_no++;
 
-        if(input == '+')  
-        {
-          next = fgetc(ip);
-          if(next == '+'){ writeTofile(op,tk_unary_inc); continue;}
-          else if(next == '='){ writeTofile(op,tk_pl_eq);continue;}
-          else { fseek(ip,-1, SEEK_CUR);writeTofile(op,tk_plus);continue;}
-        }
-
-        if(input == '-')  
-        {
-          next = fgetc(ip);
-          if(next == '-'){ writeTofile(op,tk_unary_dec);continue;}
-          else{ fseek(ip,-1, SEEK_CUR);writeTofile(op,tk_minus);continue;}
-        }
-
-        if(input == '*'){ writeTofile(op,tk_mul);continue;}
-
-        if(input == '/'){ writeTofile(op,tk_div);continue;}
-
-        if(input == '<')
-        { next = fgetc(ip);
-          if(next == '='){writeTofile(op,tk_lte);continue;}
-          else
-          {fseek(ip,-1, SEEK_CUR);writeTofile(op,tk_lt);continue;}
-        }
-
-        if(input == '>')
-        {
-          next = fgetc(ip);
-
-          if(next == '='){ writeTofile(op,tk_gte);continue;}
-          else if(next == '>'){ writeTofile(op,tk_inpop);continue;}
-          else{ fseek(ip,-1, SEEK_CUR);writeTofile(op,tk_gt);continue;}
-        }
-       
-       else 
-       {
-        printf("Unknown symbol %c at %d:%d\n",input,line_no,column_no);
-       } 
+        if(next == '='){ writeTofile(op,tk_gte);prev = '\0'; continue;}
+        else if(next == '>'){ writeTofile(op,tk_inpop);prev = '\0'; continue;}
+        else{ prev = input; writeTofile(op,tk_gt);continue;}
+      }
+     
+      else 
+      {
+        if (input != ' ')
+          printf("\nUnknown symbol %c (=%d) at %d:%d\n",input,(int)input,line_no,column_no);
+      } 
     }
   }
 
@@ -558,28 +619,28 @@ void print__symbol_table() {
 }
 
 
-// int main(int argc, char * argv[])
-// {   
-//    /* if(argc!=2)
-//     {
-//         printf("FATAL ERROR!! : No input specified or too many parameters \n");
-//         exit(1);
-//     }
-// */
-//     init_symbol_table();
-//     FILE * ip = fopen("test.txt","r");
-//     FILE * op = fopen("test.lexer","w"); //WARNING: argv[1] is changed here
-//     if (ip == NULL || op == NULL)
-//     {
-//         printf("Error opening file, check permissions! \n");
-//     }
-//     lexer(ip,op);
-//     fclose(ip);
-//     fclose(op);
-// //    add_ID_to_sym_table("joel", 3, 7);
-// //    add_ID_to_sym_table("gokul", 2, 2);
-// //    add_ID_to_sym_table("test", 42, 42);
-//     print__symbol_table();
-//     free_symbol_table();
-//     return 0;
-// }
+int main(int argc, char * argv[])
+{   
+   /* if(argc!=2)
+    {
+        printf("FATAL ERROR!! : No input specified or too many parameters \n");
+        exit(1);
+    }
+*/
+    init_symbol_table();
+    FILE * ip = fopen("test.txt","r");
+    FILE * op = fopen("test.lexer","w"); //WARNING: argv[1] is changed here
+    if (ip == NULL || op == NULL)
+    {
+        printf("Error opening file, check permissions! \n");
+    }
+    lexer(ip,op);
+    fclose(ip);
+    fclose(op);
+//    add_ID_to_sym_table("joel", 3, 7);
+//    add_ID_to_sym_table("gokul", 2, 2);
+//    add_ID_to_sym_table("test", 42, 42);
+    print__symbol_table();
+    free_symbol_table();
+    return 0;
+}

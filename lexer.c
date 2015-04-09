@@ -350,28 +350,168 @@ enum Token lexer(FILE * ip, FILE * op)
           inp[i] = '\0';
           prev = input;
 
-          if(strcmp(inp,"addV") == 0){ writeTofile(op,tk_addv); prev = '\0'; continue;}
-          else if(strcmp(inp,"boolean") == 0) { writeTofile(op,tk_boolean); prev = '\0'; continue;}
-          else if(strcmp(inp,"break") == 0) {writeTofile(op,tk_break); prev = '\0'; continue;}
-          else if(strcmp(inp,"Bot") == 0){ writeTofile(op,tk_bot); prev = '\0'; continue;}
-          else if(strcmp(inp,"continue") == 0) {writeTofile(op,tk_continue); prev = '\0'; continue;}
-          else if(strcmp(inp,"else") == 0){ writeTofile(op,tk_else) ; prev = '\0'; continue;}
-          else if(strcmp(inp,"float") == 0) {writeTofile(op,tk_float); prev = '\0'; continue;}
-          else if(strcmp(inp,"function") == 0) {writeTofile(op,tk_func); prev = '\0'; continue;}
-          else if(strcmp(inp,"false") == 0) {writeTofile(op,tk_false); prev = '\0'; continue;}
-          else if(strcmp(inp,"fw") == 0){ writeTofile(op,tk_fw); prev = '\0'; continue;}
-          else if(strcmp(inp,"for") == 0){ writeTofile(op,tk_for) ; prev = '\0'; continue;}
-          else if(strcmp(inp,"int") == 0){ writeTofile(op,tk_int); prev = '\0'; continue;}
-          else if(strcmp(inp,"if") == 0) { writeTofile(op,tk_if) ; prev = '\0'; continue;}
-          else if(strcmp(inp,"main") == 0) { writeTofile(op, tk_main); prev = '\0'; continue;} 
-          else if(strcmp(inp,"Point") == 0) {writeTofile(op,tk_point); prev = '\0'; continue;}
-          else if(strcmp(inp,"return") == 0) {writeTofile(op,tk_return); prev = '\0'; continue;}
-          else if(strcmp(inp,"rt") == 0) {writeTofile(op,tk_rt); prev = '\0'; continue;}
-          else if(strcmp(inp,"readi") == 0) {writeTofile(op,tk_readi); prev = '\0'; continue;}
-          else if(strcmp(inp,"struct") == 0){ writeTofile(op, tk_struct); prev = '\0'; continue;}
-          else if(strcmp(inp,"true") == 0){ writeTofile(op,tk_true); prev = '\0'; continue;}
-          else if(strcmp(inp,"void") == 0) {writeTofile(op,tk_void); prev = '\0'; continue;}
-          else { writeTofile(op,tk_id); add_ID_to_sym_table(inp, line_no, column_no); prev = '\0'; continue;}
+          if(inp[0] == 'a' && inp[1] == 'd' && inp[2] == 'd' 
+            && inp[3] == 'V' && inp[4] == '\0'){ // addV
+            writeTofile(op,tk_addv); 
+            prev = '\0'; 
+            continue;
+          }
+          else if (inp[0] == 'b') { // boolean OR break
+            if (inp[1] == 'o' && inp[2] == 'o' && inp[3] == 'l' 
+              && inp[4] == 'e' && inp[5] == 'a' && inp[6] == 'n' && inp[7] == '\0') {
+              writeTofile(op,tk_boolean); 
+              prev = '\0'; 
+              continue;
+            }
+            else if (inp[1] == 'r' && inp[2] == 'e' && inp[3] == 'a' 
+              && inp[4] == 'k' && inp[5] == '\0') {
+              writeTofile(op,tk_break); 
+              prev = '\0'; 
+              continue;
+            }
+            else {
+              writeTofile(op,tk_id); 
+              add_ID_to_sym_table(inp, line_no, column_no); 
+              prev = '\0'; 
+              continue;
+            }
+          }
+          else if(inp[0] == 'B' && inp[1] == 'o' && inp[2] == 't' && inp[3] == '\0') { 
+            writeTofile(op,tk_bot); 
+            prev = '\0'; 
+            continue;
+          }
+          else if(inp[0] == 'c' && inp[1] == 'o' && inp[2] == 'n' 
+            && inp[3] == 't' && inp[4] == 'i' && inp[5] == 'n' 
+            && inp[6] == 'u' && inp[7] == 'e' && inp[8] == '\0') {
+            writeTofile(op,tk_continue); 
+            prev = '\0'; 
+            continue;
+          }
+          else if(inp[0] == 'e' && inp[1] == 'l' && inp[2] == 's' && inp[3] == 'e'
+             && inp[4] == '\0'){ 
+            writeTofile(op,tk_else) ; 
+            prev = '\0'; 
+            continue;
+          }
+          else if (inp[0] == 'f') {
+            if(inp[1] == 'l' && inp[2] == 'o' && inp[3] == 'a' 
+                && inp[4] == 't' && inp[5] == '\0') {
+              writeTofile(op,tk_float); 
+              prev = '\0'; 
+              continue;
+            }
+            else if (inp[1] == 'u' && inp[2] == 'n' && inp[3] == 'c' 
+                && inp[4] == 't' && inp[5] == 'i' && inp[6] == 'o' && inp[7] == 'n'
+                && inp[8] == '\0') {
+              writeTofile(op,tk_func); 
+              prev = '\0'; 
+              continue;
+            }
+            else if(inp[1] == 'a' && inp[2] == 'l' && inp[3] == 's' 
+                && inp[4] == 'e' && inp[5] == '\0') {
+              writeTofile(op,tk_float); 
+              prev = '\0'; 
+              continue;
+            }
+            else if (inp[1] == 'w' && inp[2] == '\0') {
+              writeTofile(op,tk_fw); 
+              prev = '\0'; 
+              continue;
+            }
+            else if (inp[1] == 'o' && inp[2] == 'r' && inp[3] == '\0') {
+              writeTofile(op,tk_for); 
+              prev = '\0'; 
+              continue;
+            }
+            else {
+              writeTofile(op,tk_id); 
+              add_ID_to_sym_table(inp, line_no, column_no); 
+              prev = '\0'; 
+              continue;
+            }
+          }
+          else if (inp[0] == 'i') {
+            if (inp[1] == 'n' && inp[2] == 't' && inp[3] == '\0') {
+              writeTofile(op,tk_int); 
+              prev = '\0'; 
+              continue;
+            }
+            else if (inp[1] == 'f' && inp[2] == '\0') {
+              writeTofile(op,tk_if); 
+              prev = '\0'; 
+              continue;
+            }
+            else {
+              writeTofile(op,tk_id); 
+              add_ID_to_sym_table(inp, line_no, column_no); 
+              prev = '\0'; 
+              continue;
+            }
+          }
+          else if(inp[0] == 'm' && inp[1] == 'a' && inp[2] == 'i' && inp[3] == 'n'
+             && inp[4] == '\0') { 
+            writeTofile(op, tk_main); 
+            prev = '\0'; 
+            continue;
+          } 
+          else if(inp[0] == 'P' && inp[1] == 'o' && inp[2] == 'i' && inp[3] == 'n'
+             && inp[4] == 't' && inp[5] == '\0') {
+            writeTofile(op,tk_point); 
+            prev = '\0'; 
+            continue;
+          }
+          else if(inp[0] == 'r' && inp[1] == 'e' && inp[2] == 't' 
+            && inp[3] == 'u' && inp[4] == 'r' && inp[5] == 'n' 
+            && inp[6] == '\0') {
+            writeTofile(op,tk_return); 
+            prev = '\0'; 
+            continue;
+          }
+          else if(inp[0] == 'r') {
+            if (inp[1] == 't' && inp[2] == '\0') {
+              writeTofile(op,tk_rt); 
+              prev = '\0'; 
+              continue;
+            }
+            else if(inp[1] == 'e' && inp[2] == 'a' && inp[3] == 'd' 
+                && inp[4] == 'i' && inp[5] == '\0') {
+              writeTofile(op,tk_readi); 
+              prev = '\0'; 
+              continue;
+            }
+            else {
+              writeTofile(op,tk_id); 
+              add_ID_to_sym_table(inp, line_no, column_no); 
+              prev = '\0'; 
+              continue;
+            }
+          }
+          else if(inp[0] == 's' && inp[1] == 't' && inp[2] == 'r' 
+            && inp[3] == 'u' && inp[4] == 'c' && inp[5] == 't' 
+            && inp[6] == '\0'){ 
+            writeTofile(op, tk_struct); 
+            prev = '\0'; 
+            continue;
+          }
+          else if(inp[0] == 't' && inp[1] == 'r' && inp[2] == 'u' && inp[3] == 'e'
+             && inp[4] == '\0') { 
+            writeTofile(op,tk_true); 
+            prev = '\0'; 
+            continue;
+          }
+          else if(inp[0] == 'v' && inp[1] == 'o' && inp[2] == 'i' && inp[3] == 'd'
+             && inp[4] == '\0') {
+            writeTofile(op,tk_void); 
+            prev = '\0'; 
+            continue;
+          }
+          else { 
+            writeTofile(op,tk_id); 
+            add_ID_to_sym_table(inp, line_no, column_no); 
+            prev = '\0'; 
+            continue;
+          }
         }
 
         if(isdigit(input)) 

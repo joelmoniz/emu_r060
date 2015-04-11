@@ -733,10 +733,10 @@ void parser(FILE * ip) {
     while (!is_token(top) && !is_error(top)) {
       
       rule_no = parse_table[top][token - tk_rbrace + 1 ]; //BLING!
-      printf("\n \n \n rule_no used %d \n \n \n",rule_no); //BLING!
-      printf("\n \n \n token used %d \n \n \n",token); //BLING!
+      // printf("\nrule_no used %d\n",rule_no); //BLING!
+      // printf("\ntoken used %d\n",token); //BLING!
       	
-      printf("Rule: %d Top: %d Token no.:%d ", rule_no, top, token - FIRST_TOKEN + 1); //BLING!
+      printf("Rule: %d Top: %d Token no.:%d Token: ", rule_no, top, token - FIRST_TOKEN + 1); //BLING!
       print_token(token);
       printf("\n");
       rule_token_no = 0;
@@ -748,7 +748,11 @@ void parser(FILE * ip) {
           rule_token_no++;
         }
 
-        current = current->children[0];
+        if (current->num_child)
+          current = current->children[0];
+        // else
+        //   printf("\n\nError rule number: %d", rule_no);
+
         rule_token_no--;
 
         while (rule_token_no >= 0) {
@@ -765,6 +769,9 @@ void parser(FILE * ip) {
 
       top = pop(&s);
     }
+
+    printf("\n");
+    print_token(top);
 
     if (top != token) {
       printf("Expecting ");
@@ -820,11 +827,11 @@ int is_error(int t) {
 }
 
 
-int main()
-{
-  //printf("%d",parse_table[0][0]);
-  //test_stack();
-  FILE * ip = fopen("test.txt.lexer","r");
-  parser(ip);
-  return 0;
-} 
+// int main()
+// {
+//   //printf("%d",parse_table[0][0]);
+//   //test_stack();
+//   FILE * ip = fopen("test.txt.lexer","r");
+//   parser(ip);
+//   return 0;
+// } 

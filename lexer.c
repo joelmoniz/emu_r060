@@ -353,137 +353,137 @@ enum Token lexer(FILE * ip, FILE * op)
           if(inp[0] == 'a' && inp[1] == 'd' && inp[2] == 'd' 
             && inp[3] == 'V' && inp[4] == '\0'){ // addV
             writeTofile(op,tk_addv); 
-            prev = '\0'; 
+            // prev = '\0'; 
             continue;
           }
           else if (inp[0] == 'b') { // boolean OR break
             if (inp[1] == 'o' && inp[2] == 'o' && inp[3] == 'l' 
               && inp[4] == 'e' && inp[5] == 'a' && inp[6] == 'n' && inp[7] == '\0') {
               writeTofile(op,tk_boolean); 
-              prev = '\0'; 
+              // prev = '\0'; 
               continue;
             }
             else if (inp[1] == 'r' && inp[2] == 'e' && inp[3] == 'a' 
               && inp[4] == 'k' && inp[5] == '\0') {
               writeTofile(op,tk_break); 
-              prev = '\0'; 
+              // prev = '\0'; 
               continue;
             }
             else {
               writeTofile(op,tk_id); 
               add_ID_to_sym_table(inp, line_no, column_no); 
-              prev = '\0'; 
+              // prev = '\0'; 
               continue;
             }
           }
           else if(inp[0] == 'B' && inp[1] == 'o' && inp[2] == 't' && inp[3] == '\0') { 
             writeTofile(op,tk_bot); 
-            prev = '\0'; 
+            // prev = '\0'; 
             continue;
           }
           else if(inp[0] == 'c' && inp[1] == 'o' && inp[2] == 'n' 
             && inp[3] == 't' && inp[4] == 'i' && inp[5] == 'n' 
             && inp[6] == 'u' && inp[7] == 'e' && inp[8] == '\0') {
             writeTofile(op,tk_continue); 
-            prev = '\0'; 
+            // prev = '\0'; 
             continue;
           }
           else if(inp[0] == 'e' && inp[1] == 'l' && inp[2] == 's' && inp[3] == 'e'
              && inp[4] == '\0'){ 
             writeTofile(op,tk_else) ; 
-            prev = '\0'; 
+            // prev = '\0'; 
             continue;
           }
           else if (inp[0] == 'f') {
             if(inp[1] == 'l' && inp[2] == 'o' && inp[3] == 'a' 
                 && inp[4] == 't' && inp[5] == '\0') {
               writeTofile(op,tk_float); 
-              prev = '\0'; 
+              // prev = '\0'; 
               continue;
             }
             else if (inp[1] == 'u' && inp[2] == 'n' && inp[3] == 'c' 
                 && inp[4] == 't' && inp[5] == 'i' && inp[6] == 'o' && inp[7] == 'n'
                 && inp[8] == '\0') {
               writeTofile(op,tk_func); 
-              prev = '\0'; 
+              // prev = '\0'; 
               continue;
             }
             else if(inp[1] == 'a' && inp[2] == 'l' && inp[3] == 's' 
                 && inp[4] == 'e' && inp[5] == '\0') {
               writeTofile(op,tk_float); 
-              prev = '\0'; 
+              // prev = '\0'; 
               continue;
             }
             else if (inp[1] == 'w' && inp[2] == '\0') {
               writeTofile(op,tk_fw); 
-              prev = '\0'; 
+              // prev = '\0'; 
               continue;
             }
             else if (inp[1] == 'o' && inp[2] == 'r' && inp[3] == '\0') {
               writeTofile(op,tk_for); 
-              prev = '\0'; 
+              // prev = '\0'; 
               continue;
             }
             else {
               writeTofile(op,tk_id); 
               add_ID_to_sym_table(inp, line_no, column_no); 
-              prev = '\0'; 
+              // prev = '\0'; 
               continue;
             }
           }
           else if (inp[0] == 'i') {
             if (inp[1] == 'n' && inp[2] == 't' && inp[3] == '\0') {
               writeTofile(op,tk_int); 
-              prev = '\0'; 
+              // prev = '\0'; 
               continue;
             }
             else if (inp[1] == 'f' && inp[2] == '\0') {
               writeTofile(op,tk_if); 
-              prev = '\0'; 
+              // prev = '\0'; 
               continue;
             }
             else {
               writeTofile(op,tk_id); 
               add_ID_to_sym_table(inp, line_no, column_no); 
-              prev = '\0'; 
+              // prev = '\0'; 
               continue;
             }
           }
           else if(inp[0] == 'm' && inp[1] == 'a' && inp[2] == 'i' && inp[3] == 'n'
              && inp[4] == '\0') { 
             writeTofile(op, tk_main); 
-            prev = '\0'; 
+            // prev = '\0'; 
             continue;
           } 
           else if(inp[0] == 'P' && inp[1] == 'o' && inp[2] == 'i' && inp[3] == 'n'
              && inp[4] == 't' && inp[5] == '\0') {
             writeTofile(op,tk_point); 
-            prev = '\0'; 
+            // prev = '\0'; 
             continue;
           }
           else if(inp[0] == 'r' && inp[1] == 'e' && inp[2] == 't' 
             && inp[3] == 'u' && inp[4] == 'r' && inp[5] == 'n' 
             && inp[6] == '\0') {
             writeTofile(op,tk_return); 
-            prev = '\0'; 
+            // prev = '\0'; 
             continue;
           }
           else if(inp[0] == 'r') {
             if (inp[1] == 't' && inp[2] == '\0') {
               writeTofile(op,tk_rt); 
-              prev = '\0'; 
+              // prev = '\0'; 
               continue;
             }
             else if(inp[1] == 'e' && inp[2] == 'a' && inp[3] == 'd' 
                 && inp[4] == 'i' && inp[5] == '\0') {
               writeTofile(op,tk_readi); 
-              prev = '\0'; 
+              // prev = '\0'; 
               continue;
             }
             else {
               writeTofile(op,tk_id); 
               add_ID_to_sym_table(inp, line_no, column_no); 
-              prev = '\0'; 
+              // prev = '\0'; 
               continue;
             }
           }
@@ -491,25 +491,25 @@ enum Token lexer(FILE * ip, FILE * op)
             && inp[3] == 'u' && inp[4] == 'c' && inp[5] == 't' 
             && inp[6] == '\0'){ 
             writeTofile(op, tk_struct); 
-            prev = '\0'; 
+            // prev = '\0'; 
             continue;
           }
           else if(inp[0] == 't' && inp[1] == 'r' && inp[2] == 'u' && inp[3] == 'e'
              && inp[4] == '\0') { 
             writeTofile(op,tk_true); 
-            prev = '\0'; 
+            // prev = '\0'; 
             continue;
           }
           else if(inp[0] == 'v' && inp[1] == 'o' && inp[2] == 'i' && inp[3] == 'd'
              && inp[4] == '\0') {
             writeTofile(op,tk_void); 
-            prev = '\0'; 
+            // prev = '\0'; 
             continue;
           }
           else { 
             writeTofile(op,tk_id); 
             add_ID_to_sym_table(inp, line_no, column_no); 
-            prev = '\0'; 
+            // prev = '\0'; 
             continue;
           }
         }
@@ -567,7 +567,6 @@ enum Token lexer(FILE * ip, FILE * op)
       if(input == ')'){ writeTofile(op,tk_rpara);prev = '\0'; continue;}
       if(input == '['){ writeTofile(op,tk_lsquare);prev = '\0'; continue;}
       if(input == ']'){ writeTofile(op,tk_rsquare);prev = '\0'; continue;}
-      if(input == '['){ writeTofile(op,tk_lsquare);prev = '\0'; continue;}
       if(input == ';'){ writeTofile(op,tk_semi_cl);prev = '\0'; continue;}
       if(input == ','){ writeTofile(op,tk_comma);prev = '\0'; continue;}
       if(input == '.'){ writeTofile(op,tk_dot);prev = '\0'; continue;}
@@ -577,14 +576,14 @@ enum Token lexer(FILE * ip, FILE * op)
         next = read_next_char(ip);
         column_no++;
         if(next == '='){ writeTofile(op,tk_col_assign);prev = '\0'; continue;}
-        else{ prev = input;writeTofile(op,tk_colon);continue;}
+        else{ prev = next;writeTofile(op,tk_colon);continue;}
       }
 
       if(input == '=')
       { next = read_next_char(ip);
         column_no++;
         if( next == '='){ writeTofile(op,tk_log_eq);prev = '\0'; continue;}
-        else {prev = input; writeTofile(op,tk_assign_op);continue;} 
+        else {prev = next; writeTofile(op,tk_assign_op);continue;} 
       }
 
       if(input == '_')
@@ -614,7 +613,7 @@ enum Token lexer(FILE * ip, FILE * op)
         column_no++;
         if(next == '+'){ writeTofile(op,tk_unary_inc); prev = '\0'; continue;}
         else if(next == '='){ writeTofile(op,tk_pl_eq);prev = '\0'; continue;}
-        else { prev = input; writeTofile(op,tk_plus);continue;}
+        else { prev = next; writeTofile(op,tk_plus);continue;}
       }
 
       if(input == '-')  
@@ -622,7 +621,7 @@ enum Token lexer(FILE * ip, FILE * op)
         next = read_next_char(ip);
         column_no++;
         if(next == '-'){ writeTofile(op,tk_unary_dec);prev = '\0'; continue;}
-        else{ prev = input; writeTofile(op,tk_minus);continue;}
+        else{ prev = next; writeTofile(op,tk_minus);continue;}
       }
 
       if(input == '*'){ writeTofile(op,tk_mul);prev = '\0'; continue;}
@@ -634,7 +633,7 @@ enum Token lexer(FILE * ip, FILE * op)
         column_no++;
         if(next == '='){writeTofile(op,tk_lte);prev = '\0'; continue;}
         else
-        {prev = input; writeTofile(op,tk_lt);continue;}
+        {prev = next; writeTofile(op,tk_lt);continue;}
       }
 
       if(input == '>')
@@ -644,7 +643,7 @@ enum Token lexer(FILE * ip, FILE * op)
 
         if(next == '='){ writeTofile(op,tk_gte);prev = '\0'; continue;}
         else if(next == '>'){ writeTofile(op,tk_inpop);prev = '\0'; continue;}
-        else{ prev = input; writeTofile(op,tk_gt);continue;}
+        else{ prev = next; writeTofile(op,tk_gt);continue;}
       }
      
       else 
@@ -759,28 +758,28 @@ void print__symbol_table() {
 }
 
 
-int main(int argc, char * argv[])
-{   
-   /* if(argc!=2)
-    {
-        printf("FATAL ERROR!! : No input specified or too many parameters \n");
-        exit(1);
-    }
-*/
-    init_symbol_table();
-    FILE * ip = fopen("test.txt","r");
-    FILE * op = fopen("test.lexer","w"); //WARNING: argv[1] is changed here
-    if (ip == NULL || op == NULL)
-    {
-        printf("Error opening file, check permissions! \n");
-    }
-    lexer(ip,op);
-    fclose(ip);
-    fclose(op);
-//    add_ID_to_sym_table("joel", 3, 7);
-//    add_ID_to_sym_table("gokul", 2, 2);
-//    add_ID_to_sym_table("test", 42, 42);
-    print__symbol_table();
-    free_symbol_table();
-    return 0;
-}
+// int main(int argc, char * argv[])
+// {   
+//    /* if(argc!=2)
+//     {
+//         printf("FATAL ERROR!! : No input specified or too many parameters \n");
+//         exit(1);
+//     }
+// */
+//     init_symbol_table();
+//     FILE * ip = fopen("test.txt","r");
+//     FILE * op = fopen("test.lexer","w"); //WARNING: argv[1] is changed here
+//     if (ip == NULL || op == NULL)
+//     {
+//         printf("Error opening file, check permissions! \n");
+//     }
+//     lexer(ip,op);
+//     fclose(ip);
+//     fclose(op);
+// //    add_ID_to_sym_table("joel", 3, 7);
+// //    add_ID_to_sym_table("gokul", 2, 2);
+// //    add_ID_to_sym_table("test", 42, 42);
+//     print__symbol_table();
+//     free_symbol_table();
+//     return 0;
+// }

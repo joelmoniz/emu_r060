@@ -44,6 +44,7 @@ stack initialize_stack(int size);
 void push(stack *s, int num);
 int pop(stack *s);
 void print_stack(stack s);
+void print_stack_as_rules(stack s);
 
 typedef struct _parse_tree_node {
   struct _parse_tree_node *parent;

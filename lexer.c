@@ -50,7 +50,6 @@ void print_token(enum Token token) {
    case tk_main:
    printf( "<tk_main> " );
    break;
-   
    case tk_lbrace:
    printf( "<tk_lbrace> " );
    break;
@@ -219,6 +218,308 @@ void print_token(enum Token token) {
   } 
 }
 
+void print_rule(enum Token rule) {
+  switch (rule) {
+    case tk_program:
+      printf("<tk_program> ");
+      break;
+    case tk_mainFunction:
+      printf("<tk_mainFunction> ");
+      break;
+    case tk_stmts:
+      printf("<tk_stmts> ");
+      break;
+    case tk_stmt:
+      printf("<tk_stmt> ");
+      break;
+    case tk_loop_stmts:
+      printf("<tk_loop_stmts> ");
+      break;
+    case tk_loop_stmt:
+      printf("<tk_loop_stmt> ");
+      break;
+    case tk_lp_stmt:
+      printf("<tk_lp_stmt> ");
+      break;
+    case tk_global_vars:
+      printf("<tk_global_vars> ");
+      break;
+    case tk_global_assignment:
+      printf("<tk_global_assignment> ");
+      break;
+    case tk_gen_stmt:
+      printf("<tk_gen_stmt> ");
+      break;
+    case tk_other_stmt:
+      printf("<tk_other_stmt> ");
+      break;
+    case tk_func_ass:
+      printf("<tk_func_ass> ");
+      break;
+    case tk_unary_stmts:
+      printf("<tk_unary_stmts> ");
+      break;
+    case tk_unary_stmt_more:
+      printf("<tk_unary_stmt_more> ");
+      break;
+    case tk_primitive_declaration_stmt:
+      printf("<tk_primitive_declaration_stmt> ");
+      break;
+    case tk_assign_more:
+      printf("<tk_assign_more> ");
+      break;
+    case tk_assign_comma:
+      printf("<tk_assign_comma> ");
+      break;
+    case tk_array2:
+      printf("<tk_array2> ");
+      break;
+    case tk_assign_2d:
+      printf("<tk_assign_2d> ");
+      break;
+    case tk_curly_values:
+      printf("<tk_curly_values> ");
+      break;
+    case tk_meta_curly:
+      printf("<tk_meta_curly> ");
+      break;
+    case tk_more_curliness:
+      printf("<tk_more_curliness> ");
+      break;
+    case tk_point_decl_stmt:
+      printf("<tk_point_decl_stmt> ");
+      break;
+    case tk_pv_rest:
+      printf("<tk_pv_rest> ");
+      break;
+    case tk_bot_decl_stmt:
+      printf("<tk_bot_decl_stmt> ");
+      break;
+    case tk_bot_rest:
+      printf("<tk_bot_rest> ");
+      break;
+    case tk_assign_operators:
+      printf("<tk_assign_operators> ");
+      break;
+    case tk_type:
+      printf("<tk_type> ");
+      break;
+    case tk_type_list:
+      printf("<tk_type_list> ");
+      break;
+    case tk_type_more:
+      printf("<tk_type_more> ");
+      break;
+    case tk_primitive_type:
+      printf("<tk_primitive_type> ");
+      break;
+    case tk_bot_type:
+      printf("<tk_bot_type> ");
+      break;
+    case tk_assignment_stmt:
+      printf("<tk_assignment_stmt> ");
+      break;
+    case tk_leftHandSide1:
+      printf("<tk_leftHandSide1> ");
+      break;
+    case tk_bot_point1:
+      printf("<tk_bot_point1> ");
+      break;
+    case tk_bot_or_point:
+      printf("<tk_bot_or_point> ");
+      break;
+    case tk_idNum:
+      printf("<tk_idNum> ");
+      break;
+    case tk_leftHandSideMultiple:
+      printf("<tk_leftHandSideMultiple> ");
+      break;
+    case tk_righHandSide:
+      printf("<tk_righHandSide> ");
+      break;
+    case tk_righHandSideMultiple:
+      printf("<tk_righHandSideMultiple> ");
+      break;
+    case tk_var:
+      printf("<tk_var> ");
+      break;
+    case tk_array:
+      printf("<tk_array> ");
+      break;
+    case tk_brack_pair1:
+      printf("<tk_brack_pair1> ");
+      break;
+    case tk_array2d:
+      printf("<tk_array2d> ");
+      break;
+    case tk_values:
+      printf("<tk_values> ");
+      break;
+    case tk_values_more:
+      printf("<tk_values_more> ");
+      break;
+    case tk_value:
+      printf("<tk_value> ");
+      break;
+    case tk_value_rest:
+      printf("<tk_value_rest> ");
+      break;
+    case tk_funcCall_inside_Value:
+      printf("<tk_funcCall_inside_Value> ");
+      break;
+    case tk_funcCall_inside_Value_rest:
+      printf("<tk_funcCall_inside_Value_rest> ");
+      break;
+    case tk_idBool:
+      printf("<tk_idBool> ");
+      break;
+    case tk_bool:
+      printf("<tk_bool> ");
+      break;
+    case tk_const_value:
+      printf("<tk_const_value> ");
+      break;
+    case tk_loop_condnal_stmt:
+      printf("<tk_loop_condnal_stmt> ");
+      break;
+    case tk_loop_condnal_stmt_more:
+      printf("<tk_loop_condnal_stmt_more> ");
+      break;
+    case tk_loop_condnal_stmt_even_more:
+      printf("<tk_loop_condnal_stmt_even_more> ");
+      break;
+    case tk_condnal_stmt:
+      printf("<tk_condnal_stmt> ");
+      break;
+    case tk_condnal_stmt_suffix:
+      printf("<tk_condnal_stmt_suffix> ");
+      break;
+    case tk_condnal_stmt_more:
+      printf("<tk_condnal_stmt_more> ");
+      break;
+    case tk_condnal_stmt_even_more:
+      printf("<tk_condnal_stmt_even_more> ");
+      break;
+    case tk_expressions:
+      printf("<tk_expressions> ");
+      break;
+    case tk_more_expression:
+      printf("<tk_more_expression> ");
+      break;
+    case tk_array_arithm_expr:
+      printf("<tk_array_arithm_expr> ");
+      break;
+    case tk_array_arithm_expr1:
+      printf("<tk_array_arithm_expr1> ");
+      break;
+    case tk_arr_mul_div_expr:
+      printf("<tk_arr_mul_div_expr> ");
+      break;
+    case tk_arr_mul_div_expr1:
+      printf("<tk_arr_mul_div_expr1> ");
+      break;
+    case tk_arr_un_expr:
+      printf("<tk_arr_un_expr> ");
+      break;
+    case tk_arr_end:
+      printf("<tk_arr_end> ");
+      break;
+    case tk_expression:
+      printf("<tk_expression> ");
+      break;
+    case tk_expression1:
+      printf("<tk_expression1> ");
+      break;
+    case tk_and_expr:
+      printf("<tk_and_expr> ");
+      break;
+    case tk_and_expr1:
+      printf("<tk_and_expr1> ");
+      break;
+    case tk_reln_expr:
+      printf("<tk_reln_expr> ");
+      break;
+    case tk_reln_expr1:
+      printf("<tk_reln_expr1> ");
+      break;
+    case tk_rel_op:
+      printf("<tk_rel_op> ");
+      break;
+    case tk_add_sub_expr:
+      printf("<tk_add_sub_expr> ");
+      break;
+    case tk_add_sub_expr1:
+      printf("<tk_add_sub_expr1> ");
+      break;
+    case tk_sum_ops:
+      printf("<tk_sum_ops> ");
+      break;
+    case tk_mul_div_expr:
+      printf("<tk_mul_div_expr> ");
+      break;
+    case tk_mul_div_expr1:
+      printf("<tk_mul_div_expr1> ");
+      break;
+    case tk_mul_ops:
+      printf("<tk_mul_ops> ");
+      break;
+    case tk_un_expr:
+      printf("<tk_un_expr> ");
+      break;
+    case tk_prefix_op:
+      printf("<tk_prefix_op> ");
+      break;
+    case tk_typcast:
+      printf("<tk_typcast> ");
+      break;
+    case tk_expression_more:
+      printf("<tk_expression_more> ");
+      break;
+    case tk_arg_list:
+      printf("<tk_arg_list> ");
+      break;
+    case tk_arg_list_more2:
+      printf("<tk_arg_list_more2> ");
+      break;
+    case tk_funcCall_stmt:
+      printf("<tk_funcCall_stmt> ");
+      break;
+    case tk_funcCall_stmt_rest:
+      printf("<tk_funcCall_stmt_rest> ");
+      break;
+    case tk_otherFunctions:
+      printf("<tk_otherFunctions> ");
+      break;
+    case tk_function:
+      printf("<tk_function> ");
+      break;
+    case tk_fn_stmts:
+      printf("<tk_fn_stmts> ");
+      break;
+    case tk_parameter_list:
+      printf("<tk_parameter_list> ");
+      break;
+    case tk_parameter_list_more:
+      printf("<tk_parameter_list_more> ");
+      break;
+    case tk_io_stmt:
+      printf("<tk_io_stmt> ");
+      break;
+    case tk_bot_stmt:
+      printf("<tk_bot_stmt> ");
+      break;
+    case tk_for_stmt:
+      printf("<tk_for_stmt> ");
+      break;
+    case tk_update_stmt:
+      printf("<tk_update_stmt> ");
+      break;
+    default:
+      print_token(rule);
+      break;
+  }
+}
+
 char buf[2][BUFFER_SIZE];
 int buf_in_use;
 int at_eof;
@@ -252,275 +553,299 @@ enum Token lexer(FILE * ip, FILE * op)
   column_no=0;
   prev = '\0';
 
-    while(!at_eof)
+  printf("LEXER Output\n");
+  printf("============\n\n");
+
+  while(!at_eof)
+  { 
+    if (prev != '\0')
+      input = prev;
+    else
+      input = read_next_char(ip);
+    
+    if(input == EOF || input == 0)
+      break;
+         
+    if(input == '\n')
+    {
+      line_no++;
+      column_no = 0;
+      prev = '\0';
+      continue;
+    }
+
+    if(input == ' ') //stripping out extra white spaces 
     { 
-      if (prev != '\0')
-        input = prev;
-      else
-        input = read_next_char(ip);
+      column_no++;
+      prev = '\0';
+      continue;
+    }
+
+    if(input == '@')  //stripping out comments
+    {
+      column_no++;
       
-      if(input == EOF || input == 0)
-        break;
-           
-      if(input == '\n')
+      if(read_next_char(ip) == '~')
       {
-        line_no++;
-        column_no = 0;
-        prev = '\0';
-        continue;
-      }
-
-      if(input == ' ') //stripping out extra white spaces 
-      { 
+        input = '~';
         column_no++;
-        prev = '\0';
-        continue;
-      }
-
-      if(input == '@')  //stripping out comments
-      {
-        column_no++;
-        
-        if(read_next_char(ip) == '~')
+        while(input != EOF)
         {
-          input = '~';
+          input = read_next_char(ip);
           column_no++;
-          while(input != EOF)
-          {
+          if (input == '\n') {
+            column_no = 0;
+            line_no++;
+          }
+          else if (input == '~') {
             input = read_next_char(ip);
             column_no++;
-            if (input == '\n') {
-              column_no = 0;
-              line_no++;
+            if (input == '@') {
+              break;
             }
-            else if (input == '~') {
+          }
+        }
+        if (input == EOF) {
+          printf("\nError: EOF without terminating comment\n");
+          return tk_null;
+        }
+        prev = '\0';
+        continue;
+      }
+      else {
+        printf("\n%d : %d Unrecognized symbol @\n",line_no,column_no);
+        return tk_null;
+      }
+    }
+
+    if(isalnum(input)) //could be several things... 
+    { 
+      column_no++;
+      if(isalpha(input))
+      {
+        char inp[101]; //max size of identifier is 100
+        int i = 0;
+       do
+        {
+          inp[i] = input;
+          if(i > 100)
+          {
+            printf("\n%d : %d identifier too big!\n",line_no,column_no);
+            while(isSymbol(input)!=1)
+            {
               input = read_next_char(ip);
               column_no++;
-              if (input == '@') {
+              if(input=='\n')
+              {
+                column_no = 0;
+                line_no++;
                 break;
               }
             }
+            prev = input;
+            continue;
           }
-          if (input == EOF) {
-            printf("\nError: EOF without terminating comment\n");
-            return tk_null;
-          }
-          prev = '\0';
+        
+          input = read_next_char(ip);
+          column_no++;
+          i=i+1;
+        }while(isSymbol(input)==0);
+      
+        inp[i] = '\0';
+        prev = input;
+
+        if(inp[0] == 'a' && inp[1] == 'd' && inp[2] == 'd' 
+          && inp[3] == 'V' && inp[4] == '\0'){ // addV
+          writeTofile(op,tk_addv); 
+          // prev = '\0'; 
           continue;
         }
-        else {
-          printf("\n%d : %d Unrecognized symbol @\n",line_no,column_no);
-          return tk_null;
-        }
-      }
-
-      if(isalnum(input)) //could be several things... 
-      { 
-        column_no++;
-        if(isalpha(input))
-        {
-          char inp[101]; //max size of identifier is 100
-          int i = 0;
-         do
-          {
-            inp[i] = input;
-            if(i > 100)
-            {
-              printf("\n%d : %d identifier too big!\n",line_no,column_no);
-              while(isSymbol(input)!=1)
-              {
-                input = read_next_char(ip);
-                column_no++;
-                if(input=='\n')
-                {
-                  column_no = 0;
-                  line_no++;
-                  break;
-                }
-              }
-              prev = input;
-              continue;
-            }
-          
-            input = read_next_char(ip);
-            column_no++;
-            i=i+1;
-          }while(isSymbol(input)==0);
-        
-          inp[i] = '\0';
-          prev = input;
-
-          if(inp[0] == 'a' && inp[1] == 'd' && inp[2] == 'd' 
-            && inp[3] == 'V' && inp[4] == '\0'){ // addV
-            writeTofile(op,tk_addv); 
+        else if (inp[0] == 'b') { // boolean OR break
+          if (inp[1] == 'o' && inp[2] == 'o' && inp[3] == 'l' 
+            && inp[4] == 'e' && inp[5] == 'a' && inp[6] == 'n' && inp[7] == '\0') {
+            writeTofile(op,tk_boolean); 
             // prev = '\0'; 
             continue;
           }
-          else if (inp[0] == 'b') { // boolean OR break
-            if (inp[1] == 'o' && inp[2] == 'o' && inp[3] == 'l' 
-              && inp[4] == 'e' && inp[5] == 'a' && inp[6] == 'n' && inp[7] == '\0') {
-              writeTofile(op,tk_boolean); 
-              // prev = '\0'; 
-              continue;
-            }
-            else if (inp[1] == 'r' && inp[2] == 'e' && inp[3] == 'a' 
-              && inp[4] == 'k' && inp[5] == '\0') {
-              writeTofile(op,tk_break); 
-              // prev = '\0'; 
-              continue;
-            }
-            else {
-              writeTofile(op,tk_id); 
-              add_ID_to_sym_table(inp, line_no, column_no); 
-              // prev = '\0'; 
-              continue;
-            }
-          }
-          else if(inp[0] == 'B' && inp[1] == 'o' && inp[2] == 't' && inp[3] == '\0') { 
-            writeTofile(op,tk_bot); 
+          else if (inp[1] == 'r' && inp[2] == 'e' && inp[3] == 'a' 
+            && inp[4] == 'k' && inp[5] == '\0') {
+            writeTofile(op,tk_break); 
             // prev = '\0'; 
             continue;
           }
-          else if(inp[0] == 'c' && inp[1] == 'o' && inp[2] == 'n' 
-            && inp[3] == 't' && inp[4] == 'i' && inp[5] == 'n' 
-            && inp[6] == 'u' && inp[7] == 'e' && inp[8] == '\0') {
-            writeTofile(op,tk_continue); 
-            // prev = '\0'; 
-            continue;
-          }
-          else if(inp[0] == 'e' && inp[1] == 'l' && inp[2] == 's' && inp[3] == 'e'
-             && inp[4] == '\0'){ 
-            writeTofile(op,tk_else) ; 
-            // prev = '\0'; 
-            continue;
-          }
-          else if (inp[0] == 'f') {
-            if(inp[1] == 'l' && inp[2] == 'o' && inp[3] == 'a' 
-                && inp[4] == 't' && inp[5] == '\0') {
-              writeTofile(op,tk_float); 
-              // prev = '\0'; 
-              continue;
-            }
-            else if (inp[1] == 'u' && inp[2] == 'n' && inp[3] == 'c' 
-                && inp[4] == 't' && inp[5] == 'i' && inp[6] == 'o' && inp[7] == 'n'
-                && inp[8] == '\0') {
-              writeTofile(op,tk_func); 
-              // prev = '\0'; 
-              continue;
-            }
-            else if(inp[1] == 'a' && inp[2] == 'l' && inp[3] == 's' 
-                && inp[4] == 'e' && inp[5] == '\0') {
-              writeTofile(op,tk_float); 
-              // prev = '\0'; 
-              continue;
-            }
-            else if (inp[1] == 'w' && inp[2] == '\0') {
-              writeTofile(op,tk_fw); 
-              // prev = '\0'; 
-              continue;
-            }
-            else if (inp[1] == 'o' && inp[2] == 'r' && inp[3] == '\0') {
-              writeTofile(op,tk_for); 
-              // prev = '\0'; 
-              continue;
-            }
-            else {
-              writeTofile(op,tk_id); 
-              add_ID_to_sym_table(inp, line_no, column_no); 
-              // prev = '\0'; 
-              continue;
-            }
-          }
-          else if (inp[0] == 'i') {
-            if (inp[1] == 'n' && inp[2] == 't' && inp[3] == '\0') {
-              writeTofile(op,tk_int); 
-              // prev = '\0'; 
-              continue;
-            }
-            else if (inp[1] == 'f' && inp[2] == '\0') {
-              writeTofile(op,tk_if); 
-              // prev = '\0'; 
-              continue;
-            }
-            else {
-              writeTofile(op,tk_id); 
-              add_ID_to_sym_table(inp, line_no, column_no); 
-              // prev = '\0'; 
-              continue;
-            }
-          }
-          else if(inp[0] == 'm' && inp[1] == 'a' && inp[2] == 'i' && inp[3] == 'n'
-             && inp[4] == '\0') { 
-            writeTofile(op, tk_main); 
-            // prev = '\0'; 
-            continue;
-          } 
-          else if(inp[0] == 'P' && inp[1] == 'o' && inp[2] == 'i' && inp[3] == 'n'
-             && inp[4] == 't' && inp[5] == '\0') {
-            writeTofile(op,tk_point); 
-            // prev = '\0'; 
-            continue;
-          }
-          else if(inp[0] == 'r' && inp[1] == 'e' && inp[2] == 't' 
-            && inp[3] == 'u' && inp[4] == 'r' && inp[5] == 'n' 
-            && inp[6] == '\0') {
-            writeTofile(op,tk_return); 
-            // prev = '\0'; 
-            continue;
-          }
-          else if(inp[0] == 'r') {
-            if (inp[1] == 't' && inp[2] == '\0') {
-              writeTofile(op,tk_rt); 
-              // prev = '\0'; 
-              continue;
-            }
-            else if(inp[1] == 'e' && inp[2] == 'a' && inp[3] == 'd' 
-                && inp[4] == 'i' && inp[5] == '\0') {
-              writeTofile(op,tk_readi); 
-              // prev = '\0'; 
-              continue;
-            }
-            else {
-              writeTofile(op,tk_id); 
-              add_ID_to_sym_table(inp, line_no, column_no); 
-              // prev = '\0'; 
-              continue;
-            }
-          }
-          else if(inp[0] == 's' && inp[1] == 't' && inp[2] == 'r' 
-            && inp[3] == 'u' && inp[4] == 'c' && inp[5] == 't' 
-            && inp[6] == '\0'){ 
-            writeTofile(op, tk_struct); 
-            // prev = '\0'; 
-            continue;
-          }
-          else if(inp[0] == 't' && inp[1] == 'r' && inp[2] == 'u' && inp[3] == 'e'
-             && inp[4] == '\0') { 
-            writeTofile(op,tk_true); 
-            // prev = '\0'; 
-            continue;
-          }
-          else if(inp[0] == 'v' && inp[1] == 'o' && inp[2] == 'i' && inp[3] == 'd'
-             && inp[4] == '\0') {
-            writeTofile(op,tk_void); 
-            // prev = '\0'; 
-            continue;
-          }
-          else { 
+          else {
             writeTofile(op,tk_id); 
             add_ID_to_sym_table(inp, line_no, column_no); 
             // prev = '\0'; 
             continue;
           }
         }
+        else if(inp[0] == 'B' && inp[1] == 'o' && inp[2] == 't' && inp[3] == '\0') { 
+          writeTofile(op,tk_bot); 
+          // prev = '\0'; 
+          continue;
+        }
+        else if(inp[0] == 'c' && inp[1] == 'o' && inp[2] == 'n' 
+          && inp[3] == 't' && inp[4] == 'i' && inp[5] == 'n' 
+          && inp[6] == 'u' && inp[7] == 'e' && inp[8] == '\0') {
+          writeTofile(op,tk_continue); 
+          // prev = '\0'; 
+          continue;
+        }
+        else if(inp[0] == 'e' && inp[1] == 'l' && inp[2] == 's' && inp[3] == 'e'
+           && inp[4] == '\0'){ 
+          writeTofile(op,tk_else) ; 
+          // prev = '\0'; 
+          continue;
+        }
+        else if (inp[0] == 'f') {
+          if(inp[1] == 'l' && inp[2] == 'o' && inp[3] == 'a' 
+              && inp[4] == 't' && inp[5] == '\0') {
+            writeTofile(op,tk_float); 
+            // prev = '\0'; 
+            continue;
+          }
+          else if (inp[1] == 'u' && inp[2] == 'n' && inp[3] == 'c' 
+              && inp[4] == 't' && inp[5] == 'i' && inp[6] == 'o' && inp[7] == 'n'
+              && inp[8] == '\0') {
+            writeTofile(op,tk_func); 
+            // prev = '\0'; 
+            continue;
+          }
+          else if(inp[1] == 'a' && inp[2] == 'l' && inp[3] == 's' 
+              && inp[4] == 'e' && inp[5] == '\0') {
+            writeTofile(op,tk_float); 
+            // prev = '\0'; 
+            continue;
+          }
+          else if (inp[1] == 'w' && inp[2] == '\0') {
+            writeTofile(op,tk_fw); 
+            // prev = '\0'; 
+            continue;
+          }
+          else if (inp[1] == 'o' && inp[2] == 'r' && inp[3] == '\0') {
+            writeTofile(op,tk_for); 
+            // prev = '\0'; 
+            continue;
+          }
+          else {
+            writeTofile(op,tk_id); 
+            add_ID_to_sym_table(inp, line_no, column_no); 
+            // prev = '\0'; 
+            continue;
+          }
+        }
+        else if (inp[0] == 'i') {
+          if (inp[1] == 'n' && inp[2] == 't' && inp[3] == '\0') {
+            writeTofile(op,tk_int); 
+            // prev = '\0'; 
+            continue;
+          }
+          else if (inp[1] == 'f' && inp[2] == '\0') {
+            writeTofile(op,tk_if); 
+            // prev = '\0'; 
+            continue;
+          }
+          else {
+            writeTofile(op,tk_id); 
+            add_ID_to_sym_table(inp, line_no, column_no); 
+            // prev = '\0'; 
+            continue;
+          }
+        }
+        else if(inp[0] == 'm' && inp[1] == 'a' && inp[2] == 'i' && inp[3] == 'n'
+           && inp[4] == '\0') { 
+          writeTofile(op, tk_main); 
+          // prev = '\0'; 
+          continue;
+        } 
+        else if(inp[0] == 'P' && inp[1] == 'o' && inp[2] == 'i' && inp[3] == 'n'
+           && inp[4] == 't' && inp[5] == '\0') {
+          writeTofile(op,tk_point); 
+          // prev = '\0'; 
+          continue;
+        }
+        else if(inp[0] == 'r' && inp[1] == 'e' && inp[2] == 't' 
+          && inp[3] == 'u' && inp[4] == 'r' && inp[5] == 'n' 
+          && inp[6] == '\0') {
+          writeTofile(op,tk_return); 
+          // prev = '\0'; 
+          continue;
+        }
+        else if(inp[0] == 'r') {
+          if (inp[1] == 't' && inp[2] == '\0') {
+            writeTofile(op,tk_rt); 
+            // prev = '\0'; 
+            continue;
+          }
+          else if(inp[1] == 'e' && inp[2] == 'a' && inp[3] == 'd' 
+              && inp[4] == 'i' && inp[5] == '\0') {
+            writeTofile(op,tk_readi); 
+            // prev = '\0'; 
+            continue;
+          }
+          else {
+            writeTofile(op,tk_id); 
+            add_ID_to_sym_table(inp, line_no, column_no); 
+            // prev = '\0'; 
+            continue;
+          }
+        }
+        else if(inp[0] == 's' && inp[1] == 't' && inp[2] == 'r' 
+          && inp[3] == 'u' && inp[4] == 'c' && inp[5] == 't' 
+          && inp[6] == '\0'){ 
+          writeTofile(op, tk_struct); 
+          // prev = '\0'; 
+          continue;
+        }
+        else if(inp[0] == 't' && inp[1] == 'r' && inp[2] == 'u' && inp[3] == 'e'
+           && inp[4] == '\0') { 
+          writeTofile(op,tk_true); 
+          // prev = '\0'; 
+          continue;
+        }
+        else if(inp[0] == 'v' && inp[1] == 'o' && inp[2] == 'i' && inp[3] == 'd'
+           && inp[4] == '\0') {
+          writeTofile(op,tk_void); 
+          // prev = '\0'; 
+          continue;
+        }
+        else { 
+          writeTofile(op,tk_id); 
+          add_ID_to_sym_table(inp, line_no, column_no); 
+          // prev = '\0'; 
+          continue;
+        }
+      }
 
-        if(isdigit(input)) 
+      if(isdigit(input)) 
+      {
+        column_no++;
+        char inp[100];
+        int i = 0;
+        int flag = 0;
+        //check for num, rnum or illegal identifier like 12ab
+        do
         {
+          inp[i++]= input;
+          input=read_next_char(ip);
           column_no++;
-          char inp[100];
-          int i = 0;
-          int flag = 0;
-          //check for num, rnum or illegal identifier like 12ab
+          if(isalpha(input)) //1.3e02 format not supported
+          {
+            flag = 1;
+            printf("\nError,invalid identifier at %d : %d",line_no,column_no);
+            while(isSymbol(input)!=1){input=read_next_char(ip);column_no++;} //scan till delimiter
+          }
+        } while(isSymbol(input)!=1);
+
+        if(!flag && input!='.')
+        {
+          prev = input;
+          writeTofile(op,tk_num);
+          continue;
+        }
+        else if(input == '.')
+        {
           do
           {
             inp[i++]= input;
@@ -532,126 +857,105 @@ enum Token lexer(FILE * ip, FILE * op)
               printf("\nError,invalid identifier at %d : %d",line_no,column_no);
               while(isSymbol(input)!=1){input=read_next_char(ip);column_no++;} //scan till delimiter
             }
-          } while(isSymbol(input)!=1);
-
-          if(!flag && input!='.')
-          {
-            prev = input;
-            writeTofile(op,tk_num);
-            continue;
-          }
-          else if(input == '.')
-          {
-            do
-            {
-              inp[i++]= input;
-              input=read_next_char(ip);
-              column_no++;
-              if(isalpha(input)) //1.3e02 format not supported
-              {
-                flag = 1;
-                printf("\nError,invalid identifier at %d : %d",line_no,column_no);
-                while(isSymbol(input)!=1){input=read_next_char(ip);column_no++;} //scan till delimiter
-              }
-            }while(isSymbol(input)!=1);
-            prev = input;
-            writeTofile(op,tk_rnum);
-            continue;
-          }
+          }while(isSymbol(input)!=1);
+          prev = input;
+          writeTofile(op,tk_rnum);
+          continue;
         }
       }
-
-      if(input == '{'){ writeTofile(op,tk_lbrace); prev = '\0'; continue;}
-      if(input == '}'){ writeTofile(op,tk_rbrace); prev = '\0'; continue;}
-      if(input == '('){ writeTofile(op,tk_lpara);prev = '\0'; continue;}
-      if(input == ')'){ writeTofile(op,tk_rpara);prev = '\0'; continue;}
-      if(input == '['){ writeTofile(op,tk_lsquare);prev = '\0'; continue;}
-      if(input == ']'){ writeTofile(op,tk_rsquare);prev = '\0'; continue;}
-      if(input == ';'){ writeTofile(op,tk_semi_cl);prev = '\0'; continue;}
-      if(input == ','){ writeTofile(op,tk_comma);prev = '\0'; continue;}
-      if(input == '.'){ writeTofile(op,tk_dot);prev = '\0'; continue;}
-
-      if(input == ':')
-      {
-        next = read_next_char(ip);
-        column_no++;
-        if(next == '='){ writeTofile(op,tk_col_assign);prev = '\0'; continue;}
-        else{ prev = next;writeTofile(op,tk_colon);continue;}
-      }
-
-      if(input == '=')
-      { next = read_next_char(ip);
-        column_no++;
-        if( next == '='){ writeTofile(op,tk_log_eq);prev = '\0'; continue;}
-        else {prev = next; writeTofile(op,tk_assign_op);continue;} 
-      }
-
-      if(input == '_')
-      { writeTofile(op,tk_undersc);prev = '\0'; continue;} 
-
-      if(input == '|')
-      {
-        next = read_next_char(ip);
-        column_no++;
-        if(next == '|')
-        { writeTofile(op,tk_log_or);prev = '\0'; continue;}
-        else { printf("\nError: unknown symbol '|' at %d : %d\n",line_no,column_no ); }
-      }
-      
-      if(input == '&')
-      {
-        next = read_next_char(ip);
-        column_no++;
-        if(next == '&')
-        { writeTofile(op,tk_log_and);prev = '\0'; continue;}
-        else{ printf("\nError: unknown symbol '&' at %d : %d\n",line_no,column_no );}
-      }
-
-      if(input == '+')  
-      {
-        next = read_next_char(ip);
-        column_no++;
-        if(next == '+'){ writeTofile(op,tk_unary_inc); prev = '\0'; continue;}
-        else if(next == '='){ writeTofile(op,tk_pl_eq);prev = '\0'; continue;}
-        else { prev = next; writeTofile(op,tk_plus);continue;}
-      }
-
-      if(input == '-')  
-      {
-        next = read_next_char(ip);
-        column_no++;
-        if(next == '-'){ writeTofile(op,tk_unary_dec);prev = '\0'; continue;}
-        else{ prev = next; writeTofile(op,tk_minus);continue;}
-      }
-
-      if(input == '*'){ writeTofile(op,tk_mul);prev = '\0'; continue;}
-
-      if(input == '/'){ writeTofile(op,tk_div);prev = '\0'; continue;}
-
-      if(input == '<')
-      { next = read_next_char(ip);
-        column_no++;
-        if(next == '='){writeTofile(op,tk_lte);prev = '\0'; continue;}
-        else
-        {prev = next; writeTofile(op,tk_lt);continue;}
-      }
-
-      if(input == '>')
-      {
-        next = read_next_char(ip);
-        column_no++;
-
-        if(next == '='){ writeTofile(op,tk_gte);prev = '\0'; continue;}
-        else if(next == '>'){ writeTofile(op,tk_inpop);prev = '\0'; continue;}
-        else{ prev = next; writeTofile(op,tk_gt);continue;}
-      }
-     
-      else 
-      {
-        if (input != ' ')
-          printf("\nUnknown symbol %c (=%d) at %d:%d\n",input,(int)input,line_no,column_no);
-      } 
     }
+
+    if(input == '{'){ writeTofile(op,tk_lbrace); prev = '\0'; continue;}
+    if(input == '}'){ writeTofile(op,tk_rbrace); prev = '\0'; continue;}
+    if(input == '('){ writeTofile(op,tk_lpara);prev = '\0'; continue;}
+    if(input == ')'){ writeTofile(op,tk_rpara);prev = '\0'; continue;}
+    if(input == '['){ writeTofile(op,tk_lsquare);prev = '\0'; continue;}
+    if(input == ']'){ writeTofile(op,tk_rsquare);prev = '\0'; continue;}
+    if(input == ';'){ writeTofile(op,tk_semi_cl);prev = '\0'; continue;}
+    if(input == ','){ writeTofile(op,tk_comma);prev = '\0'; continue;}
+    if(input == '.'){ writeTofile(op,tk_dot);prev = '\0'; continue;}
+
+    if(input == ':')
+    {
+      next = read_next_char(ip);
+      column_no++;
+      if(next == '='){ writeTofile(op,tk_col_assign);prev = '\0'; continue;}
+      else{ prev = next;writeTofile(op,tk_colon);continue;}
+    }
+
+    if(input == '=')
+    { next = read_next_char(ip);
+      column_no++;
+      if( next == '='){ writeTofile(op,tk_log_eq);prev = '\0'; continue;}
+      else {prev = next; writeTofile(op,tk_assign_op);continue;} 
+    }
+
+    if(input == '_')
+    { writeTofile(op,tk_undersc);prev = '\0'; continue;} 
+
+    if(input == '|')
+    {
+      next = read_next_char(ip);
+      column_no++;
+      if(next == '|')
+      { writeTofile(op,tk_log_or);prev = '\0'; continue;}
+      else { printf("\nError: unknown symbol '|' at %d : %d\n",line_no,column_no ); }
+    }
+    
+    if(input == '&')
+    {
+      next = read_next_char(ip);
+      column_no++;
+      if(next == '&')
+      { writeTofile(op,tk_log_and);prev = '\0'; continue;}
+      else{ printf("\nError: unknown symbol '&' at %d : %d\n",line_no,column_no );}
+    }
+
+    if(input == '+')  
+    {
+      next = read_next_char(ip);
+      column_no++;
+      if(next == '+'){ writeTofile(op,tk_unary_inc); prev = '\0'; continue;}
+      else if(next == '='){ writeTofile(op,tk_pl_eq);prev = '\0'; continue;}
+      else { prev = next; writeTofile(op,tk_plus);continue;}
+    }
+
+    if(input == '-')  
+    {
+      next = read_next_char(ip);
+      column_no++;
+      if(next == '-'){ writeTofile(op,tk_unary_dec);prev = '\0'; continue;}
+      else{ prev = next; writeTofile(op,tk_minus);continue;}
+    }
+
+    if(input == '*'){ writeTofile(op,tk_mul);prev = '\0'; continue;}
+
+    if(input == '/'){ writeTofile(op,tk_div);prev = '\0'; continue;}
+
+    if(input == '<')
+    { next = read_next_char(ip);
+      column_no++;
+      if(next == '='){writeTofile(op,tk_lte);prev = '\0'; continue;}
+      else
+      {prev = next; writeTofile(op,tk_lt);continue;}
+    }
+
+    if(input == '>')
+    {
+      next = read_next_char(ip);
+      column_no++;
+
+      if(next == '='){ writeTofile(op,tk_gte);prev = '\0'; continue;}
+      else if(next == '>'){ writeTofile(op,tk_inpop);prev = '\0'; continue;}
+      else{ prev = next; writeTofile(op,tk_gt);continue;}
+    }
+   
+    else 
+    {
+      if (input != ' ')
+        printf("\nUnknown symbol %c (=%d) at %d:%d\n",input,(int)input,line_no,column_no);
+    } 
+  }
   }
 
 void init_symbol_table() {

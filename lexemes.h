@@ -161,3 +161,4 @@ typedef enum Token {
 } TOK;
 
 void print_token(enum Token token);
+void print_rule(enum Token token);

@@ -13,8 +13,8 @@ int main(int argc, char*argv[])
          // printf("FATAL ERROR!! : No input specified or too many parameters \n");
          // exit(1);
 
-        ip = fopen("test2.txt","r");
-        strcpy(opf,"test2.txt");
+        ip = fopen("test.txt","r");
+        strcpy(opf,"test.txt");
     }
     else {
         ip = fopen(argv[1],"r");

@@ -11,7 +11,7 @@
 #define FIRST_TOKEN (tk_rbrace)
 #define POP_ERROR 183
 #define SCAN_ERROR 184
-#define MAX_TOKENS 14
+#define MAX_TOKENS 12
 
 // "RBRACE",
 // "BREAK",

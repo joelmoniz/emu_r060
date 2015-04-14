@@ -29,7 +29,7 @@ enum Token states [][MAX_TOKENS + 1] =
 {tk_continue,tk_semi_cl,tk_null},
 {tk_gen_stmt,tk_null},
 {tk_loop_condnal_stmt,tk_null},
-{tk_global_assignment,tk_null},
+{tk_global_assignment,tk_global_vars,tk_null},
 {/*tk_eps*/tk_null},
 {tk_primitive_type,tk_id,tk_assign_op,tk_const_value,tk_semi_cl,tk_null},
 {tk_id,tk_func_ass,tk_null},
@@ -65,7 +65,7 @@ enum Token states [][MAX_TOKENS + 1] =
 {tk_col_assign,tk_lbrace,tk_idNum,tk_comma,tk_idNum,tk_rbrace,tk_semi_cl,tk_null}, //7 symbols!
 {tk_bot,tk_id,tk_bot_rest,tk_null},
 {tk_semi_cl,tk_null},
-{tk_col_assign,tk_lbrace,tk_id,tk_comma,tk_idNum,tk_comma,tk_idNum,tk_comma,tk_idNum,tk_comma,tk_idBool,tk_rbrace,tk_semi_cl,tk_null},//14 rules
+{tk_col_assign,tk_lbrace,tk_id,tk_comma,tk_idNum,tk_comma,tk_idNum,tk_comma,tk_idBool,tk_rbrace,tk_semi_cl,tk_null},//12 rules
 {tk_assign_op,tk_null},
 {tk_pl_eq,tk_null},
 {tk_primitive_type,tk_null},
@@ -84,7 +84,7 @@ enum Token states [][MAX_TOKENS + 1] =
 {tk_assign_operators,tk_righHandSide,tk_null},
 {tk_comma,tk_var,tk_leftHandSideMultiple,tk_null},
 {tk_col_assign,tk_lbrace,tk_bot_point1,tk_null},
-{tk_id,tk_comma,tk_idNum,tk_bot_point1,tk_null},
+{tk_id,tk_comma,tk_idNum,tk_bot_or_point,tk_null},
 {tk_num, tk_comma,tk_idNum,tk_rbrace,tk_semi_cl,tk_null },//<num> and num ??
 {tk_rbrace,tk_semi_cl,tk_null},
 {tk_comma,tk_idNum,tk_comma,tk_idBool,tk_rbrace,tk_semi_cl,tk_null},//6 symbols
@@ -98,7 +98,7 @@ enum Token states [][MAX_TOKENS + 1] =
 {tk_id,tk_array,tk_null},
 {tk_lsquare,tk_array_arithm_expr,tk_brack_pair1,tk_null},
 {/*tk_eps*/tk_null},
-{tk_rsquare,tk_array2d}, //83
+{tk_rsquare,tk_array2d,tk_null}, //83
 {tk_colon,tk_array_arithm_expr,tk_rsquare,tk_null},
 {/*tk_eps*/tk_null},
 {tk_lsquare,tk_array_arithm_expr,tk_rsquare,tk_null},
@@ -125,8 +125,8 @@ enum Token states [][MAX_TOKENS + 1] =
 {tk_loop_condnal_stmt,tk_null},
 {tk_lbrace,tk_loop_stmts,tk_null},
 {tk_if,tk_lpara,tk_expression,tk_rpara,tk_lbrace,tk_condnal_stmt_suffix,tk_null},
-{tk_stmts,tk_loop_condnal_stmt_more,tk_null},
-{tk_else,tk_loop_condnal_stmt_even_more,tk_null},
+{tk_stmts,tk_condnal_stmt_more,tk_null},
+{tk_else,tk_condnal_stmt_even_more,tk_null},
 {/*tk_eps*/tk_null},
 {tk_condnal_stmt,tk_null},
 {tk_lbrace,tk_stmts,tk_null},
@@ -161,12 +161,12 @@ enum Token states [][MAX_TOKENS + 1] =
 {/*tk_eps*/tk_null},
 {tk_plus,tk_null},
 {tk_minus,tk_null},
-{tk_un_expr,tk_arr_mul_div_expr1,tk_null},
-{tk_mul_ops,tk_un_expr,tk_arr_mul_div_expr1,tk_null},
+{tk_un_expr,tk_mul_div_expr1,tk_null},
+{tk_mul_ops,tk_un_expr,tk_mul_div_expr1,tk_null},
 {/*tk_eps*/tk_null},
 {tk_mul,tk_null},
 {tk_div,tk_null},
-{tk_prefix_op,tk_typcast},
+{tk_prefix_op,tk_typcast,tk_null},
 {tk_typcast,tk_null},
 {tk_unary_inc,tk_null},
 {tk_unary_dec,tk_null},
@@ -183,21 +183,21 @@ enum Token states [][MAX_TOKENS + 1] =
 {tk_function,tk_otherFunctions,tk_null},
 {tk_main,tk_lpara,tk_rpara,tk_lbrace,tk_null},
 {tk_function,tk_type_list,tk_lpara,tk_parameter_list,tk_lbrace,tk_fn_stmts,tk_null},
-{tk_stmt,tk_fn_stmts},
+{tk_stmt,tk_fn_stmts,tk_null},
 {tk_return,tk_expressions,tk_semi_cl,tk_rbrace,tk_null},
 {tk_type,tk_id,tk_parameter_list_more,tk_null},
 {tk_rpara,tk_null},
-{tk_comma,tk_type,tk_id,tk_parameter_list_more},
+{tk_comma,tk_type,tk_id,tk_parameter_list_more,tk_null},
 {tk_rpara,tk_null},
 {tk_readi,tk_inpop,tk_id,tk_semi_cl,tk_null},
-{tk_addv,tk_id,tk_comma,tk_id,tk_comma,tk_semi_cl,tk_null},
+{tk_addv,tk_id,tk_comma,tk_id,tk_semi_cl,tk_null},
 {tk_fw,tk_id,tk_comma,tk_expression,tk_semi_cl,tk_null},
 {tk_rt,tk_id,tk_semi_cl,tk_null},
 {tk_point_decl_stmt,tk_null},
 {tk_bot_decl_stmt,tk_null},
 {tk_for,tk_lpara,tk_assignment_stmt,tk_expression,tk_semi_cl,tk_update_stmt,tk_rpara,tk_lbrace,tk_loop_stmts,tk_null},
-{tk_assignment_stmt},
-{tk_unary_stmts}
+{tk_assignment_stmt,tk_null},
+{tk_unary_stmts,tk_null}
 };
 
 
@@ -763,7 +763,7 @@ void parser(FILE * ip) {
         print_stack(s);
       }
       else {// TODO: Handle pop vs scan errors separately}
-        printf("Error\n");
+        printf("Error pop/scan\n");
         //break;
       }
 
@@ -805,7 +805,7 @@ void parser(FILE * ip) {
   int x = pop(&s);
 
   if (x != end_marker && top != end_marker)
-    printf("Error\n");
+    printf("Error: non empty stack\n");
 
   printf("Parsing completed.\n");
   printf("\n\nParse tree:\n");

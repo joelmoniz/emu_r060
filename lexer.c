@@ -17,6 +17,8 @@
 
 #define BUFFER_SIZE 100
 
+#define OUTPUT_LEXER 1
+
 void add_ID_to_sym_table(char *name, int declared_line, int declared_position);
 
 //Need to do only one pass!
@@ -40,7 +42,10 @@ int isSymbol(char input)
 
 void writeTofile(FILE* op, enum Token token)
 {
-  fprintf(op, "%d ", token);
+  if (OUTPUT_LEXER) {
+    fprintf(op, "%d ", token);
+  }
+  insert(&lexer_queue, token);
   print_token(token);
 }
 
@@ -538,6 +543,71 @@ char read_next_char(FILE * ip) {
   return buf[buf_in_use][curr_locn];
 }
 
+queue initialize_queue(int size) {
+  queue q;
+  q.que = (int *) malloc(size*sizeof(int));
+  if (q.que == NULL) {
+    printf("Error!! Malloc failed in initialize_stack()\n");
+    exit(1);
+  }
+  q.front = q.back = -1;
+  q.size = size;
+  return q;
+}
+
+void insert(queue *q, int num) {
+  int a;
+  if (q->back == q->size - 1) {
+    q->size = (int)(2*q->size + 1);
+    q->que = (int *) realloc(q->que, q->size*sizeof(int));
+    if (q->que == NULL) {
+      printf("Error!! Realloc failed in initialize_stack()\n");
+      exit(1);
+    }
+    a = 0; //dummy to debug
+  }
+  q->back++;
+  if (q->front == -1) {
+    q->front = 0;
+  }
+  q->que[q->back] = num;
+}
+
+int get_first(queue *q) {
+  if (q->front == q->back + 1) {
+    return -1;
+  }
+  // q->front++;
+  return q->que[q->front++];
+}
+
+void print_queue(queue q) {
+  printf("->");
+  int i = q.front;
+  while(i <= q.back) {
+    printf("%d    ", q.que[i]);
+    i++;
+  }
+  printf("\n");
+}
+
+void test_queue() {
+  queue q;
+  q = initialize_queue(3);
+  insert(&q, 1);
+  insert(&q, 5);
+  insert(&q, 2);
+  insert(&q, 7);
+  insert(&q, 10);
+  print_queue(q);
+  int x = get_first(&q);
+  while (x != -1) {
+    printf("Remove: %d\n", x);
+    print_queue(q);
+    x = get_first(&q);
+  }
+}
+
 enum Token lexer(FILE * ip, FILE * op)
 {
 
@@ -545,6 +615,8 @@ enum Token lexer(FILE * ip, FILE * op)
   at_eof = 0;
   read_size[0] = read_size[1] = 0;
   curr_locn = 100;
+  
+  lexer_queue = initialize_queue(500);
 
   char input,next,prev; //our work-horse!
   input = ' ';

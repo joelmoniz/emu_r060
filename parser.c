@@ -640,7 +640,8 @@ void parser(FILE * ip) {
   printf("LL1 Derivation\n");
   printf("--------------\n\n");
   
-  while(fscanf(ip,"%d",&token) != EOF) {
+  // while(fscanf(ip,"%d",&token) != EOF) {
+  while((token = get_first(&lexer_queue)) != -1) {
     if (DEBUG) {
       printf("Token: %d  ", token);
       print_token(token);
@@ -657,7 +658,8 @@ void parser(FILE * ip) {
     if (top == end_marker) {
       printf("Error: Extra tokens found: \n");
       print_token(token);
-      while(fscanf(ip,"%d",&token) != EOF) {
+      // while(fscanf(ip,"%d",&token) != EOF) {
+      while((token = get_first(&lexer_queue)) != -1) {
         print_token(token);
       }
       printf("\n");
@@ -762,7 +764,7 @@ void parser(FILE * ip) {
   parse_tree_to_AST();
   printf("\n\n");
   printf("Abstract Syntax tree:\n");
-  printf("---------------------\n\n")
+  printf("---------------------\n\n");
   print_parse_tree(current, 0);
 }
 

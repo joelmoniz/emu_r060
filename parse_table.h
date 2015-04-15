@@ -46,6 +46,20 @@ int pop(stack *s);
 void print_stack(stack s);
 void print_stack_as_rules(stack s);
 
+typedef struct _queue {
+  int *que;
+  int front;
+  int back;
+  int size;
+} queue;
+
+queue initialize_queue(int size);
+void insert(queue *q, int num);
+int get_first(queue *q);
+void print_queue(queue q);
+
+queue lexer_queue;
+
 typedef struct _parse_tree_node {
   struct _parse_tree_node *parent;
   struct _parse_tree_node *children[MAX_TOKENS];

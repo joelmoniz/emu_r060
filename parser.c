@@ -439,6 +439,17 @@ void remove_unecessary_nodes(parse_tree_node *node) {
       node->num_child--;
       i--;
     }
+    else if (node->children[i]->num_child == 0 
+      && !is_token(node->children[i]->token_id)) {
+
+      free(node->children[i]);
+      
+      for (j=i; j < node->num_child - 1; j++)
+        node->children[j] = node->children[j+1];
+
+      node->num_child--;
+      i--;
+    }
   }
 }
 
@@ -608,12 +619,14 @@ void parse_tree_to_AST() {
   
   fold_tree();
 
-  // if (PRINT_AST_DETAILS) {
-  //   printf("\n\n");
-  //   printf("Folded:\n");
-  //   printf("-------\n");
-  //   print_parse_tree(parse_root, 0);
-  // }
+  if (PRINT_AST_DETAILS) {
+    printf("\n\n");
+    printf("Folded:\n");
+    printf("-------\n");
+    print_parse_tree(parse_root, 0);
+  }
+
+  elevate_symbols(parse_root);
 }
 
 /*

@@ -399,7 +399,12 @@ void print_parse_tree(parse_tree_node *node, int lv) {
   if (node == NULL)
     return;
   printf("%d -> ", lv);
-  print_token(node->token_id);
+  if (DEBUG) {
+    print_token(node->token_id);
+  }
+  else {
+    print_rule(node->token_id);
+  }
   //printf("%d", node->token_id);
   printf("\n");
   if (node->num_child == 0) {
@@ -432,6 +437,7 @@ void remove_unecessary_nodes(parse_tree_node *node) {
         node->children[j] = node->children[j+1];
 
       node->num_child--;
+      i--;
     }
   }
 }
@@ -600,7 +606,7 @@ void parse_tree_to_AST() {
     print_parse_tree(parse_root, 0);
   }
   
-  fold_tree(parse_root);
+  fold_tree();
 
   // if (PRINT_AST_DETAILS) {
   //   printf("\n\n");
@@ -687,10 +693,30 @@ void parser(FILE * ip) {
           rule_token_no++;
         }
 
-        if (current->num_child)
+        if (current->num_child) {
           current = current->children[0];
-        // else
-        //   printf("\n\nError rule number: %d", rule_no);
+        }
+        else {
+          while (1) {
+            if (current == NULL)
+              break;
+
+            if (current->num_child == 0) {
+              current = current->parent;
+              continue;
+            }
+
+            current->visited_child++;
+
+            if (current->visited_child >= current->num_child) {
+              current = current->parent;
+              continue;
+            }
+
+            current = current->children[current->visited_child];
+            break;
+          }
+        }
 
         rule_token_no--;
 

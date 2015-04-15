@@ -1028,7 +1028,7 @@ enum Token lexer(FILE * ip, FILE * op)
         printf("\nUnknown symbol %c (=%d) at %d:%d\n",input,(int)input,line_no,column_no);
     } 
   }
-  }
+}
 
 void init_symbol_table() {
   int i;

@@ -7,3 +7,7 @@ clean:
 run:
 	make
 	./a.out test.txt > output.txt
+debug:
+	make clean
+	gcc -g *.c *.h
+	gdb -tui ./a.out

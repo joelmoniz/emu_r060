@@ -203,7 +203,7 @@ enum Token states [][MAX_TOKENS + 1] =
 {tk_unary_stmts,tk_null}
 };
 
-
+//},break,;,continue,id,=,@~,, ,[,num,],{,Point,:=,Bot,+=,void,int,float,boolean,:,(,),true,false,rnum,if,else,||,&&,<,> ,==,<=,>=,+,-,*,/,++,--,main,function,return,readi,>>,addV,fw,rt,for
 enum Token parse_table[][53] = //1 indexed both row and column
 {
  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -254,7 +254,7 @@ enum Token parse_table[][53] = //1 indexed both row and column
 {0,183,184,184,184,87,184,184,184,184,87,184,184,184,184,184,184,184,184,184,184,184,184,184,87,87,87,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184},
 {0,89,184,184,184,184,184,184,88,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184},
 {0,183,184,183,184,91,184,184,183,184,90,184,184,184,184,184,184,184,184,184,184,184,184,183,90,90,90,184,184,183,183,183,183,183,183,183,183,183,183,183,184,184,184,184,184,184,184,184,184,184,184,184},
-{0,183,184,183,184,184,184,184,183,93,184,184,184,184,184,184,184,184,184,184,184,184,92,183,184,184,184,184,184,183,183,183,183,183,183,183,183,183,183,183,184,184,184,184,184,184,184,184,184,184,184,184},
+{0,93,184,93,184,184  ,93,184,93,93,184,184,184,184,93,184,93,184,184,184,184,184,92, 93,184,184,184,184,184,93,93,93,93,93,93,93,93,93,93,93,184,184,184,184,184,184,184,184,184,184,184,184},
 {0,183,184,183,184,184,184,184,183,184,184,184,184,184,184,184,184,184,184,184,184,184,94,183,184,184,184,184,184,183,183,183,183,183,183,183,183,183,183,183,184,184,184,184,184,184,184,184,184,184,184,184},
 {0,183,184,183,184,95,184,184,183,184,184,184,184,184,184,184,184,184,184,184,184,184,184,96,184,184,184,184,184,183,183,183,183,183,183,183,183,183,183,183,184,184,184,184,184,184,184,184,184,184,184,184},
 {0,183,184,184,184,97,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,98,98,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184},
@@ -420,7 +420,8 @@ int is_unecessary_node(int i) {
   return (enum Token)i == tk_lbrace || (enum Token)i == tk_rbrace || 
     (enum Token)i == tk_lpara || (enum Token)i == tk_rpara || 
     (enum Token)i == tk_lsquare || (enum Token)i == tk_rsquare || 
-    (enum Token)i == tk_semi_cl || (enum Token)i == tk_inpop;
+    (enum Token)i == tk_semi_cl || (enum Token)i == tk_inpop
+    || (enum Token)i == tk_comma;
 }
 
 void remove_unecessary_nodes(parse_tree_node *node) {
@@ -491,7 +492,7 @@ int is_bool_operator(int i) {
     i ==  tk_plus || i ==  tk_minus || i == tk_addv || 
     i ==  tk_mul || i ==  tk_div || i == tk_fw ||
     i == tk_col_assign || i == tk_assign_op ||
-    i == tk_colon || i == tk_dot || tk_comma);
+    i == tk_colon || i == tk_dot || i == tk_comma);
 }
 
 int is_singleton_operator(int i) {
@@ -513,7 +514,7 @@ int is_all_alone(int i) {
 
 int is_flow_construct(int i) { // for, if, func
   return (i == tk_for || i == tk_if || 
-    i == tk_func);
+    i == tk_else || i == tk_func);
 }
 
 /*
@@ -640,12 +641,12 @@ int rule_test[][4] = {{2, 3, 0, -1}, {1,-1}, {4,5,1,-1}, {6,-1}};
 // TODO: Make error checking proper
 void parser(FILE * ip) {
 
-	//printf("\n \n \n \n %d  %d \n \n \n \n", FIRST_TOKEN, tk_rbrace); //BLING!
   printf("\n\n");
   printf("PARSER Output\n");
   printf("=============\n\n");
 
   int token;
+  int error_detected = 0;
   stack s = initialize_stack(500);
   push(&s, end_marker);
   push(&s, START_STATE);
@@ -676,6 +677,7 @@ void parser(FILE * ip) {
 
     if (top == end_marker) {
       printf("Error: Extra tokens found: \n");
+      error_detected = 1;
       print_token(token);
       // while(fscanf(ip,"%d",&token) != EOF) {
       while((token = get_first(&lexer_queue)) != -1) {
@@ -687,12 +689,12 @@ void parser(FILE * ip) {
 
     while (!is_token(top) && !is_error(top)) {
       
-      rule_no = parse_table[top][token - tk_rbrace + 1 ]; //BLING!
-      // printf("\nrule_no used %d\n",rule_no); //BLING!
-      // printf("\ntoken used %d\n",token); //BLING!
+      rule_no = parse_table[top][token - tk_rbrace + 1 ];
       	
       if (DEBUG) {
-        printf("Rule: %d Top: %d Token no.:%d Token: ", rule_no, top, token - FIRST_TOKEN + 1); //BLING!
+        printf("Rule: %d Top no.: %d Top: ", rule_no, top);
+        print_rule(top);
+        printf("Token no.:%d Token: ", token - FIRST_TOKEN + 1);
         print_token(token);
         printf("\n");
       }
@@ -747,7 +749,10 @@ void parser(FILE * ip) {
         }
       }
       else {// TODO: Handle pop vs scan errors separately}
-        printf("Error pop/scan\n");
+        printf("Error pop/scan for token ");
+        print_rule(token);
+        printf("\n");
+        error_detected = 1;
         //break;
       }
 
@@ -760,14 +765,21 @@ void parser(FILE * ip) {
     }
 
     if (top != token) {
-      printf("Expecting ");
+      printf("Error: Expecting ");
       print_token(top);
       printf("but found ");
       print_token(token);
       printf("\n");
+      error_detected = 1;
     }
 
     while (1) {
+      // printf("\nValue:");
+      // print_rule(token);
+      // printf("Top:%d  Tree:%d Tree value:", top, current->token_id);
+      // print_rule(token);
+      // printf("\n\n");
+
       if (current == NULL)
         break;
 
@@ -790,25 +802,32 @@ void parser(FILE * ip) {
   }
   int x = pop(&s);
 
-  if (x != end_marker && top != end_marker)
+  if (x != end_marker && top != end_marker) {
     printf("Error: non empty stack\n");
+    error_detected = 1;
+  }
 
-  printf("\nParsing completed.\n\n\n");
-  printf("Parse tree:\n");
-  printf("-----------\n");
-  current = parse_root;
-  //printf("\n/\\\n");
-  print_parse_tree(current, 0);
+  if (!error_detected) {
+    printf("\nParsing completed successfully.\n\n\n");
+    printf("Parse tree:\n");
+    printf("-----------\n");
+    current = parse_root;
+    //printf("\n/\\\n");
+    print_parse_tree(current, 0);
 
-  parse_tree_to_AST();
-  printf("\n\n");
-  printf("Abstract Syntax tree:\n");
-  printf("---------------------\n\n");
-  print_parse_tree(current, 0);
+    parse_tree_to_AST();
+    printf("\n\n");
+    printf("Abstract Syntax tree:\n");
+    printf("---------------------\n\n");
+    print_parse_tree(current, 0);
+  }
+  else {
+    printf("\nParsing completed. Errors detected.\n\n");
+  }
 }
 
 int is_token(int t) {
-  return (t >= FIRST_TOKEN && t <= 199);  //BLING!
+  return (t >= FIRST_TOKEN && t <= 199);
 }
 
 int is_error(int t) {

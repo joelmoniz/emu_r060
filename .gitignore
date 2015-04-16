@@ -3,3 +3,5 @@ _test*
 *.gch
 *.lexer
 *.parser
+*~
+output*.txt

@@ -1,0 +1,10 @@
+int a = 8; 
+int b = 7; 
+ 
+main() 
+{ 
+	int a = 3; 
+	Bot bot; 
+	fw bot,a; 
+	fw bot,b; @~move 3 then 7~@ 
+} 

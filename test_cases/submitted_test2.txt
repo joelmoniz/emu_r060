@@ -1,0 +1,19 @@
+main() 
+{ 
+  int a; 
+  readi >> a; 
+  Bot b; 
+  if(a>3) 
+  { 
+    ++a; 
+    if(a<6) 
+    {  
+      rt b; 
+    } 
+    fw b,5; 
+  } 
+  else  
+  { 
+    fw b,5; 
+  } 
+} 

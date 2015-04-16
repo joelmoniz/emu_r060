@@ -1,3 +1,7 @@
 int a = 5;
 int a = 5;
-main(){Bot v;Bot v2:={p,v,1,true};Point p;Bot b := {p,v,1,true};fw b, 5;addV b, v2;fw b,5;} 
+main(){Bot v;Bot v2:={p,v,1,true};Point p;int b = 5+3;fw b, 5;addV b, v2;fw b,5;
+	if (a > 2) {
+		int b;
+	}
+} 

@@ -1,0 +1,20 @@
+function int,int func1(int a @~= 1~@ , int b@~ = 3~@ )  
+{ 
+@~
+  function int func2()  
+  { 
+    return 3; 
+  } 
+  ~@ 
+  a = func2(); 
+  return b,a; 
+}
+ 
+main() 
+{ 
+  int x,y; 
+  x,y = func1(b=5); 
+  Bot bot; 
+  fw bot,x; 
+  fw bot,y; 
+}

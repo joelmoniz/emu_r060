@@ -1,0 +1,13 @@
+main() 
+{ 
+  int a, i; 
+  Bot b; 
+  for(a=1;a<=3;++a;) 
+  { 
+    for (i=5;i<7;++i;) 
+    { 
+      fw b,a; 
+      break; 
+    } 
+  } 
+}

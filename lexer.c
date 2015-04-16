@@ -652,7 +652,7 @@ enum Token lexer(FILE * ip, FILE * op)
       continue;
     }
 
-    if(input == ' ') //stripping out extra white spaces 
+    if(input == ' ' || input == '\t') //stripping out extra white spaces 
     { 
       column_no++;
       prev = '\0';
@@ -1030,8 +1030,10 @@ enum Token lexer(FILE * ip, FILE * op)
    
     else 
     {
-      if (input != ' ')
+      if (input != ' ' && input != '\t') {
         printf("\nUnknown symbol %c (=%d) at %d:%d\n",input,(int)input,line_no,column_no);
+      }
+      prev = '\0';
     } 
   }
 }

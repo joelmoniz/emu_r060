@@ -537,10 +537,16 @@ char read_next_char(FILE * ip) {
     at_eof = 1;
   else if (curr_locn >= 100) {
     buf_in_use = !buf_in_use;
-    read_size[buf_in_use] = fread(buf[buf_in_use], BUFFER_SIZE, 1, ip);
+    read_size[buf_in_use] = fread(buf[buf_in_use], sizeof(char), BUFFER_SIZE, ip);
+    // if (read_size[buf_in_use] == 0)
+    //   at_eof = 1;
     curr_locn = 0;
   }
-  return buf[buf_in_use][curr_locn];
+  // printf("at_eof: %d curr_locn: %d buf_in_use: %d read_size:%d\n", at_eof, curr_locn, buf_in_use, read_size[buf_in_use]);
+  // if (at_eof)
+  //   return EOF;
+  // else
+    return buf[buf_in_use][curr_locn];
 }
 
 queue initialize_queue(int size) {

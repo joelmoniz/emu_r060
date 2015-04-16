@@ -185,7 +185,7 @@ enum Token states [][MAX_TOKENS + 1] =
 {tk_rpara,tk_semi_cl,tk_null},
 {tk_function,tk_otherFunctions,tk_null},
 {tk_main,tk_lpara,tk_rpara,tk_lbrace,tk_null},
-{tk_function,tk_type_list,tk_lpara,tk_parameter_list,tk_lbrace,tk_fn_stmts,tk_null},
+{tk_func,tk_type_list,tk_lpara,tk_parameter_list,tk_lbrace,tk_fn_stmts,tk_null},
 {tk_stmt,tk_fn_stmts,tk_null},
 {tk_return,tk_expressions,tk_semi_cl,tk_rbrace,tk_null},
 {tk_type,tk_id,tk_parameter_list_more,tk_null},

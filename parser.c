@@ -530,62 +530,120 @@ void elevate_symbols(parse_tree_node *node) {
   int i, j;
   // tk_break, tk_continue dont need to 
   // be handled explicitly- done by fold_tree()
-  
-  /*
-  TODO: Handle case-by-case
-  tk_for // FOR assignment_stmt <expression> <update_stmt> <loop_stmts>
-  tk_if // !handle else
-  tk_func  
-  tk_readi
-  */
+
   if (node == NULL || node->num_child == 0)
     return;
+
+  int type = -1;
+  
+  typedef enum _node_type {
+    null,
+    flow_construct,
+    datatype,
+    singleton_operator,
+    bool_operator,
+    dont_touch
+  } node_type;
+
+  node_type n = null;
+  int position = -1;
 
   for (i=0; i < node->num_child; i++) {
     elevate_symbols(node->children[i]);
   }
 
   for (i=0; i < node->num_child; i++) {
-
     if (is_flow_construct(node->children[i]->token_id)) {
-      node->token_id = node->children[i]->token_id;
-      node->num_child--;
-      free(node->children[i]);
+      if (n == flow_construct) {
+        n = dont_touch;
+        break;
+      }
 
-      for (j=i; j < node->num_child; j++)
-        node->children[j] = node->children[j+1];
-
-      break;
+      if (!node->children[i]->num_child) {
+        position = i;
+        n = flow_construct;
+      }
     }
     else if (is_datatype(node->children[i]->token_id)) {
-      node->token_id = node->children[i]->token_id;
-      node->num_child--;
-      free(node->children[i]);
-
-      for (j=i; j < node->num_child; j++)
-        node->children[j] = node->children[j+1];
-
-      break;
+      if (n == null) {
+        n = datatype;
+        position = i;
+      }
+      else if (n != flow_construct) {
+        n = dont_touch;
+        break;
+      }
     }
     else if(is_singleton_operator(node->children[i]->token_id)) {
-      node->token_id = node->children[i]->token_id;
-      node->num_child--;
-      free(node->children[i]);
-
-      for (j=i; j < node->num_child; j++)
-        node->children[j] = node->children[j+1];
-
-      break;
+      if (n == null && !node->children[i]->num_child) {
+        n = singleton_operator;
+        position = i;
+      }
     }
     else if (is_bool_operator(node->children[i]->token_id)) {
-      node->token_id = node->children[i]->token_id;
-      node->num_child--;
-      free(node->children[i]);
+      if ((n == null || n == bool_operator || n== singleton_operator) && node->children[i]->num_child <= 1) {
+        n = bool_operator;
+        position = i;
+      }
+      else if (n != flow_construct) {
+        n = dont_touch;
+        break;
+      }
+    }
+  }
 
-      for (j=i; j < node->num_child; j++)
-        node->children[j] = node->children[j+1];
+  if (n == flow_construct && node->children[position]->num_child == 0) {
+    node->token_id = node->children[position]->token_id;
+    node->num_child--;
+    free(node->children[position]);
 
-      break;
+    for (j=position; j < node->num_child; j++)
+      node->children[j] = node->children[j+1];
+  }
+  // else if (n == datatype) {
+  //   node->token_id = node->children[position]->token_id;
+  //   node->num_child--;
+  //   free(node->children[position]);
+
+  //   for (j=position; j < node->num_child; j++)
+  //     node->children[j] = node->children[j+1];
+  // }
+  else if(n == singleton_operator) {
+    node->token_id = node->children[position]->token_id;
+    node->num_child--;
+    free(node->children[position]);
+
+    for (j=position; j < node->num_child; j++)
+      node->children[j] = node->children[j+1];
+  }
+  else if (n == bool_operator) {
+    node->token_id = node->children[position]->token_id;
+
+    for (j=0; j < node->children[position]->num_child; j++) {
+      node->children[node->num_child] = node->children[position]->children[j];
+      node->num_child++;
+    }
+    
+    free(node->children[position]);
+    node->num_child--;
+
+    for (j=position; j < node->num_child; j++)
+      node->children[j] = node->children[j+1];
+  }
+
+  if (node->token_id == tk_program) {
+    for (i=0; i < node->num_child; i++) {
+      if (node->children[i]->token_id == tk_main) {
+        free(node->children[i]);
+
+        for (j=i; j < node->num_child - 1; j++) {
+          // if (node->children[j+1]->token_id == tk_stmts)
+            node->children[j+1]->token_id = tk_main;
+
+          node->children[j] = node->children[j+1];
+        }
+        node->num_child--;
+      }
     }
   }
 }

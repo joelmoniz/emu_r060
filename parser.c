@@ -554,14 +554,10 @@ void elevate_symbols(parse_tree_node *node) {
 
   for (i=0; i < node->num_child; i++) {
     if (is_flow_construct(node->children[i]->token_id)) {
-      if (n == flow_construct) {
-        n = dont_touch;
-        break;
-      }
-
       if (!node->children[i]->num_child) {
         position = i;
         n = flow_construct;
+        break;
       }
     }
     else if (is_datatype(node->children[i]->token_id)) {
@@ -645,6 +641,19 @@ void elevate_symbols(parse_tree_node *node) {
         node->num_child--;
       }
     }
+  }
+  else if (node->token_id == tk_condnal_stmt_suffix) {
+    // stetemts if condition is true
+    node->parent->children[node->parent->num_child - 1] = node->children[0];
+    node->parent->num_child++;
+
+    // else part
+    node->parent->children[node->parent->num_child - 1] = node->children[1]->children[0];
+
+    // free else node
+    free(node->children[1]);
+
+    free(node);
   }
 }
 

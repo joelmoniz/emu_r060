@@ -496,9 +496,8 @@ int is_bool_operator(int i) {
 }
 
 int is_singleton_operator(int i) {
-  return (i == tk_rt || i == tk_return || 
-    i ==  tk_unary_inc  || i ==  tk_unary_dec  || 
-    i == tk_readi);
+  return (i == tk_rt || i ==  tk_unary_inc  || 
+    i ==  tk_unary_dec  || i == tk_readi);
 }
 
 int is_datatype(int i) {
@@ -514,7 +513,8 @@ int is_all_alone(int i) {
 
 int is_flow_construct(int i) { // for, if, func
   return (i == tk_for || i == tk_if || 
-    i == tk_else || i == tk_func);
+    i == tk_else || i == tk_func || 
+    i == tk_return);
 }
 
 /*
@@ -595,6 +595,16 @@ void elevate_symbols(parse_tree_node *node) {
 
     for (j=position; j < node->num_child; j++)
       node->children[j] = node->children[j+1];
+
+    if (node->token_id == tk_return) {
+      parse_tree_node *expressions = node->children[0];
+      node->num_child = expressions->num_child;
+
+      for (j=0; j < node->num_child; j++)
+        node->children[j] = expressions->children[j];
+
+      free(expressions);
+    }
   }
   // else if (n == datatype) {
   //   node->token_id = node->children[position]->token_id;

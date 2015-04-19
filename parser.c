@@ -657,16 +657,26 @@ void elevate_symbols(parse_tree_node *node) {
 
   if (node->token_id == tk_program) {
     for (i=0; i < node->num_child; i++) {
-      if (node->children[i]->token_id == tk_main) {
+      if (node->children[i]->token_id == tk_main && !node->children[i]->num_child) {
         free(node->children[i]);
 
         for (j=i; j < node->num_child - 1; j++) {
           // if (node->children[j+1]->token_id == tk_stmts)
-            node->children[j+1]->token_id = tk_main;
 
           node->children[j] = node->children[j+1];
         }
+        node->children[i+1]->token_id = tk_main;
         node->num_child--;
+      }
+    }
+  }
+  else if (node->token_id == tk_otherFunctions) {
+    for (i=node->num_child-1; i >= 0; i--) {
+      if (node->children[i]->token_id == tk_main) {
+        free(node->children[i]);
+        node->num_child--;
+        node->parent->children[node->parent->num_child-1]->token_id = tk_main;
+        break;
       }
     }
   }

@@ -605,6 +605,24 @@ void elevate_symbols(parse_tree_node *node) {
 
       free(expressions);
     }
+    else if (node->token_id == tk_func) {
+      parse_tree_node *get_id = node->children[0];
+      while (get_id->children[1]->token_id != tk_id) 
+        get_id = get_id->children[1];
+      if (get_id->token_id != tk_type_list) {
+        get_id->token_id = get_id->children[0]->token_id;
+        free(get_id->children[0]);
+        get_id->num_child = 0;
+      }
+      else {
+        get_id->num_child--;
+      }
+      node->num_child++;
+      for(j=node->num_child-1; j>1; j--) {
+        node->children[j] = node->children[j-1];
+      }
+      node->children[j] = get_id->children[1]; // j = 1 here after loop
+    }
   }
   // else if (n == datatype) {
   //   node->token_id = node->children[position]->token_id;

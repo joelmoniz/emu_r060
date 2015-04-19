@@ -1,0 +1,5 @@
+1. Function call inside an expression is supported only if the function returns a single value
+2. Maximum of x values may be returned from a function
+3. Only one Bot per function
+4. Number of arguments passed = Number of arguments in function header
+5. Number of variables on LHS = Number of return values from function

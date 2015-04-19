@@ -1,0 +1,29 @@
+1. RNUM is of type float
+2. NUM is of type integer
+3. <bool> represents a boolean type, and may take either a TRUE or a FALSE value
+4. The program follows static typing, i.e., the type of a variable has to be declared in advance, and may not change till the end of the variable's lifetime
+5. Point
+6. Array
+7. Widening coercion is supported only from an integer to a float. More specifically, if X is an expression of the form E1 <op> E2, where E1 and E2 are expressions, or if X is an assignment statement of the form <type> ID = E3, where E3 is an expression, the coercion happens as follows:
+	a. If E1 and E2 evaluate to floats, integers or booleans, and <op> is a relational operator, X is a boolean
+	b. If both E1 and E2 evaluate to floats, and <op> is an arithmetic operator, X is a float
+	c. If both E1 and E2 evaluate to integers, and <op> is an arithmetic operator X is a integer
+	d. If either E1 or E2 is a float, the other is an integer, and <op> is an arithmetic operator, X is a float
+	e. If either E1 or E2 is a boolean, and <op> is an arithmetic operator, an error is flagged
+	f. If either E1 or E2 is a Point or an array, an error is flagged. However, a single array element is treated exactly like an element of the type ot which the element belongs
+8. Conversions
+	a. Narrowing conversion from a floating point value to an integer is supported via type-casting, 
+		for example, 
+			int x = (int) 23.823; 
+		is a valid statement, and a value of 23 is stored in x. Note that no rounding happens.
+	b. Conversions are not supported from or to the boolean type
+	c. Conversions are not supported from or to the Point datatype
+	d. Conversions from or to entire arrays are not supported, and an array of one type cannot be interconverted to an array of another type. However, a single array element is treated exactly like an element of the type ot which the element belongs
+9. Function calls
+	a. Coercion is not supported when passing arguments to a function
+	b. Coercion is supported when a function returns a value, and this value is used in an expresison or is assigned
+	c. Coercion is not supported when a function returns multiple values
+	d. Narrowing conversions, according to the rules specified in 8, are supported when passing an argument as input to a function
+	e. Narrowing conversions, according to the rules specified in 8, are permitted when a function has a single return value
+	f. Narrowing conversions are not permitted when there are multiple values returned from a fucntion
+10.

@@ -8,7 +8,8 @@
 #include "lexemes.h"
 #endif
 
-#define hash_size  1000
+#define HASH_SIZE 50
+#define MAX_BRANCHING 15
 
 typedef union _data_val {
   int i;
@@ -17,8 +18,8 @@ typedef union _data_val {
 } data_val;
 
 typedef struct _referred {
-  int line;
-  int loc;
+  int depth;
+  int breadth;
   struct _referred *next;
 } referred;
 
@@ -46,12 +47,30 @@ typedef struct _symbol_entry {
   int has_value; // 1 (represents if valid value is held)
   int size; // 2 (bytes)
   int scope; // number represting scope
-  int declared_line, declared_position; // line 27, character 5
+  int depth, breadth; // line 27, character 5
   referred *refd; // linked list indicating lines and locations where my_int has been used
   var_type misc; // variable
   struct _symbol_entry *next;
 } symbol_entry;
 
-symbol_entry *symbol_table_hash[hash_size];
+typedef struct _symbol_table_node {
+  struct _symbol_table_node *parent;
+  struct _symbol_table_node *children[MAX_BRANCHING];
+  int num_children; // how many children it has
+  int level;
+  int breadth; // how many "elder siblings" it has
+  symbol_entry *symbol_table_hash[HASH_SIZE];
+} symbol_table_node;
+
+symbol_table_node *symbol_table_root;
+
+symbol_table_node *initialize_symbol_table_root();
+symbol_table_node *initialize_symbol_table_node(symbol_table_node *parent);
+symbol_table_node *add_new_node_to_parent(symbol_table_node *parent);
+void add_ID_to_sym_table_node(symbol_table_node *node, char *name);
+void init_symbol_table(symbol_entry *symbol_table_hash[]);
+void free_symbol_table(symbol_entry *symbol_table_hash[]);
+void print_symbol_table_tree(symbol_table_node *node);
+void print_symbol_table(symbol_entry *symbol_table_hash[]);
 
 int get_hash_value(unsigned char *name);

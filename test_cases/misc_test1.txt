@@ -6,7 +6,7 @@ function int,int,float func1(int a, int b, float c)
  
 main() 
 { 
-  int x,y,k; 
+  int x,y,k,l=3,m=4,n; 
   float z;
   x,y,z = func1(b=5, c=3.0, a=12); 
   k = (int)(z);

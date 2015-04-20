@@ -538,8 +538,10 @@ char read_next_char(FILE * ip) {
   else if (curr_locn >= 100) {
     buf_in_use = !buf_in_use;
     read_size[buf_in_use] = fread(buf[buf_in_use], sizeof(char), BUFFER_SIZE, ip);
-    // if (read_size[buf_in_use] == 0)
-    //   at_eof = 1;
+    if (read_size[buf_in_use] == 0) {
+      at_eof = 1;
+      memset(&buf[buf_in_use], ' ', sizeof(buf[buf_in_use]));
+    }
     curr_locn = 0;
   }
   // printf("at_eof: %d curr_locn: %d buf_in_use: %d read_size:%d\n", at_eof, curr_locn, buf_in_use, read_size[buf_in_use]);

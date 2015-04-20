@@ -945,8 +945,13 @@ enum Token lexer(FILE * ip, FILE * op)
       }
     }
 
-    if(input == '{'){ writeTofile(op,tk_lbrace); prev = '\0'; continue;}
-    if(input == '}'){ writeTofile(op,tk_rbrace); prev = '\0'; continue;}
+    if(input == '{') { 
+      writeTofile(op,tk_lbrace); 
+      prev = '\0'; 
+      node = add_new_node_to_parent(node); 
+      continue;
+    }
+    if(input == '}'){ writeTofile(op,tk_rbrace); prev = '\0'; node = node->parent; continue;}
     if(input == '('){ writeTofile(op,tk_lpara);prev = '\0'; continue;}
     if(input == ')'){ writeTofile(op,tk_rpara);prev = '\0'; continue;}
     if(input == '['){ writeTofile(op,tk_lsquare);prev = '\0'; continue;}
@@ -1038,6 +1043,8 @@ enum Token lexer(FILE * ip, FILE * op)
       prev = '\0';
     } 
   }
+  printf("\n\nSYMBOL TABLE\n");
+  printf("============\n\n");
   print_symbol_table_tree(symbol_table_root);
 }
 

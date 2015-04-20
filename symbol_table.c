@@ -139,7 +139,7 @@ void add_ID_to_sym_table_node(symbol_table_node *node, char *name) {
   s->scope = -1;
   s->depth = node->level;
   s->breadth = node->breadth;
-  s->refd = NULL;
+  s->refd = r;
   s->misc = vt_unk;
   s->next = node->symbol_table_hash[index];
 

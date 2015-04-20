@@ -491,7 +491,7 @@ int is_bool_operator(int i) {
     i == tk_lte || i ==  tk_gte || i == tk_pl_eq ||
     i ==  tk_plus || i ==  tk_minus || i == tk_addv || 
     i ==  tk_mul || i ==  tk_div || i == tk_fw ||
-    i == tk_col_assign || i == tk_assign_op ||
+    i == tk_col_assign || //i == tk_assign_op ||
     i == tk_colon || i == tk_dot || i == tk_comma);
 }
 

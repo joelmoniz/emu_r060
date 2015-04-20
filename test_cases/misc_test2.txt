@@ -1,0 +1,6 @@
+main() {
+  Bot bot; 
+  Point p2 := {2,2}; 
+  bot := {x,y,k,true}; 
+  p2 := {x,y};
+}

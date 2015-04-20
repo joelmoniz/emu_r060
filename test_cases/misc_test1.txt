@@ -9,8 +9,5 @@ main()
   int x,y,k; 
   float z;
   x,y,z = func1(b=5, c=3.0, a=12); 
-  Bot bot; 
-  Point p2 := {2,2}; 
   k = (int)(z);
-  bot := {x,y,k,true}; 
 }

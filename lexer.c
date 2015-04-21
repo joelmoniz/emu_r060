@@ -633,6 +633,8 @@ enum Token lexer(FILE * ip, FILE * op)
   column_no=0;
   prev = '\0';
 
+  int is_in_function = 0;
+
   printf("LEXER Output\n");
   printf("============\n\n");
 
@@ -789,6 +791,7 @@ enum Token lexer(FILE * ip, FILE * op)
               && inp[4] == 't' && inp[5] == 'i' && inp[6] == 'o' && inp[7] == 'n'
               && inp[8] == '\0') {
             writeTofile(op,tk_func); 
+            is_in_function = 1;
             // prev = '\0'; 
             continue;
           }
@@ -948,11 +951,28 @@ enum Token lexer(FILE * ip, FILE * op)
     if(input == '{') { 
       writeTofile(op,tk_lbrace); 
       prev = '\0'; 
-      node = add_new_node_to_parent(node); 
+      if (!is_in_function) {
+        node = add_new_node_to_parent(node);
+      }
+      else {
+        is_in_function = 0;
+      }
       continue;
     }
-    if(input == '}'){ writeTofile(op,tk_rbrace); prev = '\0'; node = node->parent; continue;}
-    if(input == '('){ writeTofile(op,tk_lpara);prev = '\0'; continue;}
+    if(input == '}'){ 
+      writeTofile(op,tk_rbrace); 
+      prev = '\0'; 
+      node = node->parent; 
+      continue;
+    }
+    if(input == '('){ 
+      writeTofile(op,tk_lpara);
+      prev = '\0'; 
+      if (is_in_function) {
+        node = add_new_node_to_parent(node);
+      }
+      continue;
+    }
     if(input == ')'){ writeTofile(op,tk_rpara);prev = '\0'; continue;}
     if(input == '['){ writeTofile(op,tk_lsquare);prev = '\0'; continue;}
     if(input == ']'){ writeTofile(op,tk_rsquare);prev = '\0'; continue;}

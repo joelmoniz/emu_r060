@@ -869,11 +869,26 @@ void parser(FILE * ip) {
         }
       }
       else {// TODO: Handle pop vs scan errors separately}
-        printf("Error pop/scan for token ");
-        print_rule(token);
-        printf("\n");
-        error_detected = 1;
-        //break;
+        if (rule_no == POP_ERROR) {
+          printf("Error for token ");
+          print_rule(token);
+          printf("  ==> Popping ");
+          print_rule(top);
+          printf(" from the stack...\n");
+          // top = pop(&s);
+          if (top == end_marker) {
+            push(&s, top);
+          }
+          lexer_queue.que[--lexer_queue.front] = token;
+        }
+        else if (rule_no == SCAN_ERROR) {
+          printf("Error for token ");
+          print_rule(token);
+          printf("  ==> Continuing scan...\n");
+          // token = get_first(&lexer_queue);
+          push(&s, top);
+        }
+        break;
       }
 
       top = pop(&s);
@@ -886,14 +901,14 @@ void parser(FILE * ip) {
 
     if (top != token) {
       printf("Error: Expecting ");
-      print_token(top);
+      print_rule(top);
       printf("but found ");
       print_token(token);
       printf("\n");
       error_detected = 1;
     }
 
-    while (1) {
+    while (!error_detected) {
       // printf("\nValue:");
       // print_rule(token);
       // printf("Top:%d  Tree:%d Tree value:", top, current->token_id);

@@ -23,11 +23,11 @@ typedef struct _referred {
   struct _referred *next;
 } referred;
 
-typedef enum _data_type {
-  dt_unk,
-  integer,
-  float_point,
-  boolean
+typedef enum _data_type { // the value of the enum represents the size of the data type
+  dt_unk = 0,
+  integer = 2,
+  float_point = 4,
+  boolean = 1
 } data_type;
 
 typedef enum _var_type {
@@ -38,18 +38,15 @@ typedef enum _var_type {
   return_val
 } var_type;
 
+void print_var_type(var_type v);
+
 // Eg: int my_int = 42;
 typedef struct _symbol_entry {
   char *name; // my_int
-  TOK token_type; // TK_ID
   data_type dtype; // integer
-  data_val value; // 42
-  int has_value; // 1 (represents if valid value is held)
-  int size; // 2 (bytes)
-  int scope; // number represting scope
   int depth, breadth; // line 27, character 5
   referred *refd; // linked list indicating lines and locations where my_int has been used
-  var_type misc; // variable
+  var_type vtype; // variable
   struct _symbol_entry *next;
 } symbol_entry;
 

@@ -57,6 +57,22 @@ symbol_table_node *add_new_node_to_parent(symbol_table_node *parent) {
   }
 }
 
+void print_var_type(var_type v) {
+  switch(v) {
+   case variable: printf("  variable");
+    break;
+   case parameter: printf("  parameter");
+    break;
+   case argument: printf("  argument");
+    break;
+   case return_val: printf("  return_val");
+    break;
+   case vt_unk: 
+   default: printf("  vt_unk");
+    break;
+  }
+}
+
 void print_symbol_table(symbol_entry *symbol_table_hash[]) {
   int i = 0;
   referred *r;
@@ -69,17 +85,16 @@ void print_symbol_table(symbol_entry *symbol_table_hash[]) {
       
       s = symbol_table_hash[i];
       while (s != NULL) {
-        printf("name: %s\n token: %d\n type: %d\n has_val: %d\n scope: %d\n depth: %d\n breadth: %d\n refd: ", 
-          s->name, s->token_type, s->dtype, s->has_value, 
-          s->scope, s->depth, s->breadth);
-        r = s->refd;
-        while (r != NULL) {
-          printf("<%d, %d>", r->depth, r->breadth);
-          if (r->next != NULL)
-            printf(", ");
-          r = r->next;
-        }
-        printf("\n misc: %d\n", s->misc);
+        printf("name: %s\n depth: %d\n breadth: %d\n size: %d bytes\n var_type:",// %d\n refd: ", 
+          s->name, s->depth, s->breadth, s->dtype);//, s->vtype);
+        print_var_type(s->vtype);
+        // r = s->refd;
+        // while (r != NULL) {
+        //   printf("<%d, %d>", r->depth, r->breadth);
+        //   if (r->next != NULL)
+        //     printf(", ");
+        //   r = r->next;
+        // }
         s = s->next;
       }
     }
@@ -113,10 +128,37 @@ void add_ID_to_sym_table_node(symbol_table_node *node, char *name) {
   symbol_entry *s = node->symbol_table_hash[index];
   symbol_entry *prev = NULL;
 
+  int dp, bdt;
+
   referred *r = (referred *) malloc(sizeof(referred));
-  r->depth = node->level;
-  r->breadth = node->breadth;
-  r->next = NULL;
+  r->next = NULL;  
+
+  symbol_table_node *node_temp = node->parent;
+  while (node_temp != NULL) {
+    symbol_entry *s_temp = node_temp->symbol_table_hash[get_hash_value(name)];
+
+    while (s_temp != NULL) {
+      if (strcmp(name, s_temp->name) != 0) {
+        s_temp = s_temp->next;
+      }
+      else {// entry found
+        break;
+      }
+    }
+
+    if (s_temp != NULL)
+      break;
+    node_temp = node_temp->parent;
+  }
+
+  if (node_temp != NULL) {
+    dp = node_temp->level;
+    bdt = node_temp->breadth;
+  }
+  else {
+    dp = node->level;
+    bdt = node->breadth;
+  }
 
   while ( s != NULL) {
     if (strcmp(name, s->name) != 0) {
@@ -133,14 +175,11 @@ void add_ID_to_sym_table_node(symbol_table_node *node, char *name) {
   s = (symbol_entry *) malloc(sizeof(symbol_entry));
   s->name = (char *) malloc(sizeof(name));
   strcpy(s->name, name);
-  s->token_type = tk_id;
   s->dtype = dt_unk;
-  s->has_value = 0;
-  s->scope = -1;
-  s->depth = node->level;
-  s->breadth = node->breadth;
+  s->depth = dp;
+  s->breadth = bdt;
   s->refd = r;
-  s->misc = vt_unk;
+  s->vtype = vt_unk;
   s->next = node->symbol_table_hash[index];
 
   node->symbol_table_hash[index] = s;

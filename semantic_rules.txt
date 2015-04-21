@@ -3,3 +3,9 @@
 3. Only one Bot per function
 4. Number of arguments passed = Number of arguments in function header
 5. Number of variables on LHS = Number of return values from function
+6. All variables must be declared before use, in the same block, the parent block or in an ancestor block
+7. An identifier can not be declared multiple times within the same scope. However, if it is declared in both a given block and, say its block, the parent block's variable will be hidden.
+8. No identifier may have the same name as a fucntion that has been declared, irrespective of where the identifier is to be declared
+9. Function overloading is not allowed
+10. Recursive function calls are not allowed
+11. No function may call another function, except for the main() function

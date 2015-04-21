@@ -10,6 +10,11 @@
 #include "parse_table.h"
 #endif
 
+#ifndef QUEUES_H
+#define QUEUES_H
+#include "queues.h"
+#endif
+
 #ifndef LEXEMES_H
 #define LEXEMES_H
 #include "lexemes.h"
@@ -547,71 +552,6 @@ inline char read_next_char(FILE * ip) {
   //   return EOF;
   // else
     return buf[buf_in_use][curr_locn];
-}
-
-queue initialize_queue(int size) {
-  queue q;
-  q.que = (int *) malloc(size*sizeof(int));
-  if (q.que == NULL) {
-    printf("Error!! Malloc failed in initialize_stack()\n");
-    exit(1);
-  }
-  q.front = q.back = -1;
-  q.size = size;
-  return q;
-}
-
-void insert(queue *q, int num) {
-  int a;
-  if (q->back == q->size - 1) {
-    q->size = (int)(2*q->size + 1);
-    q->que = (int *) realloc(q->que, q->size*sizeof(int));
-    if (q->que == NULL) {
-      printf("Error!! Realloc failed in initialize_stack()\n");
-      exit(1);
-    }
-    a = 0; //dummy to debug
-  }
-  q->back++;
-  if (q->front == -1) {
-    q->front = 0;
-  }
-  q->que[q->back] = num;
-}
-
-int get_first(queue *q) {
-  if (q->front == q->back + 1) {
-    return -1;
-  }
-  // q->front++;
-  return q->que[q->front++];
-}
-
-void print_queue(queue q) {
-  printf("->");
-  int i = q.front;
-  while(i <= q.back) {
-    printf("%d    ", q.que[i]);
-    i++;
-  }
-  printf("\n");
-}
-
-void test_queue() {
-  queue q;
-  q = initialize_queue(3);
-  insert(&q, 1);
-  insert(&q, 5);
-  insert(&q, 2);
-  insert(&q, 7);
-  insert(&q, 10);
-  print_queue(q);
-  int x = get_first(&q);
-  while (x != -1) {
-    printf("Remove: %d\n", x);
-    print_queue(q);
-    x = get_first(&q);
-  }
 }
 
 enum Token lexer(FILE * ip, FILE * op)

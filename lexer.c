@@ -529,7 +529,7 @@ int at_eof;
 int read_size[2];
 int curr_locn;
 
-char read_next_char(FILE * ip) {
+inline char read_next_char(FILE * ip) {
   curr_locn++;
   if (curr_locn == read_size[buf_in_use] - 1 && read_size[buf_in_use]  < BUFFER_SIZE) 
     at_eof = 1;

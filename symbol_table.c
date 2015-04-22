@@ -1,11 +1,25 @@
+#ifndef STANDARD_H
+#define STANDARD_H
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+#endif
+
 #ifndef SYMBOL_TABLE_H
 #define SYMBOL_TABLE_H
 #include "symbol_table.h"
 #endif
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+#ifndef QUEUES_H
+#define QUEUES_H
+#include "queues.h"
+#endif
+
+#ifndef PARSE_TABLE_H
+#define PARSE_TABLE_H
+#include "parse_table.h"
+#endif
 
 void init_symbol_table(symbol_entry *symbol_table_hash[]) {
   int i;
@@ -158,6 +172,7 @@ void add_ID_to_sym_table_node(symbol_table_node *node, char *name) {
   else {
     dp = node->level;
     bdt = node->breadth;
+    node_temp = node->parent;
   }
 
   while ( s != NULL) {
@@ -168,6 +183,7 @@ void add_ID_to_sym_table_node(symbol_table_node *node, char *name) {
     else {// entry found => add occurance to symbol table
       r->next = s->refd;
       s->refd = r;
+      insert_st(&st_lex_queue, s);
       return;
     }
   }
@@ -180,7 +196,9 @@ void add_ID_to_sym_table_node(symbol_table_node *node, char *name) {
   s->breadth = bdt;
   s->refd = r;
   s->vtype = vt_unk;
+  s->container = node_temp;
   s->next = node->symbol_table_hash[index];
+  insert_st(&st_lex_queue, s);
 
   node->symbol_table_hash[index] = s;
 }

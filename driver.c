@@ -1,7 +1,10 @@
+#ifndef STANDARD_H
+#define STANDARD_H
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-
+#include <ctype.h>
+#endif
 
 int main(int argc, char*argv[])
 {
@@ -13,8 +16,8 @@ int main(int argc, char*argv[])
          // printf("FATAL ERROR!! : No input specified or too many parameters \n");
          // exit(1);
 
-        ip = fopen("test.txt","r");
-        strcpy(opf,"test.txt");
+        ip = fopen("./test_cases/submitted_test1.txt","r");
+        strcpy(opf,"./test_cases/submitted_test1.txt");
     }
     else {
         ip = fopen(argv[1],"r");

@@ -1,7 +1,10 @@
+#ifndef STANDARD_H
+#define STANDARD_H
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
+#include <stdlib.h>
 #include <ctype.h>
+#endif
 
 #ifndef SYMBOL_TABLE_H
 #define SYMBOL_TABLE_H
@@ -567,7 +570,9 @@ enum Token lexer(FILE * ip, FILE * op)
   read_size[0] = read_size[1] = 0;
   curr_locn = 100;
   
-  lexer_queue = initialize_queue(500);
+  lexer_queue = initialize_queue(LEXER_QUEUE_SIZE);
+  st_lex_queue = initialize_st_queue(SYM_TBL_QUEUE_SIZE);
+  num_lexemes_queue = initialize_num_queue(NUM_TBL_QUEUE_SIZE);
 
   char input,next,prev; //our work-horse!
   input = ' ';
@@ -867,6 +872,8 @@ enum Token lexer(FILE * ip, FILE * op)
         if(!flag && input!='.')
         {
           prev = input;
+          inp[i] = '\0';
+          insert_num(&num_lexemes_queue, (float)atoi(inp));
           writeTofile(op,tk_num);
           continue;
         }
@@ -884,8 +891,13 @@ enum Token lexer(FILE * ip, FILE * op)
               while(isSymbol(input)!=1){input=read_next_char(ip);column_no++;} //scan till delimiter
             }
           }while(isSymbol(input)!=1);
+
+          if (input == '.') {
+            printf("\nError, invalid real number at %d : %d\n",line_no,column_no);
+          }
           prev = input;
           writeTofile(op,tk_rnum);
+          insert_num(&num_lexemes_queue, atof(inp));
           continue;
         }
       }
@@ -1009,6 +1021,8 @@ enum Token lexer(FILE * ip, FILE * op)
   printf("\n\nSYMBOL TABLE\n");
   printf("============\n\n");
   print_symbol_table_tree(symbol_table_root);
+
+  // print_st_queue(st_lex_queue);
 }
 
 // int main(int argc, char * argv[])

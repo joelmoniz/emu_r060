@@ -1,6 +1,10 @@
+#ifndef STANDARD_H
+#define STANDARD_H
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+#endif
 
 #ifndef PARSE_TABLE_H
 #define PARSE_TABLE_H
@@ -10,6 +14,11 @@
 #ifndef QUEUES_H
 #define QUEUES_H
 #include "queues.h"
+#endif
+
+#ifndef SYMBOL_TABLE_H
+#define SYMBOL_TABLE_H
+#include "symbol_table.h"
 #endif
 
 queue initialize_queue(int size) {
@@ -203,6 +212,55 @@ void test_id_queue() {
     print_id_queue(q);
     x = get_first_id(&q);
   }
+}
+
+st_queue initialize_st_queue(int size)  {
+  st_queue q;
+  q.que = (symbol_entry **) malloc(size*sizeof(symbol_entry *));
+  if (q.que == NULL) {
+    printf("Error!! Malloc failed in initialize_stack()\n");
+    exit(1);
+  }
+  q.front = q.back = -1;
+  q.size = size;
+  return q;
+}
+
+void insert_st(st_queue *q, symbol_entry *st) 
+ {
+  if (q->back == q->size - 1) {
+    q->size = (int)(2*q->size + 1);
+    q->que = (symbol_entry **) realloc(q->que, q->size*sizeof(symbol_entry *));
+    if (q->que == NULL) {
+      printf("Error!! Realloc failed in initialize_stack()\n");
+      exit(1);
+    }
+  }
+  q->back++;
+  if (q->front == -1) {
+    q->front = 0;
+  }
+  q->que[q->back] = st;
+}
+
+symbol_entry* get_first_st(st_queue *q) 
+ {
+  if (q->front == q->back + 1) {
+    return NULL;
+  }
+  // q->front++;
+  return q->que[q->front++];
+}
+
+void print_st_queue(st_queue q) 
+ {
+  printf("->");
+  int i = q.front;
+  while(i <= q.back) {
+    printf("%s    ", q.que[i]->name);
+    i++;
+  }
+  printf("\n");
 }
 
 // void main() {

@@ -1,3 +1,11 @@
+#ifndef STANDARD_H
+#define STANDARD_H
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+#endif
+
 #ifndef SYMBOL_TABLE_H
 #define SYMBOL_TABLE_H
 #include "symbol_table.h"
@@ -17,9 +25,6 @@
 #define QUEUES_H
 #include "queues.h"
 #endif
-
-#include <stdio.h>
-#include <stdlib.h>
 
 #define DEBUG 0
 #define PRINT_AST_DETAILS 1
@@ -385,7 +390,7 @@ void test_stack() {
   print_stack(s);
 }
 
-parse_tree_node *initialize_parse_tree_node(parse_tree_node *parent, int token) {
+parse_tree_node *initialize_parse_tree_node(parse_tree_node *parent, int token, st_num_rnum snr) {
   parse_tree_node *p = (parse_tree_node *) malloc(sizeof(parse_tree_node));
 
   if (p == NULL) {
@@ -398,8 +403,11 @@ parse_tree_node *initialize_parse_tree_node(parse_tree_node *parent, int token) 
   p->num_child = 0;
   p->visited_child = 0;
   int i = 0;
+
   for (; i<MAX_TOKENS; i++)
     p->children[i] = NULL;
+
+  p->value = snr;
   return p;
 }
 
@@ -407,11 +415,18 @@ void print_parse_tree(parse_tree_node *node, int lv) {
   if (node == NULL)
     return;
   printf("%d -> ", lv);
+  
   if (DEBUG) {
     print_token(node->token_id);
   }
   else {
     print_rule(node->token_id);
+  }
+
+  switch (node->token_id) {
+    case tk_id: printf(" ==>  %s", node->value.id->name);break;
+    case tk_num: printf(" ==>  %d", node->value.num);break;
+    case tk_rnum: printf(" ==>  %f", node->value.rnum);break;
   }
   //printf("%d", node->token_id);
   printf("\n");
@@ -778,7 +793,9 @@ void parser(FILE * ip) {
   stack s = initialize_stack(500);
   push(&s, end_marker);
   push(&s, START_STATE);
-  parse_root = initialize_parse_tree_node(NULL, START_STATE);
+  st_num_rnum snr1;
+  snr1.num = 0;
+  parse_root = initialize_parse_tree_node(NULL, START_STATE, snr1);
   parse_tree_node *current = parse_root;
   int row, col;
   int top;
@@ -831,7 +848,14 @@ void parser(FILE * ip) {
 
       if (rule_no != POP_ERROR && rule_no != SCAN_ERROR) { // TODO: Change this to scan vs pop errors
         while (states[rule_no][rule_token_no] != tk_null) {
-          current->children[rule_token_no] = initialize_parse_tree_node(current, states[rule_no][rule_token_no]);
+          st_num_rnum snr;
+          switch (states[rule_no][rule_token_no]) {
+            case tk_id: snr.id = get_first_st(&st_lex_queue); break;
+            case tk_num: snr.num = (int)get_first_num(&num_lexemes_queue); break;
+            case tk_rnum: snr.rnum = get_first_num(&num_lexemes_queue); break;
+            default: snr.num = 0; break;
+          }
+          current->children[rule_token_no] = initialize_parse_tree_node(current, states[rule_no][rule_token_no], snr);
           current->num_child++;
           rule_token_no++;
         }
@@ -876,7 +900,7 @@ void parser(FILE * ip) {
           print_stack_as_rules(s);
         }
       }
-      else {// TODO: Handle pop vs scan errors separately}
+      else {
         if (rule_no == POP_ERROR) {
           printf("Error for token ");
           print_rule(token);

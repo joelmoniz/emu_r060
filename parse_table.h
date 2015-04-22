@@ -5,6 +5,11 @@
 #include "lexemes.h"
 #endif
 
+#ifndef SYMBOL_TABLE_H
+#define SYMBOL_TABLE_H
+#include "symbol_table.h"
+#endif
+
 #define START_STATE 1
 #define end_marker 200
 #define error 184
@@ -46,16 +51,23 @@ int pop(stack *s);
 void print_stack(stack s);
 void print_stack_as_rules(stack s);
 
+typedef union _st_num_rnum {
+  int num;
+  float rnum;
+  symbol_entry *id;
+} st_num_rnum;
+
 typedef struct _parse_tree_node {
   struct _parse_tree_node *parent;
   struct _parse_tree_node *children[MAX_TOKENS];
   int num_child;
   int visited_child;
   int token_id;
+  st_num_rnum value;
 } parse_tree_node;
 
 parse_tree_node *parse_root;
-parse_tree_node *initialize_parse_tree_node(parse_tree_node *parent, int token);
+parse_tree_node *initialize_parse_tree_node(parse_tree_node *parent, int token, st_num_rnum value);
 void print_parse_tree(parse_tree_node *node, int lv);
 void parse_tree_to_AST();
 

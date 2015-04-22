@@ -205,9 +205,9 @@ void test_id_queue() {
   }
 }
 
-void main() {
-  test_queue();
-  printf("\n");
-  test_num_queue();
-}
+// void main() {
+//   test_queue();
+//   printf("\n");
+//   test_num_queue();
+// }
 

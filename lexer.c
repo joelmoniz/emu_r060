@@ -3,7 +3,10 @@
 #include <string.h>
 #include <ctype.h>
 
+#ifndef SYMBOL_TABLE_H
+#define SYMBOL_TABLE_H
 #include "symbol_table.h"
+#endif
 
 #ifndef PARSE_TABLE_H
 #define PARSE_TABLE_H

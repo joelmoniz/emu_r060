@@ -1,4 +1,7 @@
+#ifndef SYMBOL_TABLE_H
+#define SYMBOL_TABLE_H
 #include "symbol_table.h"
+#endif
 
 #ifndef PARSE_TABLE_H
 #define PARSE_TABLE_H
@@ -8,6 +11,11 @@
 #ifndef LEXEMES_H
 #define LEXEMES_H
 #include "lexemes.h"
+#endif
+
+#ifndef QUEUES_H
+#define QUEUES_H
+#include "queues.h"
 #endif
 
 #include <stdio.h>

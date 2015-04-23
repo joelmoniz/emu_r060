@@ -27,9 +27,12 @@ typedef enum _var_type {
 } var_type;
 
 typedef enum _data_type { // the value of the enum represents the size of the data type
-  dt_unk = 0,
+  dt_unk = -1,
+  function = 0,
   integer = 2,
   float_point = 4,
+  Point = 8,
+  Bot = 16,
   boolean = 1
 } data_type;
 
@@ -70,7 +73,7 @@ symbol_table_node *symbol_table_root;
 symbol_table_node *initialize_symbol_table_root();
 symbol_table_node *initialize_symbol_table_node(symbol_table_node *parent);
 symbol_table_node *add_new_node_to_parent(symbol_table_node *parent);
-void add_ID_to_sym_table_node(symbol_table_node *node, char *name);
+void add_ID_to_sym_table_node(symbol_table_node *node, char *name, data_type dt);
 void init_symbol_table(symbol_entry *symbol_table_hash[]);
 void free_symbol_table(symbol_entry *symbol_table_hash[]);
 void print_symbol_table_tree(symbol_table_node *node);

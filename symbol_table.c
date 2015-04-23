@@ -137,7 +137,7 @@ void print_symbol_table_tree(symbol_table_node *node) {
   }
 }
 
-void add_ID_to_sym_table_node(symbol_table_node *node, char *name) {
+void add_ID_to_sym_table_node(symbol_table_node *node, char *name, data_type dt) {
   int index = get_hash_value(name);
   symbol_entry *s = node->symbol_table_hash[index];
   symbol_entry *prev = NULL;
@@ -156,6 +156,7 @@ void add_ID_to_sym_table_node(symbol_table_node *node, char *name) {
         s_temp = s_temp->next;
       }
       else {// entry found
+        dt = s_temp->dtype;
         break;
       }
     }
@@ -191,7 +192,12 @@ void add_ID_to_sym_table_node(symbol_table_node *node, char *name) {
   s = (symbol_entry *) malloc(sizeof(symbol_entry));
   s->name = (char *) malloc(sizeof(name));
   strcpy(s->name, name);
-  s->dtype = dt_unk;
+  s->dtype = dt;
+
+  if (dt == dt_unk) {
+    printf("\nError: Undeclared identifier %s\n", name);
+  }
+
   s->depth = dp;
   s->breadth = bdt;
   s->refd = r;

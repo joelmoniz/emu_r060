@@ -574,6 +574,8 @@ enum Token lexer(FILE * ip, FILE * op)
   st_lex_queue = initialize_st_queue(SYM_TBL_QUEUE_SIZE);
   num_lexemes_queue = initialize_num_queue(NUM_TBL_QUEUE_SIZE);
 
+  data_type dt = dt_unk;
+
   char input,next,prev; //our work-horse!
   input = ' ';
   int line_no, column_no;
@@ -582,6 +584,7 @@ enum Token lexer(FILE * ip, FILE * op)
   prev = '\0';
 
   int is_in_function = 0;
+  int is_in_function2 = 0;
 
   printf("LEXER Output\n");
   printf("============\n\n");
@@ -695,6 +698,8 @@ enum Token lexer(FILE * ip, FILE * op)
             && inp[4] == 'e' && inp[5] == 'a' && inp[6] == 'n' && inp[7] == '\0') {
             writeTofile(op,tk_boolean); 
             // prev = '\0'; 
+            if (!is_in_function2)
+              dt = boolean;
             continue;
           }
           else if (inp[1] == 'r' && inp[2] == 'e' && inp[3] == 'a' 
@@ -705,7 +710,7 @@ enum Token lexer(FILE * ip, FILE * op)
           }
           else {
             writeTofile(op,tk_id); 
-            add_ID_to_sym_table_node(node,inp);
+            add_ID_to_sym_table_node(node,inp,dt);
             // prev = '\0'; 
             continue;
           }
@@ -713,6 +718,8 @@ enum Token lexer(FILE * ip, FILE * op)
         else if(inp[0] == 'B' && inp[1] == 'o' && inp[2] == 't' && inp[3] == '\0') { 
           writeTofile(op,tk_bot); 
           // prev = '\0'; 
+          if (!is_in_function2)
+            dt = Bot;
           continue;
         }
         else if(inp[0] == 'c' && inp[1] == 'o' && inp[2] == 'n' 
@@ -733,6 +740,8 @@ enum Token lexer(FILE * ip, FILE * op)
               && inp[4] == 't' && inp[5] == '\0') {
             writeTofile(op,tk_float); 
             // prev = '\0'; 
+            if (!is_in_function2)
+              dt = float_point;
             continue;
           }
           else if (inp[1] == 'u' && inp[2] == 'n' && inp[3] == 'c' 
@@ -740,6 +749,8 @@ enum Token lexer(FILE * ip, FILE * op)
               && inp[8] == '\0') {
             writeTofile(op,tk_func); 
             is_in_function = 1;
+            is_in_function2 = 1;
+            dt = function;
             // prev = '\0'; 
             continue;
           }
@@ -761,7 +772,7 @@ enum Token lexer(FILE * ip, FILE * op)
           }
           else {
             writeTofile(op,tk_id); 
-            add_ID_to_sym_table_node(node,inp);
+            add_ID_to_sym_table_node(node,inp,dt);
             // prev = '\0'; 
             continue;
           }
@@ -770,6 +781,8 @@ enum Token lexer(FILE * ip, FILE * op)
           if (inp[1] == 'n' && inp[2] == 't' && inp[3] == '\0') {
             writeTofile(op,tk_int); 
             // prev = '\0'; 
+            if (!is_in_function2)
+              dt = integer;
             continue;
           }
           else if (inp[1] == 'f' && inp[2] == '\0') {
@@ -779,7 +792,7 @@ enum Token lexer(FILE * ip, FILE * op)
           }
           else {
             writeTofile(op,tk_id); 
-            add_ID_to_sym_table_node(node,inp);
+            add_ID_to_sym_table_node(node,inp,dt);
             // prev = '\0'; 
             continue;
           }
@@ -794,6 +807,8 @@ enum Token lexer(FILE * ip, FILE * op)
            && inp[4] == 't' && inp[5] == '\0') {
           writeTofile(op,tk_point); 
           // prev = '\0'; 
+          if (!is_in_function2)
+            dt = Point;
           continue;
         }
         else if(inp[0] == 'r' && inp[1] == 'e' && inp[2] == 't' 
@@ -817,7 +832,7 @@ enum Token lexer(FILE * ip, FILE * op)
           }
           else {
             writeTofile(op,tk_id); 
-            add_ID_to_sym_table_node(node,inp);
+            add_ID_to_sym_table_node(node,inp,dt);
             // prev = '\0'; 
             continue;
           }
@@ -843,7 +858,7 @@ enum Token lexer(FILE * ip, FILE * op)
         }
         else { 
           writeTofile(op,tk_id); 
-          add_ID_to_sym_table_node(node,inp);
+          add_ID_to_sym_table_node(node,inp,dt);
           // prev = '\0'; 
           continue;
         }
@@ -923,15 +938,19 @@ enum Token lexer(FILE * ip, FILE * op)
     if(input == '('){ 
       writeTofile(op,tk_lpara);
       prev = '\0'; 
+      is_in_function2 = 0;
+      dt = dt_unk;
       if (is_in_function) {
         node = add_new_node_to_parent(node);
       }
       continue;
     }
-    if(input == ')'){ writeTofile(op,tk_rpara);prev = '\0'; continue;}
+    if(input == ')'){ writeTofile(op,tk_rpara);prev = '\0'; 
+            dt = dt_unk; continue;}
     if(input == '['){ writeTofile(op,tk_lsquare);prev = '\0'; continue;}
     if(input == ']'){ writeTofile(op,tk_rsquare);prev = '\0'; continue;}
-    if(input == ';'){ writeTofile(op,tk_semi_cl);prev = '\0'; continue;}
+    if(input == ';'){ writeTofile(op,tk_semi_cl);prev = '\0'; 
+            dt = dt_unk; continue;}
     if(input == ','){ writeTofile(op,tk_comma);prev = '\0'; continue;}
     if(input == '.'){ writeTofile(op,tk_dot);prev = '\0'; continue;}
 

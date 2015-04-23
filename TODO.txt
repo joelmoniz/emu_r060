@@ -1,0 +1,50 @@
+TODO
+====
+
+Semantic
+--------
+[ ] Function call inside an expression is supported only if the function returns a single value
+[ ] Maximum of x values may be returned from a function
+[ ] Only one Bot may be defined per program
+[ ] Number of arguments passed = Number of arguments in function header
+[ ] Number of variables on LHS = Number of return values from function
+[ ] Identifiers that serve to indicate the names in named parameter of a function call do not have to be declared
+[ ] An identifier can not be declared multiple times within the same scope. However, if it is declared in both a given block and, say its ancestor block, the ancestor block's variable will be hidden.
+[ ] No identifier may have the same name as a fucntion that has been declared, irrespective of where the identifier is to be declared
+[ ] Function overloading is not allowed
+[ ] Recursive function calls are not allowed
+[ ] No function may call another function, except for the main() function
+[X] All variables must be declared before use, in the same block, the parent block or in an ancestor block
+
+Type checking
+-------------
+[ ] The program follows static typing, i.e., the type of a variable has to be declared in advance, and may not change till the end of the variable's lifetime
+[ ] Point
+[ ] Bot
+[ ] Array
+[ ] Widening conversion (coercion) is supported only from an integer to a float. More specifically, if X is an expression of the form E1 <op> E2, where E1 and E2 are expressions, or if X is an assignment statement of the form <type> ID = E3, where E3 is an expression, the coercion happens as follows:
+	[ ] If E1 and E2 evaluate to floats, integers or booleans, and <op> is a relational operator, X is a boolean
+	[ ] If both E1 and E2 evaluate to floats, and <op> is an arithmetic operator, X is a float
+	[ ] If both E1 and E2 evaluate to integers, and <op> is an arithmetic operator X is a integer
+	[ ] If either E1 or E2 is a float, the other is an integer, and <op> is an arithmetic operator, X is a float
+	[ ] If either E1 or E2 is a boolean, and <op> is an arithmetic operator, an error is flagged
+	[ ] If either E1 or E2 is a Point or an array, an error is flagged. However, a single array element is treated exactly like an element of the type ot which the element belongs
+[ ] Conversions
+	[ ] Narrowing conversion from a floating point value to an integer is supported via type-casting, 
+		for example, 
+			int x = (int) 23.823; 
+		is a valid statement, and a value of 23 is stored in x. Note that no rounding happens.
+	[ ] Conversions are not supported from or to the boolean type
+	[ ] Conversions are not supported from or to the Point datatype
+	[ ] Conversions from or to entire arrays are not supported, and an array of one type cannot be interconverted to an array of another type. However, a single array element is treated exactly like an element of the type ot which the element belongs
+[ ] Function calls
+	[ ] Coercion is not supported when passing arguments to a function
+	[ ] Coercion is supported when a function returns a value, and this value is used in an expresison or is assigned
+	[ ] Coercion is not supported when a function returns multiple values
+	[ ] Narrowing conversions, according to the rules specified in 8, are supported when passing an argument as input to a function
+	[ ] Narrowing conversions, according to the rules specified in 8, are permitted when a function has a single return value
+	[ ] Narrowing conversions are not permitted when there are multiple values returned from a function
+[ ] If statements and the conditional part of for loops may have only boolean types, or expressions that give rise to boolean types.
+[X] RNUM is of type float
+[X] NUM is of type integer
+[X] <bool> represents a boolean type, and may take either a TRUE or a FALSE value

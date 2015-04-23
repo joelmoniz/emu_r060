@@ -11,6 +11,7 @@ Semantic
 [ ] Identifiers that serve to indicate the names in named parameter of a function call do not have to be declared
 [ ] Recursive function calls are not allowed
 [ ] No function may call another function, except for the main() function
+[X] Maximum of 5 arguments may be passed to a function
 [X] Maximum of 5 values may be returned from a function
 [X] Only one Bot may be defined per program
 [X] Function overloading is not allowed
@@ -20,7 +21,6 @@ Semantic
 
 Type checking
 -------------
-[ ] The program follows static typing, i.e., the type of a variable has to be declared in advance, and may not change till the end of the variable's lifetime
 [ ] Point
 [ ] Bot
 [ ] Array
@@ -47,6 +47,7 @@ Type checking
 	[ ] Narrowing conversions, according to the rules specified in 8, are permitted when a function has a single return value
 	[ ] Narrowing conversions are not permitted when there are multiple values returned from a function
 [ ] If statements and the conditional part of for loops may have only boolean types, or expressions that give rise to boolean types.
+[X] The program follows static typing, i.e., the type of a variable has to be declared in advance, and may not change till the end of the variable's lifetime
 [X] RNUM is of type float
 [X] NUM is of type integer
 [X] <bool> represents a boolean type, and may take either a TRUE or a FALSE value

@@ -6,7 +6,7 @@ function int,int,float,boolean,float,boolean func1(int a, int b, float c)
   return b,a,d+1,true,1.414,false; 
 }
 
-function int,int,float func1(int a, int b, float c)  
+function int,int,float func2(int a, int b, float c)  
 { 
   float d = c + 1.0;
   Bot q;

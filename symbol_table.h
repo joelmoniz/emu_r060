@@ -6,10 +6,16 @@
 #define HASH_SIZE 50
 #define MAX_BRANCHING 15
 
+#define MAX_RETURN_VALUES 5
+#define MAX_ARGS 5
+
+typedef struct _function_details function_details;
+
 typedef union _data_val {
   int i;
   int bln;
   float f;
+  function_details *fn;
 } data_val;
 
 typedef struct _referred {
@@ -36,6 +42,13 @@ typedef enum _data_type { // the value of the enum represents the size of the da
   boolean = 1
 } data_type;
 
+struct _function_details {
+  data_type args[5];
+  data_type ret_vals[5];
+  int num_args;
+  int num_ret_vals;
+};
+
 typedef struct _id_type {
   data_type dtype;
   char *name;
@@ -56,6 +69,7 @@ struct _symbol_entry {
   referred *refd; // linked list indicating lines and locations where my_int has been used
   var_type vtype; // variable
   symbol_table_node *container;
+  data_val *dval;
   symbol_entry *next;
 };
 
@@ -75,6 +89,7 @@ symbol_table_node *initialize_symbol_table_root();
 symbol_table_node *initialize_symbol_table_node(symbol_table_node *parent);
 symbol_table_node *add_new_node_to_parent(symbol_table_node *parent);
 void add_ID_to_sym_table_node(symbol_table_node *node, char *name, data_type dt);
+void update_st_function(char fn_name[], symbol_table_node *node, function_details *func_info);
 void init_symbol_table(symbol_entry *symbol_table_hash[]);
 void free_symbol_table(symbol_entry *symbol_table_hash[]);
 void print_symbol_table_tree(symbol_table_node *node);

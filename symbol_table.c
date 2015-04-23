@@ -73,16 +73,16 @@ symbol_table_node *add_new_node_to_parent(symbol_table_node *parent) {
 
 void print_var_type(var_type v) {
   switch(v) {
-   case variable: printf("  variable");
+   case variable: printf(" variable");
     break;
-   case parameter: printf("  parameter");
+   case parameter: printf(" parameter");
     break;
-   case argument: printf("  argument");
+   case argument: printf(" argument");
     break;
-   case return_val: printf("  return_val");
+   case return_val: printf(" return_val");
     break;
    case vt_unk: 
-   default: printf("  vt_unk");
+   default: printf(" vt_unk");
     break;
   }
 }
@@ -119,9 +119,29 @@ void print_symbol_table(symbol_entry *symbol_table_hash[]) {
       
       s = symbol_table_hash[i];
       while (s != NULL) {
-        printf("name: %s\n depth: %d\n breadth: %d\n size: %d bytes\n var_type:",// %d\n refd: ", 
-          s->name, s->depth, s->breadth, s->dtype);//, s->vtype);
+        printf("name: %s\n depth: %d\n breadth: %d\n type: ",//%d bytes\n var_type:",// %d\n refd: ", 
+          s->name, s->depth, s->breadth);//, s->dtype);//, s->vtype);
+        print_data_type(s->dtype);
+        printf("\n var_type:");
         print_var_type(s->vtype);
+
+        if (s->dtype == function) {
+          printf("\n  argument types: ");
+          int l;
+          for (l=0; l<s->dval->fn->num_args-1 && l<MAX_ARGS-1; l++) {
+            print_data_type(s->dval->fn->args[l]);
+            printf(", ");
+          }
+          print_data_type(s->dval->fn->args[l]);
+
+          printf("\n  return types: ");
+          for (l=0; l<s->dval->fn->num_ret_vals-1 && l<MAX_RETURN_VALUES-1; l++) {
+            print_data_type(s->dval->fn->ret_vals[l]);
+            printf(", ");
+          }
+          print_data_type(s->dval->fn->ret_vals[l]);
+        }
+
         // r = s->refd;
         // while (r != NULL) {
         //   printf("<%d, %d>", r->depth, r->breadth);
@@ -165,6 +185,8 @@ void add_ID_to_sym_table_node(symbol_table_node *node, char *name, data_type dt)
   // printf("\nHere:  %s, ", name);print_data_type(dt);printf("\n");
 
   int dp, bdt;
+  data_val *dv;
+  dv = (data_val *) malloc(sizeof(data_val));
 
   int is_dt_orig_unk = (dt == dt_unk);
 
@@ -180,10 +202,15 @@ void add_ID_to_sym_table_node(symbol_table_node *node, char *name, data_type dt)
         s_temp = s_temp->next;
       }
       else {// entry found
-        if (is_dt_orig_unk)
+        if (is_dt_orig_unk) {
           dt = s_temp->dtype;
-        else if (s_temp->dtype == function)
+          free(dv);
+          dv = s_temp->dval;
+        }
+        else if (s_temp->dtype == function) {
           printf("\nError: Cannot have a variable with the same name as a function (%s)\n", name);
+        }
+
         break;
       }
     }
@@ -252,6 +279,7 @@ void add_ID_to_sym_table_node(symbol_table_node *node, char *name, data_type dt)
   s->refd = r;
   s->dtype = dt;
   s->vtype = vt_unk;
+  s->dval = dv;
 
   if (is_dt_orig_unk)
     s->container = node_temp;
@@ -262,6 +290,13 @@ void add_ID_to_sym_table_node(symbol_table_node *node, char *name, data_type dt)
   insert_st(&st_lex_queue, s);
 
   node->symbol_table_hash[index] = s;
+}
+
+void update_st_function(char fn_name[], symbol_table_node *node, function_details *func_info) {
+  symbol_entry *s = node->symbol_table_hash[get_hash_value(fn_name)];
+  if (s->dtype == function) {
+    s->dval->fn = func_info;
+  }
 }
 
 void free_symbol_table(symbol_entry *symbol_table_hash[]) {

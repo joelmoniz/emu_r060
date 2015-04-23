@@ -29,7 +29,6 @@
 #define BUFFER_SIZE 100
 
 #define OUTPUT_LEXER 1
-#define MAX_RETURN_VALUES 5
 
 //Need to do only one pass!
 //What was that joey blabbering about reading in blocks?
@@ -586,10 +585,13 @@ enum Token lexer(FILE * ip, FILE * op)
 
   int is_in_function = 0;
   int is_in_function2 = 0;
+  int is_in_function3 = 0;
   int is_at_assign = 0;
   int is_at_bot_assign = 0;
   int is_bot_defined = 0;
-  int returned_vals = 0;
+  function_details *func;
+
+  char prev_fn_name[100];
 
   printf("LEXER Output\n");
   printf("============\n\n");
@@ -703,8 +705,19 @@ enum Token lexer(FILE * ip, FILE * op)
             && inp[4] == 'e' && inp[5] == 'a' && inp[6] == 'n' && inp[7] == '\0') {
             writeTofile(op,tk_boolean); 
             // prev = '\0'; 
-            if (!is_in_function2)
+            if (!is_in_function2) {
               dt = boolean;
+              if (is_in_function) {
+                if (func->num_args < MAX_ARGS)
+                  func->args[func->num_args] = boolean;
+                func->num_args++;                
+              }
+            }
+            else {
+              if (func->num_ret_vals < MAX_RETURN_VALUES)
+                func->ret_vals[func->num_ret_vals] = boolean;
+              func->num_ret_vals++;
+            }
             continue;
           }
           else if (inp[1] == 'r' && inp[2] == 'e' && inp[3] == 'a' 
@@ -719,6 +732,11 @@ enum Token lexer(FILE * ip, FILE * op)
               add_ID_to_sym_table_node(node,inp,dt);
             else
               add_ID_to_sym_table_node(node,inp,dt_unk);
+
+            if (is_in_function3) {
+              is_in_function3 = 0;
+              strcpy(prev_fn_name, inp);
+            }
             // prev = '\0'; 
             continue;
           }
@@ -729,8 +747,19 @@ enum Token lexer(FILE * ip, FILE * op)
           if (is_bot_defined)
             printf("\nError: Only one bot may be defined per program\n");
           is_bot_defined = 1;
-          if (!is_in_function2)
+          if (!is_in_function2) {
             dt = Bot;
+            if (is_in_function) {
+              if (func->num_args < MAX_ARGS)
+                func->args[func->num_args] = Bot;
+              func->num_args++;                
+            }
+          }
+          else {
+            if (func->num_ret_vals < MAX_RETURN_VALUES)
+              func->ret_vals[func->num_ret_vals] = Bot;
+            func->num_ret_vals++;
+          }
           continue;
         }
         else if(inp[0] == 'c' && inp[1] == 'o' && inp[2] == 'n' 
@@ -751,8 +780,19 @@ enum Token lexer(FILE * ip, FILE * op)
               && inp[4] == 't' && inp[5] == '\0') {
             writeTofile(op,tk_float); 
             // prev = '\0'; 
-            if (!is_in_function2)
+            if (!is_in_function2) {
               dt = float_point;
+              if (is_in_function) {
+                if (func->num_args < MAX_ARGS)
+                  func->args[func->num_args] = float_point;
+                func->num_args++;                
+              }
+            }
+            else {
+              if (func->num_ret_vals < MAX_RETURN_VALUES)
+                func->ret_vals[func->num_ret_vals] = float_point;
+              func->num_ret_vals++;
+            }
             continue;
           }
           else if (inp[1] == 'u' && inp[2] == 'n' && inp[3] == 'c' 
@@ -761,6 +801,15 @@ enum Token lexer(FILE * ip, FILE * op)
             writeTofile(op,tk_func); 
             is_in_function = 1;
             is_in_function2 = 1;
+            is_in_function3 = 1;
+            func = (function_details *) malloc(sizeof(function_details));
+            func->num_args = 0;
+            func->num_ret_vals = 0;
+            int x;
+            for (x=0;x<MAX_ARGS;x++)
+              func->args[x] = dt_unk;
+            for (x=0;x<MAX_RETURN_VALUES;x++)
+              func->ret_vals[x] = dt_unk;
             dt = function;
             // prev = '\0'; 
             continue;
@@ -787,6 +836,11 @@ enum Token lexer(FILE * ip, FILE * op)
               add_ID_to_sym_table_node(node,inp,dt);
             else
               add_ID_to_sym_table_node(node,inp,dt_unk);
+
+            if (is_in_function3) {
+              is_in_function3 = 0;
+              strcpy(prev_fn_name, inp);
+            }
             // prev = '\0'; 
             continue;
           }
@@ -795,8 +849,19 @@ enum Token lexer(FILE * ip, FILE * op)
           if (inp[1] == 'n' && inp[2] == 't' && inp[3] == '\0') {
             writeTofile(op,tk_int); 
             // prev = '\0'; 
-            if (!is_in_function2)
+            if (!is_in_function2) {
               dt = integer;
+              if (is_in_function) {
+                if (func->num_args < MAX_ARGS)
+                  func->args[func->num_args] = integer;
+                func->num_args++;                
+              }
+            }
+            else {
+              if (func->num_ret_vals < MAX_RETURN_VALUES)
+                func->ret_vals[func->num_ret_vals] = integer;
+              func->num_ret_vals++;
+            }
             continue;
           }
           else if (inp[1] == 'f' && inp[2] == '\0') {
@@ -810,6 +875,11 @@ enum Token lexer(FILE * ip, FILE * op)
               add_ID_to_sym_table_node(node,inp,dt);
             else
               add_ID_to_sym_table_node(node,inp,dt_unk);
+
+            if (is_in_function3) {
+              is_in_function3 = 0;
+              strcpy(prev_fn_name, inp);
+            }
             // prev = '\0'; 
             continue;
           }
@@ -824,8 +894,19 @@ enum Token lexer(FILE * ip, FILE * op)
            && inp[4] == 't' && inp[5] == '\0') {
           writeTofile(op,tk_point); 
           // prev = '\0'; 
-          if (!is_in_function2)
+          if (!is_in_function2) {
             dt = Point;
+            if (is_in_function) {
+              if (func->num_args < MAX_ARGS)
+                func->args[func->num_args] = Point;
+              func->num_args++;                
+            }
+          }
+          else {
+            if (func->num_ret_vals < MAX_RETURN_VALUES)
+              func->ret_vals[func->num_ret_vals] = Point;
+            func->num_ret_vals++;
+          }
           continue;
         }
         else if(inp[0] == 'r' && inp[1] == 'e' && inp[2] == 't' 
@@ -853,6 +934,11 @@ enum Token lexer(FILE * ip, FILE * op)
               add_ID_to_sym_table_node(node,inp,dt);
             else
               add_ID_to_sym_table_node(node,inp,dt_unk);
+
+            if (is_in_function3) {
+              is_in_function3 = 0;
+              strcpy(prev_fn_name, inp);
+            }
             // prev = '\0'; 
             continue;
           }
@@ -882,6 +968,11 @@ enum Token lexer(FILE * ip, FILE * op)
             add_ID_to_sym_table_node(node,inp,dt);
           else
             add_ID_to_sym_table_node(node,inp,dt_unk);
+
+          if (is_in_function3) {
+            is_in_function3 = 0;
+            strcpy(prev_fn_name, inp);
+          }
           // prev = '\0'; 
           continue;
         }
@@ -949,6 +1040,7 @@ enum Token lexer(FILE * ip, FILE * op)
       }
       else {
         is_in_function = 0;
+        update_st_function(prev_fn_name, node->parent, func);
       }
       continue;
     }
@@ -963,13 +1055,17 @@ enum Token lexer(FILE * ip, FILE * op)
       writeTofile(op,tk_lpara);
       prev = '\0'; 
       is_in_function2 = 0;
-      
-      if (returned_vals + 1 > MAX_RETURN_VALUES)
-        printf("\nError: Function cannot return more than %d values\n", MAX_RETURN_VALUES);
 
-      returned_vals = 0;
       dt = dt_unk;
       if (is_in_function) {
+        // func->num_ret_vals++;
+        
+        if (func->num_ret_vals > MAX_RETURN_VALUES)
+          printf("\nError: Function cannot return more than %d values\n", MAX_RETURN_VALUES);
+
+        if (func->num_args > MAX_ARGS)
+          printf("\nError: Function cannot accept more than %d arguments\n", MAX_ARGS);
+
         node = add_new_node_to_parent(node);
       }
       continue;
@@ -991,9 +1087,6 @@ enum Token lexer(FILE * ip, FILE * op)
     }
     if(input == ',') { 
       writeTofile(op,tk_comma);
-
-      if (is_in_function2)
-        returned_vals++;
 
       is_at_assign = 0;
       prev = '\0'; 

@@ -87,6 +87,26 @@ void print_var_type(var_type v) {
   }
 }
 
+void print_data_type(data_type d) {
+  switch(d) {
+   case function: printf(" function");
+    break;
+   case integer: printf(" integer");
+    break;
+   case float_point: printf(" float");
+    break;
+   case Point: printf(" Point");
+    break;
+   case Bot: printf(" Bot");
+    break;
+   case boolean: printf(" boolean");
+    break;
+   case dt_unk: 
+   default: printf(" vt_unk");
+    break;
+  }
+}
+
 void print_symbol_table(symbol_entry *symbol_table_hash[]) {
   int i = 0;
   referred *r;
@@ -142,7 +162,11 @@ void add_ID_to_sym_table_node(symbol_table_node *node, char *name, data_type dt)
   symbol_entry *s = node->symbol_table_hash[index];
   symbol_entry *prev = NULL;
 
+  // printf("\nHere:  %s, ", name);print_data_type(dt);printf("\n");
+
   int dp, bdt;
+
+  int is_dt_orig_unk = (dt == dt_unk);
 
   referred *r = (referred *) malloc(sizeof(referred));
   r->next = NULL;  
@@ -156,7 +180,10 @@ void add_ID_to_sym_table_node(symbol_table_node *node, char *name, data_type dt)
         s_temp = s_temp->next;
       }
       else {// entry found
-        dt = s_temp->dtype;
+        if (is_dt_orig_unk)
+          dt = s_temp->dtype;
+        else if (s_temp->dtype == function)
+          printf("\nError: Cannot have a variable with the same name as a function (%s)\n", name);
         break;
       }
     }
@@ -173,7 +200,7 @@ void add_ID_to_sym_table_node(symbol_table_node *node, char *name, data_type dt)
   else {
     dp = node->level;
     bdt = node->breadth;
-    node_temp = node->parent;
+    node_temp = node;
   }
 
   while ( s != NULL) {
@@ -185,6 +212,29 @@ void add_ID_to_sym_table_node(symbol_table_node *node, char *name, data_type dt)
       r->next = s->refd;
       s->refd = r;
       insert_st(&st_lex_queue, s);
+      if (is_dt_orig_unk)
+        return;
+      // printf("\nPrinting: %s  ",name);print_data_type(s->dtype);printf("\n");
+      if (dt == function) {
+        if (s->dtype != function)
+          printf("\nError: Cannot have a function with the same name as a variable (%s)\n", name);
+        else
+          printf("\nError: Overloading of function %s not permitted\n", name);
+      }
+      else if (dt != function) {
+        if (s->dtype == function)
+          printf("\nError: Cannot define a variable with the same name as a function (%s)\n", name);
+        else if (dt != s->dtype) {
+          printf("\nError: Trying to declare %s as", name);
+          print_data_type(dt);
+          printf(" when it has already been declared as");
+          print_data_type(s->dtype);
+          printf("\n");
+        }
+        else {
+          printf("\nError: Redeclaration of variable %s\n", name);
+        }
+      }
       return;
     }
   }
@@ -192,7 +242,6 @@ void add_ID_to_sym_table_node(symbol_table_node *node, char *name, data_type dt)
   s = (symbol_entry *) malloc(sizeof(symbol_entry));
   s->name = (char *) malloc(sizeof(name));
   strcpy(s->name, name);
-  s->dtype = dt;
 
   if (dt == dt_unk) {
     printf("\nError: Undeclared identifier %s\n", name);
@@ -201,8 +250,14 @@ void add_ID_to_sym_table_node(symbol_table_node *node, char *name, data_type dt)
   s->depth = dp;
   s->breadth = bdt;
   s->refd = r;
+  s->dtype = dt;
   s->vtype = vt_unk;
-  s->container = node_temp;
+
+  if (is_dt_orig_unk)
+    s->container = node_temp;
+  else
+    s->container = node;
+
   s->next = node->symbol_table_hash[index];
   insert_st(&st_lex_queue, s);
 

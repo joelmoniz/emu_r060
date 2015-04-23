@@ -585,6 +585,8 @@ enum Token lexer(FILE * ip, FILE * op)
 
   int is_in_function = 0;
   int is_in_function2 = 0;
+  int is_at_assign = 0;
+  int is_at_bot_assign = 0;
 
   printf("LEXER Output\n");
   printf("============\n\n");
@@ -710,7 +712,10 @@ enum Token lexer(FILE * ip, FILE * op)
           }
           else {
             writeTofile(op,tk_id); 
-            add_ID_to_sym_table_node(node,inp,dt);
+            if (!is_at_assign && !is_at_bot_assign)
+              add_ID_to_sym_table_node(node,inp,dt);
+            else
+              add_ID_to_sym_table_node(node,inp,dt_unk);
             // prev = '\0'; 
             continue;
           }
@@ -772,7 +777,10 @@ enum Token lexer(FILE * ip, FILE * op)
           }
           else {
             writeTofile(op,tk_id); 
-            add_ID_to_sym_table_node(node,inp,dt);
+            if (!is_at_assign && !is_at_bot_assign)
+              add_ID_to_sym_table_node(node,inp,dt);
+            else
+              add_ID_to_sym_table_node(node,inp,dt_unk);
             // prev = '\0'; 
             continue;
           }
@@ -792,7 +800,10 @@ enum Token lexer(FILE * ip, FILE * op)
           }
           else {
             writeTofile(op,tk_id); 
-            add_ID_to_sym_table_node(node,inp,dt);
+            if (!is_at_assign && !is_at_bot_assign)
+              add_ID_to_sym_table_node(node,inp,dt);
+            else
+              add_ID_to_sym_table_node(node,inp,dt_unk);
             // prev = '\0'; 
             continue;
           }
@@ -832,7 +843,10 @@ enum Token lexer(FILE * ip, FILE * op)
           }
           else {
             writeTofile(op,tk_id); 
-            add_ID_to_sym_table_node(node,inp,dt);
+            if (!is_at_assign && !is_at_bot_assign)
+              add_ID_to_sym_table_node(node,inp,dt);
+            else
+              add_ID_to_sym_table_node(node,inp,dt_unk);
             // prev = '\0'; 
             continue;
           }
@@ -858,7 +872,10 @@ enum Token lexer(FILE * ip, FILE * op)
         }
         else { 
           writeTofile(op,tk_id); 
-          add_ID_to_sym_table_node(node,inp,dt);
+          if (!is_at_assign && !is_at_bot_assign)
+            add_ID_to_sym_table_node(node,inp,dt);
+          else
+            add_ID_to_sym_table_node(node,inp,dt_unk);
           // prev = '\0'; 
           continue;
         }
@@ -932,6 +949,7 @@ enum Token lexer(FILE * ip, FILE * op)
     if(input == '}'){ 
       writeTofile(op,tk_rbrace); 
       prev = '\0'; 
+      is_at_bot_assign = 0;
       node = node->parent; 
       continue;
     }
@@ -945,20 +963,39 @@ enum Token lexer(FILE * ip, FILE * op)
       }
       continue;
     }
-    if(input == ')'){ writeTofile(op,tk_rpara);prev = '\0'; 
-            dt = dt_unk; continue;}
-    if(input == '['){ writeTofile(op,tk_lsquare);prev = '\0'; continue;}
-    if(input == ']'){ writeTofile(op,tk_rsquare);prev = '\0'; continue;}
-    if(input == ';'){ writeTofile(op,tk_semi_cl);prev = '\0'; 
-            dt = dt_unk; continue;}
-    if(input == ','){ writeTofile(op,tk_comma);prev = '\0'; continue;}
+    if(input == ')'){ 
+      writeTofile(op,tk_rpara);
+      prev = '\0'; 
+      dt = dt_unk; 
+      continue;
+    }
+    if(input == '[') { writeTofile(op,tk_lsquare);prev = '\0'; continue;}
+    if(input == ']') { writeTofile(op,tk_rsquare);prev = '\0'; continue;}
+    if(input == ';') { 
+      writeTofile(op,tk_semi_cl);
+      prev = '\0'; 
+      dt = dt_unk; 
+      is_at_assign = 0;
+      continue;
+    }
+    if(input == ',') { 
+      writeTofile(op,tk_comma);
+      is_at_assign = 0;
+      prev = '\0'; 
+      continue;
+    }
     if(input == '.'){ writeTofile(op,tk_dot);prev = '\0'; continue;}
 
     if(input == ':')
     {
       next = read_next_char(ip);
       column_no++;
-      if(next == '='){ writeTofile(op,tk_col_assign);prev = '\0'; continue;}
+      if(next == '=') { 
+        writeTofile(op,tk_col_assign);
+        is_at_bot_assign = 1;
+        prev = '\0'; 
+        continue;
+      }
       else{ prev = next;writeTofile(op,tk_colon);continue;}
     }
 
@@ -966,7 +1003,12 @@ enum Token lexer(FILE * ip, FILE * op)
     { next = read_next_char(ip);
       column_no++;
       if( next == '='){ writeTofile(op,tk_log_eq);prev = '\0'; continue;}
-      else {prev = next; writeTofile(op,tk_assign_op);continue;} 
+      else {
+        prev = next; 
+        writeTofile(op,tk_assign_op);
+        is_at_assign = 1;
+        continue;
+      } 
     }
 
     if(input == '_')
@@ -995,7 +1037,7 @@ enum Token lexer(FILE * ip, FILE * op)
       next = read_next_char(ip);
       column_no++;
       if(next == '+'){ writeTofile(op,tk_unary_inc); prev = '\0'; continue;}
-      else if(next == '='){ writeTofile(op,tk_pl_eq);prev = '\0'; continue;}
+      else if(next == '='){ writeTofile(op,tk_pl_eq);is_at_assign = 1;prev = '\0'; continue;}
       else { prev = next; writeTofile(op,tk_plus);continue;}
     }
 

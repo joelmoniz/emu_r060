@@ -43,6 +43,7 @@ typedef struct _id_type {
 } id_type;
 
 void print_var_type(var_type v);
+void print_data_type(data_type d);
 
 typedef struct _symbol_entry symbol_entry;
 typedef struct _symbol_table_node symbol_table_node;

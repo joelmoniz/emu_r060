@@ -29,6 +29,7 @@
 #define BUFFER_SIZE 100
 
 #define OUTPUT_LEXER 1
+#define MAX_RETURN_VALUES 5
 
 //Need to do only one pass!
 //What was that joey blabbering about reading in blocks?
@@ -588,6 +589,7 @@ enum Token lexer(FILE * ip, FILE * op)
   int is_at_assign = 0;
   int is_at_bot_assign = 0;
   int is_bot_defined = 0;
+  int returned_vals = 0;
 
   printf("LEXER Output\n");
   printf("============\n\n");
@@ -765,7 +767,7 @@ enum Token lexer(FILE * ip, FILE * op)
           }
           else if(inp[1] == 'a' && inp[2] == 'l' && inp[3] == 's' 
               && inp[4] == 'e' && inp[5] == '\0') {
-            writeTofile(op,tk_float); 
+            writeTofile(op,tk_false); 
             // prev = '\0'; 
             continue;
           }
@@ -961,6 +963,11 @@ enum Token lexer(FILE * ip, FILE * op)
       writeTofile(op,tk_lpara);
       prev = '\0'; 
       is_in_function2 = 0;
+      
+      if (returned_vals + 1 > MAX_RETURN_VALUES)
+        printf("\nError: Function cannot return more than %d values\n", MAX_RETURN_VALUES);
+
+      returned_vals = 0;
       dt = dt_unk;
       if (is_in_function) {
         node = add_new_node_to_parent(node);
@@ -984,6 +991,10 @@ enum Token lexer(FILE * ip, FILE * op)
     }
     if(input == ',') { 
       writeTofile(op,tk_comma);
+
+      if (is_in_function2)
+        returned_vals++;
+
       is_at_assign = 0;
       prev = '\0'; 
       continue;

@@ -707,13 +707,16 @@ void elevate_symbols(parse_tree_node *node) {
         node->num_child--;
       }
     }
+    if (i == node->num_child) {
+      node->children[i-1]->token_id = tk_main;
+    }
   }
   else if (node->token_id == tk_otherFunctions) {
     for (i=node->num_child-1; i >= 0; i--) {
       if (node->children[i]->token_id == tk_main) {
         free(node->children[i]);
         node->num_child--;
-        node->parent->children[node->parent->num_child-1]->token_id = tk_main;
+        // node->parent->children[node->parent->num_child-1]->token_id = tk_main;
         break;
       }
     }

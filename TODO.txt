@@ -9,8 +9,6 @@ Semantic
 [ ] Number of return arguments from a function = Number specified in header 
 [ ] The corresponding return types match exactly
 [ ] Identifiers that serve to indicate the names in named parameter of a function call do not have to be declared
-[ ] Recursive function calls are not allowed
-[ ] No function may call another function, except for the main() function
 [X] Maximum of 5 arguments may be passed to a function
 [X] Maximum of 5 values may be returned from a function
 [X] Only one Bot may be defined per program
@@ -22,8 +20,17 @@ Semantic
 Type checking
 -------------
 [ ] Point
+	[ ] Points may not be type casted to any other type
+	[ ] Widening conversion is not supported for any of the fields within the point when declaring the point
+	[X] Narrowing conversion via typecasting fails at the parser stage itself when declaring a point
 [ ] Bot
+	[ ] Bots may not be type casted to any other type
+	[ ] Widening conversion is not supported for any of the fields within the bot when declaring the bot
+	[X] Narrowing conversion via typecasting fails at the parser stage itself when declaring a bot
 [ ] Array
+	[ ] An individual element of an array may be treated as exactly identical to a variable of the corresponding type
+	[ ] No conversions (neither widening conversion nor typecasting) are supported for an entire array as a whole
+	[ ] No conversions (neither widening conversion nor typecasting) are supported when using an array index
 [ ] Widening conversion (coercion) is supported only from an integer to a float. More specifically, if X is an expression of the form E1 <op> E2, where E1 and E2 are expressions, or if X is an assignment statement of the form <type> ID = E3, where E3 is an expression, the coercion happens as follows:
 	[ ] If E1 and E2 evaluate to floats, integers or booleans, and <op> is a relational operator, X is a boolean
 	[ ] If both E1 and E2 evaluate to floats, and <op> is an arithmetic operator, X is a float
@@ -41,9 +48,11 @@ Type checking
 	[ ] Conversions from or to entire arrays are not supported, and an array of one type cannot be interconverted to an array of another type. However, a single array element is treated exactly like an element of the type ot which the element belongs
 [ ] Function calls
 	[ ] Coercion is not supported when passing arguments to a function
-	[ ] Coercion is supported when a function returns a value, and this value is used in an expresison or is assigned
+	[ ] Coercion is not supported in the return statement of a function
+	[ ] Coercion is supported when the value returned by a function is used in an expresison or is assigned
 	[ ] Coercion is not supported when a function returns multiple values
 	[ ] Narrowing conversions, according to the rules specified in 8, are supported when passing an argument as input to a function
+	[ ] Narrowing conversion, according to the rules specified in 8, is supported in the function's return statement
 	[ ] Narrowing conversions, according to the rules specified in 8, are permitted when a function has a single return value
 	[ ] Narrowing conversions are not permitted when there are multiple values returned from a function
 [ ] If statements and the conditional part of for loops may have only boolean types, or expressions that give rise to boolean types.

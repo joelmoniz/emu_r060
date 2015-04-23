@@ -796,7 +796,7 @@ X -> float * X | bool
 int parse_table_test[][5] = {{0, -1, 1, -1, 1}, {-1, -1, 2, -1, 3}};
 int rule_test[][4] = {{2, 3, 0, -1}, {1,-1}, {4,5,1,-1}, {6,-1}};
 // TODO: Make error checking proper
-void parser(FILE * ip) {
+int parser(FILE * ip) {
 
   printf("\n\n");
   printf("PARSER Output\n");
@@ -1005,6 +1005,8 @@ void parser(FILE * ip) {
   else {
     printf("\nParsing completed. Errors detected.\n\n");
   }
+
+  return error_detected;
 }
 
 int is_token(int t) {

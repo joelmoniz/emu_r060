@@ -9,5 +9,3 @@
 9. An identifier can not be declared multiple times within the same scope. However, if it is declared in both a given block and, say its ancestor block, the ancestor block's variable will be hidden.
 10. No identifier may have the same name as a function that has been declared, irrespective of where the identifier is to be declared
 11. Function overloading is not allowed
-12. Recursive function calls are not allowed
-13. No function may call another function, except for the main() function

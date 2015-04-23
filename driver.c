@@ -44,8 +44,11 @@ int main(int argc, char*argv[])
      printf("Error opening file %s, check permissions! \n",opf);
     }
 
-    parser(ip1);
+    int parser_error_detected = parser(ip1); // input file passed due to legacy reasons
     fclose(ip1);
-    return 0;
 
+    if (!parser_error_detected) {
+      function_call_semanticize();
+    }
+    return 0;
 }

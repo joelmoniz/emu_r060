@@ -12,6 +12,12 @@ function int,int,float func2(int a, int b, float c)
   Bot q;
   return b,a,d+1; 
 }
+
+function int f3(int a)
+{
+ int a;
+return a;
+}
  
 main() 
 { 

@@ -717,6 +717,17 @@ void elevate_symbols(parse_tree_node *node) {
         free(node->children[i]);
         node->num_child--;
         // node->parent->children[node->parent->num_child-1]->token_id = tk_main;
+        if (node->num_child == 1) {
+          parse_tree_node *n = node->children[0];
+          node->token_id = n->token_id;
+          node->num_child = n->num_child;
+          node->value = n->value;
+          int lmn;
+          for (lmn = 0; lmn < n->num_child; lmn++) {
+            node->children[lmn] = n->children[lmn];
+          }
+          free(n);
+        }
         break;
       }
     }

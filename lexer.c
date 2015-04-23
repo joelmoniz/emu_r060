@@ -587,6 +587,7 @@ enum Token lexer(FILE * ip, FILE * op)
   int is_in_function2 = 0;
   int is_at_assign = 0;
   int is_at_bot_assign = 0;
+  int is_bot_defined = 0;
 
   printf("LEXER Output\n");
   printf("============\n\n");
@@ -723,6 +724,9 @@ enum Token lexer(FILE * ip, FILE * op)
         else if(inp[0] == 'B' && inp[1] == 'o' && inp[2] == 't' && inp[3] == '\0') { 
           writeTofile(op,tk_bot); 
           // prev = '\0'; 
+          if (is_bot_defined)
+            printf("\nError: Only one bot may be defined per program\n");
+          is_bot_defined = 1;
           if (!is_in_function2)
             dt = Bot;
           continue;

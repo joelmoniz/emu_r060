@@ -5,12 +5,14 @@ Semantic
 --------
 [ ] Function call inside an expression is supported only if the function returns a single value
 [ ] Maximum of x values may be returned from a function
-[ ] Only one Bot may be defined per program
 [ ] Number of arguments passed = Number of arguments in function header
 [ ] Number of variables on LHS = Number of return values from function
+[ ] Number of return arguments from a function = Number specified in header 
+[ ] The corresponding return types match exactly
 [ ] Identifiers that serve to indicate the names in named parameter of a function call do not have to be declared
 [ ] Recursive function calls are not allowed
 [ ] No function may call another function, except for the main() function
+[X] Only one Bot may be defined per program
 [X] Function overloading is not allowed
 [X] An identifier can not be declared multiple times within the same scope. However, if it is declared in both a given block and, say its ancestor block, the ancestor block's variable will be hidden.
 [X] No identifier may have the same name as a fucntion that has been declared, irrespective of where the identifier is to be declared

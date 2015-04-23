@@ -1,0 +1,8 @@
+default:
+	rm -f codegen_output*
+	rm -f final_output
+	gcc codegen.c
+	./a.out
+	nasm -f elf64 codegen_output
+	gcc codegen_output.o -o final_output
+	rm a.out

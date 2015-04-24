@@ -698,7 +698,7 @@ void elevate_symbols(parse_tree_node *node) {
       }
       else {
         node->parent->token_id = node->children[position]->token_id;
-        
+
         free(node->children[position]);
         node->num_child--;
     

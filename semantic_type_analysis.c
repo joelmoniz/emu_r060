@@ -46,6 +46,7 @@ op_type get_op_type(int op) {
     case tk_gte: return reln_op;
     case tk_unary_inc:
     case tk_unary_dec: return unary_op;
+    case tk_expression_more: return typecast_op;
 
     // the following wont come in the picture
     case tk_pl_eq: return assign_op;
@@ -78,9 +79,20 @@ data_type get_and_check_type(parse_tree_node *node, int is_an_expression) {
         }
         break;
       default:
-        printf("Unrecognized token in expression: ");
-        print_rule(node->token_id);
-        printf("\n");
+        if (!is_datatype(node->token_id)) {
+          printf("Unrecognized token in expression: ");
+          print_rule(node->token_id);
+          printf("\n");
+        }
+        else {
+          switch (node->token_id) {
+            case tk_int: return integer;
+            case tk_float: return float_point;
+            case tk_bot: return Bot;
+            case tk_point: return Point;
+            case tk_boolean: return boolean;
+          }
+        }
         break;
     }
   }
@@ -198,6 +210,39 @@ data_type get_and_check_type(parse_tree_node *node, int is_an_expression) {
           return boolean;
         }
         break;
+      case typecast_op: 
+        if (left_child == float_point) {
+          if (right_child == integer || right_child == float_point)
+            return float_point;
+          else if (right_child != dt_unk) {
+            printf("Type Error: Cannot typecast ");
+            print_rule(node->children[1]->token_id);
+            printf("of type");
+            print_data_type(right_child);
+            printf(" into the type float");
+            printf("\n");
+            return dt_unk;
+          }
+        }
+        else if (left_child == integer) {
+          if (right_child == integer || right_child == float_point)
+            return integer;
+          else if (right_child != dt_unk) {
+            printf("Type Error: Cannot typecast ");
+            print_rule(node->children[1]->token_id);
+            printf("of type");
+            print_data_type(right_child);
+            printf(" into the type int");
+            printf("\n");
+            return dt_unk;
+          }
+        }
+        else {
+          printf("Type Error: Cannot have a typecast of the type");
+          print_data_type(left_child);
+          printf("\n");  
+          return dt_unk;        
+        }
     }
   }
 

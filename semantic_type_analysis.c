@@ -37,8 +37,6 @@ op_type get_op_type(int op) {
     case tk_minus:
     case tk_mul:
     case tk_div: return arithm_op;
-    case tk_rt:
-    case tk_fw: return bot_op;
     case tk_log_or:
     case tk_log_and: return bool_op;
     case tk_lt:
@@ -46,11 +44,15 @@ op_type get_op_type(int op) {
     case tk_log_eq:
     case tk_lte:
     case tk_gte: return reln_op;
-    case tk_addv: return point_op;
-    case tk_pl_eq: return assign_op;
     case tk_unary_inc:
-    case tk_unary_dec:
-    case tk_readi: return unary_op;
+    case tk_unary_dec: return unary_op;
+
+    // the following wont come in the picture
+    case tk_pl_eq: return assign_op;
+    case tk_addv: return point_op;
+    case tk_readi: return read_op;
+    case tk_rt:
+    case tk_fw: return bot_op;
     default: return unk;
   }
 }
@@ -63,15 +65,139 @@ data_type get_and_check_type(parse_tree_node *node, int is_an_expression) {
       case tk_true:
       case tk_false: return boolean;
       case tk_id:
-        if (node->value.id->dtype != function)
+        if (node->value.id->dtype != function) {
+          print_data_type(node->value.id->dtype);
           return node->value.id->dtype;
+        }
         else {
           if (node->value.id->dval->fn->num_ret_vals == 1)
             return node->value.id->dval->fn->ret_vals[0];
           else if (is_an_expression) {
-            printf("\nError: Function %s may not be used in an expression, since it returns multiple values.\n", node->value.id->name);
+            printf("Error: Function %s may not be used in an expression, since it returns multiple values.\n", node->value.id->name);
           }
         }
+        break;
+      default:
+        printf("Unrecognized token in expression: ");
+        print_rule(node->token_id);
+        printf("\n");
+        break;
+    }
+  }
+  else if (node->num_child == 1) {
+    data_type child = get_and_check_type(node->children[0], 1);
+    switch(get_op_type(node->token_id)) {
+      case unary_op: 
+        if (child != integer) {
+          if (child != dt_unk) {
+            printf("Type Error: Cannot use ");
+            print_rule(node->children[0]->token_id);
+            printf("of type");
+            print_data_type(child);
+            printf(" with the unary operator ");
+            print_rule(node->token_id);
+            printf("\n");
+          }
+          return dt_unk;
+        }
+        else
+          return integer;
+    }
+  }
+  else if (node->num_child == 2) {
+    data_type left_child = get_and_check_type(node->children[0], 1);
+    data_type right_child = get_and_check_type(node->children[1], 1);
+    switch(get_op_type(node->token_id)) {
+      case reln_op:
+      case arithm_op:
+        if (left_child == integer) {
+          if (right_child == integer)
+            return integer;
+          else if (right_child == float_point) {
+            printf("Type Warning: Implicit conversion of ");
+            print_rule(node->children[0]->token_id);
+            printf("of type");
+            print_data_type(left_child);
+            printf(" into type");
+            print_data_type(right_child);
+            printf(" for the binary operator ");
+            print_rule(node->token_id);
+            printf("\n");
+            return float_point;
+          }
+          else if (right_child != dt_unk){
+            printf("Type Error: Cannot use ");
+            print_rule(node->children[1]->token_id);
+            printf("of type");
+            print_data_type(right_child);
+            printf(" with the binary operator ");
+            print_rule(node->token_id);
+            printf("\n");
+            return dt_unk;
+          }
+        }
+        else if (left_child == float_point) {
+          if (right_child == float_point)
+            return float_point;
+          else if (right_child == integer) {
+            printf("Type Warning: Implicit conversion of ");
+            print_rule(node->children[1]->token_id);
+            printf("of type");
+            print_data_type(right_child);
+            printf(" into type");
+            print_data_type(left_child);
+            printf(" for the arithmetic operator ");
+            print_rule(node->token_id);
+            printf("\n");
+            return float_point;
+          }
+          else if (right_child != dt_unk){
+            printf("Type Error: Cannot use ");
+            print_rule(node->children[1]->token_id);
+            printf("of type");
+            print_data_type(right_child);
+            printf(" with the binary operator ");
+            print_rule(node->token_id);
+            printf("\n");
+            return dt_unk;
+          }
+        }
+        else if (left_child != dt_unk) {
+          printf("Type Error: Cannot use ");
+          print_rule(node->children[0]->token_id);
+          printf("of type");
+          print_data_type(left_child);
+          printf(" with the binary operator ");
+          print_rule(node->token_id);
+          printf("\n");
+          return dt_unk;
+        }
+        break;
+      case bool_op:
+        if (left_child != boolean && left_child != dt_unk) {
+          printf("Type Error: Cannot use ");
+          print_rule(node->children[0]->token_id);
+          printf("of type");
+          print_data_type(left_child);
+          printf(" with the binary operator ");
+          print_rule(node->token_id);
+          printf("\n");
+          return dt_unk;
+        }
+        else if (right_child != boolean && right_child != dt_unk) {
+          printf("Type Error: Cannot use ");
+          print_rule(node->children[1]->token_id);
+          printf("of type");
+          print_data_type(right_child);
+          printf(" with the binary operator ");
+          print_rule(node->token_id);
+          printf("\n");
+          return dt_unk;
+        }
+        else if (left_child == boolean && right_child == boolean) {
+          return boolean;
+        }
+        break;
     }
   }
 
@@ -79,9 +205,26 @@ data_type get_and_check_type(parse_tree_node *node, int is_an_expression) {
   // data_type left = get_and_check_type()
 }
 
+void check_expression_types(parse_tree_node *node) {
+  // printf("\n\n");
+  // print_rule(node->token_id);
+  int i;
+  for (i=0;i<node->num_child;i++) {
+    if (get_op_type(node->children[i]->token_id) != unk) {
+      data_type d = get_and_check_type(node->children[i],1);
+      printf("\nDatatype for ");
+      print_rule(node->token_id);
+      printf("is");
+      print_data_type(d);
+      printf("\n");
+    }
+    else
+      check_expression_types(node->children[i]);
+  }
+}
+
 void prevent_func_call_and_recursion(parse_tree_node *node) {
-  printf("\n\n");
-  print_rule(node->token_id);
+  ;
 }
 
 void function_call_semanticize() {

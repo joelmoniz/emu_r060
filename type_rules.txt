@@ -39,3 +39,4 @@
 	g. Narrowing conversions, according to the rules specified in 8, are permitted when a function has a single return value
 	h. Narrowing conversions are not permitted when there are multiple values returned from a function
 11. If statements and the conditional part of for loops may have only boolean types, or expressions that give rise to boolean types.
+12. No type conversion is permitted for unary operators such as unary increment.

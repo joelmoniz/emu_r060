@@ -656,7 +656,7 @@ enum Token lexer(FILE * ip, FILE * op)
         continue;
       }
       else {
-        printf("\n%d : %d Unrecognized symbol @\n",line_no,column_no);
+        printf("\nError: Unrecognized symbol @ at %d : %d \n",line_no,column_no);
         return tk_null;
       }
     }
@@ -664,7 +664,7 @@ enum Token lexer(FILE * ip, FILE * op)
     // Used to check if function call is proper wrt the parameters matching in terms of name
     if (func_call_locn == 42/* || is_in_function*/) {
       func_call_locn = 0;
-      printf("\nBreaking out: %c\n", input);
+      // printf("\nBreaking out: %c\n", input);
     }
     else if (func_call_locn == 1)
       func_call_locn = 42;

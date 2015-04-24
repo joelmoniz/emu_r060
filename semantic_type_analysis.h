@@ -26,6 +26,7 @@ typedef enum _op_type {
   point_op,
   assign_op,
   unary_op,
+  read_op,
   unk // error
 } op_type;
 

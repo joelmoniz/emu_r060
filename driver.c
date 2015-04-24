@@ -6,6 +6,11 @@
 #include <ctype.h>
 #endif
 
+#ifndef PARSE_TABLE_H
+#define PARSE_TABLE_H
+#include "parse_table.h"
+#endif
+
 int main(int argc, char*argv[])
 {
     FILE * ip;
@@ -48,7 +53,8 @@ int main(int argc, char*argv[])
     fclose(ip1);
 
     if (!parser_error_detected) {
-      function_call_semanticize();
+      // function_call_semanticize();
+      check_expression_types(parse_root);
     }
     return 0;
 }

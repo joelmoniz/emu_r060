@@ -313,6 +313,71 @@ data_type get_and_check_type(parse_tree_node *node, int is_an_expression) {
   // data_type left = get_and_check_type()
 }
 
+void check_function_call_and_assignment(parse_tree_node *node) {
+  int ret_n = 0;
+  int arg_n = 0;
+  int is_assignment = 0;
+  data_type ret_vals[MAX_RETURN_VALUES];
+  data_type arg_vals[MAX_ARGS];
+  parse_tree_node *arglist_node;
+  parse_tree_node *temp = node;
+  if (node->children[1]->token_id == tk_arg_list && node->children[0]->value.id->dtype == function) {
+    if (node->children[0]->value.id->dval->fn->num_args != 0) {
+      printf("Error: The function %s returns %d values, but none of these values are assigned\n",
+        temp->children[0]->value.id->name, temp->children[0]->value.id->dval->fn->num_ret_vals);
+    }
+    arglist_node = node->children[1];
+  }
+  else {
+    if (temp->token_id == tk_col_assign)
+      return;
+    while (temp->children[0]->token_id == tk_id) {
+      if (temp->children[0]->token_id == tk_col_assign || temp->children[1]->token_id == tk_col_assign)
+        return;
+      ret_vals[ret_n] = get_and_check_type(temp->children[0],1);
+      ret_n++;
+      temp = temp->children[1];
+    }
+    if (temp->children[1]->token_id != tk_value)
+      is_assignment = 1;
+    temp = temp->children[1]->children[0];
+  }
+
+  // if (!is_assignment) {
+  //   if (ret_n != temp->value.id->dval->fn->num_args) {
+  //     printf("Error in function %s: Returns %d value(s), but assigned to %d instead\n", 
+  //       temp->value.id->name, temp->value.id->dval->fn->num_ret_vals, ret_n);
+  //   }
+  //   else {
+  //     int i;
+  //     temp = temp->children[0];
+  //     for (i=0; i<ret_n; i++) {
+  //       if (temp->value.id->dval->fn->ret_vals[i] != ret_vals[i]) {
+  //         printf("Error in function %s: Expecting return values of type", 
+  //           temp->value.id->name);
+  //         int j;
+  //         for (j=0; j<ret_n-1; j++) {
+  //           print_data_type(temp->value.id->dval->fn->ret_vals[j]);
+  //           printf(",");
+  //         }
+  //         print_data_type(temp->value.id->dval->fn->ret_vals[j]);
+  //         printf(" but the values actually returned are of the type\n");
+  //         for (j=0; j<ret_n-1; j++) {
+  //           print_data_type(ret_vals[j]);
+  //           printf(",");
+  //         }
+  //         print_data_type(ret_vals[j]);
+  //         printf("\n");
+  //         break;
+  //       }
+  //     }
+  //   }
+  // }
+  // // else {
+
+  // // }
+}
+
 void check_expression_types(parse_tree_node *node) {
   // printf("\n\n");
   // print_rule(node->token_id);
@@ -320,11 +385,32 @@ void check_expression_types(parse_tree_node *node) {
   for (i=0;i<node->num_child;i++) {
     if (get_op_type(node->children[i]->token_id) != unk && node->token_id != tk_return) {
       data_type d = get_and_check_type(node->children[i],1);
-      printf("\nDatatype for ");
+      printf("Datatype for ");
       print_rule(node->token_id);
       printf("is");
       print_data_type(d);
       printf("\n");
+    }
+    else if (node->token_id == tk_gen_stmt) {
+      check_function_call_and_assignment(node);
+    }
+    else if (node->children[i]->token_id == tk_for) {
+      data_type d = get_and_check_type(node->children[i]->children[1], 1);
+      if (d != boolean) {
+        printf("Error: Expected conditional part of for loop to be a boolean expression, instead found a(n)");
+        print_data_type(d);
+        printf("\n");
+      }
+      check_expression_types(node->children[i]);
+    }
+    else if (node->children[i]->token_id == tk_if) {
+      data_type d = get_and_check_type(node->children[i]->children[0], 1);
+      if (d != boolean) {
+        printf("Error: Expected conditional expression in if statement to be a boolean expression, instead found a(n)");
+        print_data_type(d);
+        printf("\n");
+      }
+      check_expression_types(node->children[i]);
     }
     else
       check_expression_types(node->children[i]);
@@ -354,15 +440,16 @@ void check_individ_function_return(parse_tree_node *node) {
     n++;
     ret_vals[n-1] = get_and_check_type(ret_node->children[1], 1);
   }
+
   if (n != node->children[1]->value.id->dval->fn->num_ret_vals) {
-    printf("\nError in function %s: Expecting %d return value(s), but found %d instead\n", 
+    printf("Error in function %s: Expecting %d return value(s), but found %d instead\n", 
       node->children[1]->value.id->name, node->children[1]->value.id->dval->fn->num_ret_vals, n);
   }
   else {
     int i;
     for (i=0; i<n; i++) {
       if (node->children[1]->value.id->dval->fn->ret_vals[i] != ret_vals[i]) {
-        printf("\nError in function %s: Expecting return values of type", 
+        printf("Error in function %s: Expecting return values of type", 
           node->children[1]->value.id->name);
         int j;
         for (j=0; j<n-1; j++) {
@@ -370,7 +457,7 @@ void check_individ_function_return(parse_tree_node *node) {
           printf(",");
         }
         print_data_type(node->children[1]->value.id->dval->fn->ret_vals[j]);
-        printf(" but the values actually returned are of the type");
+        printf(" but the values actually returned are of the type\n");
         for (j=0; j<n-1; j++) {
           print_data_type(ret_vals[j]);
           printf(",");
@@ -383,24 +470,6 @@ void check_individ_function_return(parse_tree_node *node) {
   }
 }
 
-// void check_function_returns() {
-//   int i;
-//   parse_tree_node *node = parse_root;
-//   for (i=0;i<node->num_child;i++) {
-//     if (node->children[i]->token_id == tk_otherFunctions) {
-
-//     }
-//     else if (node->children[i]->token_id == tk_func) {
-//       check_individ_function_return (node->children[i])
-//     }
-//   }
-// }
-
-/*
-void prevent_func_call_and_recursion(parse_tree_node *node) {
-  ;
-}
-*/
 void check_function_returns() {
   int i;
   parse_tree_node *node = parse_root;

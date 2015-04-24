@@ -80,7 +80,7 @@ void codegen_from_ast(parse_tree_node* root, registers dest, FILE* f1)
 				printf("registers overloaded\n");
 			} 
 		}
-		source_reg = EAX;
+		//source_reg = EAX;
 		if(root->token_id == tk_unary_inc)
 		{
 			fprintf(f1,"INC EAX\n");
@@ -193,10 +193,8 @@ void create_bss_section_from_node(FILE *f1,symbol_entry *symbol_table_hash[]) {
 		{
 			fprintf(f1,"%d",s->array_dim1[0]*s->array_dim1[1]);
 		}*/
-
+			fprintf(f1,"%d",1);
 		fprintf(f1,"%s\n","");
-
-
 
         s = s->next;
       }

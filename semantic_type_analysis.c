@@ -67,7 +67,7 @@ data_type get_and_check_type(parse_tree_node *node, int is_an_expression) {
       case tk_false: return boolean;
       case tk_id:
         if (node->value.id->dtype != function) {
-          print_data_type(node->value.id->dtype);
+          // print_data_type(node->value.id->dtype);
           return node->value.id->dtype;
         }
         else {
@@ -121,6 +121,69 @@ data_type get_and_check_type(parse_tree_node *node, int is_an_expression) {
     data_type right_child = get_and_check_type(node->children[1], 1);
     switch(get_op_type(node->token_id)) {
       case reln_op:
+        if (left_child == integer) {
+          if (right_child == integer)
+            return boolean;
+          else if (right_child == float_point) {
+            printf("Type Warning: Implicit conversion of ");
+            print_rule(node->children[0]->token_id);
+            printf("of type");
+            print_data_type(left_child);
+            printf(" into type");
+            print_data_type(right_child);
+            printf(" for the binary operator ");
+            print_rule(node->token_id);
+            printf("\n");
+            return boolean;
+          }
+          else if (right_child != dt_unk){
+            printf("Type Error: Cannot use ");
+            print_rule(node->children[1]->token_id);
+            printf("of type");
+            print_data_type(right_child);
+            printf(" with the binary operator ");
+            print_rule(node->token_id);
+            printf("\n");
+            return dt_unk;
+          }
+        }
+        else if (left_child == float_point) {
+          if (right_child == float_point)
+            return boolean;
+          else if (right_child == integer) {
+            printf("Type Warning: Implicit conversion of ");
+            print_rule(node->children[1]->token_id);
+            printf("of type");
+            print_data_type(right_child);
+            printf(" into type");
+            print_data_type(left_child);
+            printf(" for the arithmetic operator ");
+            print_rule(node->token_id);
+            printf("\n");
+            return boolean;
+          }
+          else if (right_child != dt_unk){
+            printf("Type Error: Cannot use ");
+            print_rule(node->children[1]->token_id);
+            printf("of type");
+            print_data_type(right_child);
+            printf(" with the binary operator ");
+            print_rule(node->token_id);
+            printf("\n");
+            return dt_unk;
+          }
+        }
+        else if (left_child != dt_unk) {
+          printf("Type Error: Cannot use ");
+          print_rule(node->children[0]->token_id);
+          printf("of type");
+          print_data_type(left_child);
+          printf(" with the binary operator ");
+          print_rule(node->token_id);
+          printf("\n");
+          return dt_unk;
+        }
+        break;
       case arithm_op:
         if (left_child == integer) {
           if (right_child == integer)
@@ -250,6 +313,8 @@ data_type get_and_check_type(parse_tree_node *node, int is_an_expression) {
   // data_type left = get_and_check_type()
 }
 
+// void check_function_return();
+
 void check_expression_types(parse_tree_node *node) {
   // printf("\n\n");
   // print_rule(node->token_id);
@@ -268,6 +333,7 @@ void check_expression_types(parse_tree_node *node) {
   }
 }
 
+/*
 void prevent_func_call_and_recursion(parse_tree_node *node) {
   ;
 }
@@ -298,3 +364,4 @@ void function_call_semanticize() {
     }
   }
 }
+*/

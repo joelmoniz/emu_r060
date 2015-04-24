@@ -20,18 +20,18 @@ Semantic
 Type checking
 -------------
 [ ] Point
-	[ ] Points may not be type casted to any other type
+	[X] Points may not be type casted to any other type
 	[ ] Widening conversion is supported for any of the fields within the point when declaring the point
 	[X] Narrowing conversion via typecasting fails at the parser stage itself when declaring a point
 [ ] Bot
-	[ ] Bots may not be type casted to any other type
+	[X] Bots may not be type casted to any other type
 	[ ] Widening conversion is supported for any of the fields within the bot when declaring the bot
 	[X] Narrowing conversion via typecasting fails at the parser stage itself when declaring a bot
 [ ] Array
 	[ ] An individual element of an array may be treated as exactly identical to a variable of the corresponding type
 	[ ] No conversions (neither widening conversion nor typecasting) are supported for an entire array as a whole
 	[ ] No conversions (neither widening conversion nor typecasting) are supported when using an array index
-[ ] Widening conversion (coercion) is supported only from an integer to a float. More specifically, if X is an expression of the form E1 <op> E2, where E1 and E2 are expressions, or if X is an assignment statement of the form <type> ID = E3, where E3 is an expression, the coercion happens as follows:
+[~] Widening conversion (coercion) is supported only from an integer to a float. More specifically, if X is an expression of the form E1 <op> E2, where E1 and E2 are expressions, or if X is an assignment statement of the form <type> ID = E3, where E3 is an expression, the coercion happens as follows:
 	[ ] If E1 and E2 evaluate to floats, integers or booleans, and <op> is a relational operator, X is a boolean
 	[ ] If both E1 and E2 evaluate to floats, and <op> is an arithmetic operator, X is a float
 	[ ] If both E1 and E2 evaluate to integers, and <op> is an arithmetic operator X is a integer
@@ -56,7 +56,7 @@ Type checking
 	[ ] Narrowing conversions, according to the rules specified in 8, are permitted when a function has a single return value
 	[ ] Narrowing conversions are not permitted when there are multiple values returned from a function
 [ ] If statements and the conditional part of for loops may have only boolean types, or expressions that give rise to boolean types.
-[ ] No type conversion is permitted for unary operators such as unary increment.
+[X] Only integers may be used as is with unary increment and decrement operators, i.e., floating points will have to be explicitly typecasted to be used with a unary operator.
 [X] The program follows static typing, i.e., the type of a variable has to be declared in advance, and may not change till the end of the variable's lifetime
 [X] RNUM is of type float
 [X] NUM is of type integer

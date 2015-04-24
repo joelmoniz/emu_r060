@@ -740,6 +740,13 @@ enum Token lexer(FILE * ip, FILE * op)
           else {
             writeTofile(op,tk_id); 
             
+            if (func_call_locn == 3) {
+              if (!is_at_assign && !is_at_bot_assign)
+                add_ID_to_sym_table_node(node,inp,dt);
+              else
+                add_ID_to_sym_table_node(node,inp,dt_unk);
+            }
+            
             if (!is_in_function && func_call_locn == 2) {
               func_call_locn = 3;
 
@@ -874,6 +881,13 @@ enum Token lexer(FILE * ip, FILE * op)
           else {
             writeTofile(op,tk_id); 
 
+            if (func_call_locn == 3) {
+              if (!is_at_assign && !is_at_bot_assign)
+                add_ID_to_sym_table_node(node,inp,dt);
+              else
+                add_ID_to_sym_table_node(node,inp,dt_unk);
+            }
+
             if (!is_in_function && func_call_locn == 2) {
               func_call_locn = 3;
 
@@ -942,6 +956,13 @@ enum Token lexer(FILE * ip, FILE * op)
           }
           else {
             writeTofile(op,tk_id); 
+
+            if (func_call_locn == 3) {
+              if (!is_at_assign && !is_at_bot_assign)
+                add_ID_to_sym_table_node(node,inp,dt);
+              else
+                add_ID_to_sym_table_node(node,inp,dt_unk);
+            }            
 
             if (!is_in_function && func_call_locn == 2) {
               func_call_locn = 3;
@@ -1032,6 +1053,13 @@ enum Token lexer(FILE * ip, FILE * op)
           else {
             writeTofile(op,tk_id); 
 
+            if (func_call_locn == 3) {
+              if (!is_at_assign && !is_at_bot_assign)
+                add_ID_to_sym_table_node(node,inp,dt);
+              else
+                add_ID_to_sym_table_node(node,inp,dt_unk);
+            }
+
             if (!is_in_function && func_call_locn == 2) {
               func_call_locn = 3;
 
@@ -1095,6 +1123,13 @@ enum Token lexer(FILE * ip, FILE * op)
         }
         else { 
           writeTofile(op,tk_id); 
+
+          if (func_call_locn == 3) {
+            if (!is_at_assign && !is_at_bot_assign)
+              add_ID_to_sym_table_node(node,inp,dt);
+            else
+              add_ID_to_sym_table_node(node,inp,dt_unk);
+          }
 
           if (!is_in_function && func_call_locn == 2) {
             func_call_locn = 3;

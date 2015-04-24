@@ -6,19 +6,15 @@
 #include "parse_table.h"
 #endif
 
-#define N 3 //change later as per requirement
+#ifndef CODEGEN_H
+#define CODEGEN_H
+#include "codegen.h"
+#endif
+/*#define N 3 //change later as per requirement
 FILE* f1;
+*/
 
-typedef enum registers
-{
-	EAX,
-	EBX,
-	ECX,
-	EDX,
-	UNK
-}
-
-char * print_register(registers r)
+char* print_register(registers r)
 {
  if(r == EAX)
  {
@@ -44,80 +40,124 @@ char * print_register(registers r)
   
 int isArithOper(int token)
 {
-	if(token==tk_plus || token ==tk_minus || token == tk_mul || 
+	if(token == tk_plus || token == tk_minus || token == tk_mul || 
 	   token == tk_div || token == tk_unary_inc || token == tk_unary_dec)
 		return 1;
 	else return 0;
 }
 
 
-void codegen_from_ast(parse_tree_node root, registers dest)
+void codegen_from_ast(parse_tree_node* root, registers dest, FILE* f1)
 {
+	//printf("hello!\n");
+	print_token(root->token_id);
 	int i;
 	registers r,source_reg;
 	r = EAX;
 	if(root->num_child == 0) //leaf node 
-	{
+	{ //printf("leaf node\n");
 		if(root->token_id == tk_id)
 		{
-			fprintf("MOV %s, %s\n",print_register(dest), root->(id->); //Todo
+			fprintf(f1,"MOV %s, %s\n",print_register(dest), (root->value).id->name); //variable
 		}
 		else if(root->token_id == tk_num)//num
 		{
-			fprintf("MOV %s, %d\n",print_register(dest),root->(value.num));
+			fprintf(f1,"MOV %s, %d\n",print_register(dest),root->value.num);
 		}
 		else if(root->token_id == tk_rnum)//rnum
 		{	
-			fprintf("MOV %s, %f\n",print_register(dest),root->(value.rnum));
+			fprintf(f1,"MOV %s, %f\n",print_register(dest),(root->value).rnum);
 		}
 	}
 
 	if (isArithOper(root->token_id))
-	{
-		for(i=0; i < num_child;i++)
+	{ //printf("arithmetic expr\n");
+		for(i=0; i < root->num_child;i++)
 		{
-			codegen_from_ast(root->children[i],r++);
-			if (r > EDX)
+			codegen_from_ast(root->children[i],r++,f1);
+			if (r > (EDX+1))
 			{
 				printf("registers overloaded\n");
 			} 
 		}
 		source_reg = EAX;
-		if(root->token_id == tk_plus)
+		if(root->token_id == tk_unary_inc)
+		{
+			fprintf(f1,"INC EAX\n");
+			source_reg = EAX;
+		}
+		else if(root->token_id == tk_unary_dec)
+		{
+			fprintf(f1,"DEC EAX\n");
+			source_reg = EAX;
+		}
+		else if(root->token_id == tk_plus)
 		{
 			if((root->children[0])->value.num == 1)
 			{
-				fprintf("INC EBX\n");
+				fprintf(f1,"INC EBX\n");
 				source_reg = EBX;
 			}
 			else if((root->children[1])->value.num == 1)
 			{
-				fprintf("INC EAX\n");
+				fprintf(f1,"INC EAX\n");
 				source_reg = EAX;
 			}
 			else
 			{
-				fprintf("ADD EAX, EBX\n");		
+				fprintf(f1,"ADD EAX, EBX\n");
+				source_reg = EAX;		
 			}
 		}
-		if(root->token_id == tk_minus)
+		else if(root->token_id == tk_minus)
 		{
-			fprintf("SUB EAX, EBX\n");
+			if((root->children[0])->value.num == 1)
+			{
+				fprintf(f1,"DEC EBX\n");
+				source_reg = EBX;
+			}
+			else if((root->children[1])->value.num == 1)
+			{
+				fprintf(f1,"DEC EAX\n");
+				source_reg = EAX;
+			}
+
+			else
+			{
+				fprintf(f1,"SUB EAX, EBX\n");
+				source_reg = EAX;
+			}
 		}
-		if(root->token_id == tk_mul)
+
+		else if(root->token_id == tk_mul)
 		{
-			fprintf("MUL EAX, EBX\n");
+			fprintf(f1,"MUL EBX\n"); //has DX:AX
+			source_reg = EAX;
 		}
 		if(root->token_id == tk_div)
 		{
-			fprintf("DIV EAX, EBX\n");
+			fprintf(f1,"DIV  BX\n"); //A / B , A is in EAX, B in BX+
+			source_reg = EAX;
 		}
 	}
+	else
+	{
+			for(i=0; i < root->num_child;i++)
+			{
+				codegen_from_ast(root->children[i],r,f1);
+				/*if (r > (EDX+1))
+				{
+					printf("registers overloaded\n");
+				} */
+			}
 
+	}
+	if(dest!=source_reg)
 	fprintf(f1,"\tMOV %s, %s \n",print_register(dest),print_register(source_reg));
 }
-
+/*
 struct _id_type a[3] = {{integer,"a",{0,0}},{float_point,"b",{2,3}},{boolean,"c",{4,4}}};
+FILE *f1;
 int main()
 {
 
@@ -141,7 +181,7 @@ int main()
 	fprintf(f1,"\n%s","section .bss\n");
 	//iterate through a list of _id_type and put stuff here!
 	// Row major alignment!!
-	for(i=0;i<N;i++)
+	for(i=0;i<3;i++)
 	{
 		fprintf(f1,"\t%s",a[i].name);
 		if(a[i].dtype == integer) //1 word long
@@ -183,3 +223,4 @@ int main()
 	close(f1);
 	return 0;
 }
+*/

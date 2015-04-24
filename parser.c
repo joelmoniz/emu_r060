@@ -670,18 +670,41 @@ void elevate_symbols(parse_tree_node *node) {
   }
   else if (n == bool_operator) {
     if (!(node->children[position]->token_id == tk_col_assign && node->token_id == tk_gen_stmt)) {
-      node->token_id = node->children[position]->token_id;
-  
-      for (j=0; j < node->children[position]->num_child; j++) {
-        node->children[node->num_child] = node->children[position]->children[j];
-        node->num_child++;
+      if (!is_bool_operator(node->token_id)) {
+        node->token_id = node->children[position]->token_id;
+    
+        for (j=0; j < node->children[position]->num_child; j++) {
+          node->children[node->num_child] = node->children[position]->children[j];
+          node->num_child++;
+        }
+
+        free(node->children[position]);
+        node->num_child--;
+    
+        for (j=position; j < node->num_child; j++)
+          node->children[j] = node->children[j+1];
+
+        for (j=0; j < node->num_child; j++) {
+          if (is_bool_operator(node->children[j]->token_id) && node->children[j]->num_child == 0) {
+            node->parent->token_id = node->children[j]->token_id;
+            int x;
+            node->num_child--;
+            free(node->children[j]);
+            for (x=j; x<node->num_child; x++)
+              node->children[x] = node->children[x+1];
+            break;
+          }
+        }
       }
-      
-      free(node->children[position]);
-      node->num_child--;
-  
-      for (j=position; j < node->num_child; j++)
-        node->children[j] = node->children[j+1];
+      else {
+        node->parent->token_id = node->children[position]->token_id;
+        
+        free(node->children[position]);
+        node->num_child--;
+    
+        for (j=position; j < node->num_child; j++)
+          node->children[j] = node->children[j+1];
+      }
     }
     else {
       parse_tree_node *get_col_eq1 = node->children[position]->children[0];

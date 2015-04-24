@@ -26,6 +26,59 @@
 #include "queues.h"
 #endif
 
+#ifndef SEMANTIC_TYPE_H
+#define SEMANTIC_TYPE_H
+#include "semantic_type_analysis.h"
+#endif
+
+op_type get_op_type(int op) {
+  switch(op) {
+    case tk_plus:
+    case tk_minus:
+    case tk_mul:
+    case tk_div: return arithm_op;
+    case tk_rt:
+    case tk_fw: return bot_op;
+    case tk_log_or:
+    case tk_log_and: return bool_op;
+    case tk_lt:
+    case tk_gt:
+    case tk_log_eq:
+    case tk_lte:
+    case tk_gte: return reln_op;
+    case tk_addv: return point_op;
+    case tk_pl_eq: return assign_op;
+    case tk_unary_inc:
+    case tk_unary_dec:
+    case tk_readi: return unary_op;
+    default: return unk;
+  }
+}
+
+data_type get_and_check_type(parse_tree_node *node, int is_an_expression) {
+  if (node->num_child == 0) {
+    switch(node->token_id) {
+      case tk_num: return integer;
+      case tk_rnum: return float_point;
+      case tk_true:
+      case tk_false: return boolean;
+      case tk_id:
+        if (node->value.id->dtype != function)
+          return node->value.id->dtype;
+        else {
+          if (node->value.id->dval->fn->num_ret_vals == 1)
+            return node->value.id->dval->fn->ret_vals[0];
+          else if (is_an_expression) {
+            printf("\nError: Function %s may not be used in an expression, since it returns multiple values.\n", node->value.id->name);
+          }
+        }
+    }
+  }
+
+  return dt_unk;
+  // data_type left = get_and_check_type()
+}
+
 void prevent_func_call_and_recursion(parse_tree_node *node) {
   printf("\n\n");
   print_rule(node->token_id);

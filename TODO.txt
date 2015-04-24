@@ -60,3 +60,8 @@ Type checking
 [X] RNUM is of type float
 [X] NUM is of type integer
 [X] <bool> represents a boolean type, and may take either a TRUE or a FALSE value
+
+Misc
+----
+
+[ ] Handle array slicing everywhere

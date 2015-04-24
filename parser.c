@@ -624,7 +624,7 @@ void elevate_symbols(parse_tree_node *node) {
     for (j=position; j < node->num_child; j++)
       node->children[j] = node->children[j+1];
 
-    if (node->token_id == tk_return) {
+    if (node->token_id == tk_return && node->children[0]->token_id == tk_expressions) {
       parse_tree_node *expressions = node->children[0];
       node->num_child = expressions->num_child;
 

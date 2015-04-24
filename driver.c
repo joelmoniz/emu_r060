@@ -11,6 +11,11 @@
 #include "parse_table.h"
 #endif
 
+#ifndef CODEGEN_H
+#define CODEGEN_H
+#include "codegen.h"
+#endif
+
 int main(int argc, char*argv[])
 {
     FILE * ip;
@@ -57,5 +62,41 @@ int main(int argc, char*argv[])
       check_expression_types(parse_root);
       check_function_returns();
     }
+
+    //codegen code
+    int i;
+    char codegen [100];
+    strcpy(codegen,argv[1]);
+    strcat(codegen,"codegen_output");
+    FILE* f1 = fopen(codegen,"w");
+    struct _id_type a[3] = {{integer,"a",{0,0}},{float_point,"b",{2,3}},{boolean,"c",{4,4}}}; //dummy test
+    if (f1==NULL)
+    {
+        printf("error opening output");
+        exit(2);
+    }
+    
+    fprintf(f1,"\n%s\n","section .data\n"); //for storing constants that don't change (do we have these?
+
+
+    fprintf(f1,"\n%s","section .bss\n");
+    //iterate through a list of _id_type and put stuff here!
+    // Row major alignment!!
+    create_bss_section_from_tree(f1,symbol_table_root);
+    fprintf(f1,"\n%s\n","section .text");
+    fprintf(f1,"%s\n","\tglobal main");
+    fprintf(f1,"%s\n","main:");
+    //DO I need to write the EOF character at the end of file?
+    //parse_tree_node * arith_base = parse_root;
+    registers r1 = EAX;
+    //printf("here1");
+    codegen_from_ast(parse_root, r1, f1);
+    //printf("here");
+    //the exit sys call to prevent segfaults
+    fprintf(f1,"\n\t%s\n","mov\teax,1");
+    fprintf(f1, "\t%s\n","mov\tebx,0");
+    fprintf(f1, "\t%s\n","int\t80h");
+    
+    close(f1);
     return 0;
 }

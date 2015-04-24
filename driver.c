@@ -55,6 +55,7 @@ int main(int argc, char*argv[])
     if (!parser_error_detected) {
       // function_call_semanticize();
       check_expression_types(parse_root);
+      check_function_returns();
     }
     return 0;
 }

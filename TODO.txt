@@ -5,8 +5,8 @@ Semantic
 --------
 [ ] Number of arguments passed = Number of arguments in function header
 [ ] Number of variables on LHS = Number of return values from function
-[ ] Number of return arguments from a function = Number specified in header 
-[ ] The corresponding return types match exactly
+[X] Number of return arguments from a function = Number specified in header 
+[X] The corresponding return types match exactly
 [X] Function call inside an expression is supported only if the function returns a single value
 [X] Identifiers that serve to indicate the names in named parameter of a function call do not have to be declared
 [X] Maximum of 5 arguments may be passed to a function

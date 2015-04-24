@@ -313,14 +313,12 @@ data_type get_and_check_type(parse_tree_node *node, int is_an_expression) {
   // data_type left = get_and_check_type()
 }
 
-// void check_function_return();
-
 void check_expression_types(parse_tree_node *node) {
   // printf("\n\n");
   // print_rule(node->token_id);
   int i;
   for (i=0;i<node->num_child;i++) {
-    if (get_op_type(node->children[i]->token_id) != unk) {
+    if (get_op_type(node->children[i]->token_id) != unk && node->token_id != tk_return) {
       data_type d = get_and_check_type(node->children[i],1);
       printf("\nDatatype for ");
       print_rule(node->token_id);
@@ -333,19 +331,85 @@ void check_expression_types(parse_tree_node *node) {
   }
 }
 
+void check_individ_function_return(parse_tree_node *node) {
+  parse_tree_node *ret_node = node->children[node->num_child-1];
+  while (ret_node->token_id != tk_return)
+    ret_node = ret_node->children[1];
+  if (node->children[1]->value.id->dval->fn->num_ret_vals > MAX_RETURN_VALUES)
+    return;
+  int n = 0;
+  data_type ret_vals[MAX_RETURN_VALUES];
+  if (ret_node->num_child == 1) {
+    n = 1;
+    ret_vals[n-1] = get_and_check_type(ret_node->children[0], 1);
+  }
+  else {
+    while (ret_node->children[1]->token_id == tk_more_expression) {
+      n++;
+      ret_vals[n-1] = get_and_check_type(ret_node->children[0], 1);
+      ret_node = ret_node->children[1];
+    }
+    n++;
+    ret_vals[n-1] = get_and_check_type(ret_node->children[0], 1);
+    n++;
+    ret_vals[n-1] = get_and_check_type(ret_node->children[1], 1);
+  }
+  if (n != node->children[1]->value.id->dval->fn->num_ret_vals) {
+    printf("\nError in function %s: Expecting %d return value(s), but found %d instead\n", 
+      node->children[1]->value.id->name, node->children[1]->value.id->dval->fn->num_ret_vals, n);
+  }
+  else {
+    int i;
+    for (i=0; i<n; i++) {
+      if (node->children[1]->value.id->dval->fn->ret_vals[i] != ret_vals[i]) {
+        printf("\nError in function %s: Expecting return values of type", 
+          node->children[1]->value.id->name);
+        int j;
+        for (j=0; j<n-1; j++) {
+          print_data_type(node->children[1]->value.id->dval->fn->ret_vals[j]);
+          printf(",");
+        }
+        print_data_type(node->children[1]->value.id->dval->fn->ret_vals[j]);
+        printf(" but the values actually returned are of the type");
+        for (j=0; j<n-1; j++) {
+          print_data_type(ret_vals[j]);
+          printf(",");
+        }
+        print_data_type(ret_vals[j]);
+        printf("\n");
+        break;
+      }
+    }
+  }
+}
+
+// void check_function_returns() {
+//   int i;
+//   parse_tree_node *node = parse_root;
+//   for (i=0;i<node->num_child;i++) {
+//     if (node->children[i]->token_id == tk_otherFunctions) {
+
+//     }
+//     else if (node->children[i]->token_id == tk_func) {
+//       check_individ_function_return (node->children[i])
+//     }
+//   }
+// }
+
 /*
 void prevent_func_call_and_recursion(parse_tree_node *node) {
   ;
 }
-
-void function_call_semanticize() {
+*/
+void check_function_returns() {
   int i;
-  for (i=0; i<parse_root->num_child; i++) {
+  parse_tree_node *node = parse_root;
+  for (i=0; i<node->num_child; i++) {
     if (parse_root->children[i]->token_id == tk_otherFunctions) {
-      parse_tree_node *node = parse_root->children[i];
+      node = parse_root->children[i];
       while (node->children[1]->token_id != tk_func) {
         if (node->children[0]->token_id == tk_func) {
-          prevent_func_call_and_recursion(node->children[0]);
+          check_individ_function_return(node->children[0]);
           node = node->children[1];
         }
         else {
@@ -354,14 +418,13 @@ void function_call_semanticize() {
           break;
         }
       }
-      prevent_func_call_and_recursion(node->children[0]);
-      prevent_func_call_and_recursion(node->children[1]);
+      check_individ_function_return(node->children[0]);
+      check_individ_function_return(node->children[1]);
       break;
     }
     else if (parse_root->children[i]->token_id == tk_func) {
-      prevent_func_call_and_recursion(parse_root->children[i]);
+      check_individ_function_return(parse_root->children[i]);
       break;
     }
   }
 }
-*/

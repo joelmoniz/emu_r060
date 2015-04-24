@@ -589,7 +589,10 @@ enum Token lexer(FILE * ip, FILE * op)
   int is_at_assign = 0;
   int is_at_bot_assign = 0;
   int is_bot_defined = 0;
+  int func_call_locn = 0;
+
   function_details *func;
+  function_details *func_call;
 
   char prev_fn_name[100];
 
@@ -657,6 +660,14 @@ enum Token lexer(FILE * ip, FILE * op)
         return tk_null;
       }
     }
+
+    // Used to check if function call is proper wrt the parameters matching in terms of name
+    if (func_call_locn == 42/* || is_in_function*/) {
+      func_call_locn = 0;
+      printf("\nBreaking out: %c\n", input);
+    }
+    else if (func_call_locn == 1)
+      func_call_locn = 42;
 
     if(isalnum(input)) //could be several things... 
     { 
@@ -728,10 +739,40 @@ enum Token lexer(FILE * ip, FILE * op)
           }
           else {
             writeTofile(op,tk_id); 
-            if (!is_at_assign && !is_at_bot_assign)
-              add_ID_to_sym_table_node(node,inp,dt);
-            else
-              add_ID_to_sym_table_node(node,inp,dt_unk);
+            
+            if (func_call_locn == 2) {
+              func_call_locn = 3;
+
+              if (func_call != NULL) {
+                int la;
+                for (la=0; la<func_call->num_args; la++) {
+                  if (!strcmp(func_call->arg_names[la], inp))
+                    break;
+                }
+
+                if (la == func_call->num_args)
+                  printf("\nError: Unidentified named argument %s\n", inp);
+              }
+
+              insert_st(&st_lex_queue, NULL);
+            }
+
+            if (func_call == NULL || func_call_locn != 3) {
+              if (!is_at_assign && !is_at_bot_assign)
+                add_ID_to_sym_table_node(node,inp,dt);
+              else
+                add_ID_to_sym_table_node(node,inp,dt_unk);
+            }
+
+            if (!func_call_locn) {
+              func_call_locn = 1;
+              func_call = get_function_details(node,inp);
+            }
+
+            if (!is_in_function2 && is_in_function && func->num_args <= MAX_ARGS) {
+              func->arg_names[func->num_args-1] = (char *) malloc((strlen(inp) + 1) * sizeof(char));
+              strcpy(func->arg_names[func->num_args-1], inp);
+            }
 
             if (is_in_function3) {
               is_in_function3 = 0;
@@ -832,10 +873,40 @@ enum Token lexer(FILE * ip, FILE * op)
           }
           else {
             writeTofile(op,tk_id); 
-            if (!is_at_assign && !is_at_bot_assign)
-              add_ID_to_sym_table_node(node,inp,dt);
-            else
-              add_ID_to_sym_table_node(node,inp,dt_unk);
+
+            if (func_call_locn == 2) {
+              func_call_locn = 3;
+
+              if (func_call != NULL) {
+                int la;
+                for (la=0; la<func_call->num_args; la++) {
+                  if (!strcmp(func_call->arg_names[la], inp))
+                    break;
+                }
+
+                if (la == func_call->num_args)
+                  printf("\nError: Unidentified named argument %s\n", inp);
+              }
+
+              insert_st(&st_lex_queue, NULL);
+            }
+
+            if (func_call == NULL || func_call_locn != 3) {
+              if (!is_at_assign && !is_at_bot_assign)
+                add_ID_to_sym_table_node(node,inp,dt);
+              else
+                add_ID_to_sym_table_node(node,inp,dt_unk);
+            }
+
+            if (!func_call_locn) {
+              func_call_locn = 1;
+              func_call = get_function_details(node,inp);
+            }
+
+            if (!is_in_function2 && is_in_function && func->num_args <= MAX_ARGS) {
+              func->arg_names[func->num_args-1] = (char *) malloc((strlen(inp) + 1) * sizeof(char));
+              strcpy(func->arg_names[func->num_args-1], inp);
+            }
 
             if (is_in_function3) {
               is_in_function3 = 0;
@@ -871,10 +942,40 @@ enum Token lexer(FILE * ip, FILE * op)
           }
           else {
             writeTofile(op,tk_id); 
-            if (!is_at_assign && !is_at_bot_assign)
-              add_ID_to_sym_table_node(node,inp,dt);
-            else
-              add_ID_to_sym_table_node(node,inp,dt_unk);
+
+            if (func_call_locn == 2) {
+              func_call_locn = 3;
+
+              if (func_call != NULL) {
+                int la;
+                for (la=0; la<func_call->num_args; la++) {
+                  if (!strcmp(func_call->arg_names[la], inp))
+                    break;
+                }
+
+                if (la == func_call->num_args)
+                  printf("\nError: Unidentified named argument %s\n", inp);
+              }
+
+              insert_st(&st_lex_queue, NULL);
+            }
+
+            if (func_call == NULL || func_call_locn != 3) {
+              if (!is_at_assign && !is_at_bot_assign)
+                add_ID_to_sym_table_node(node,inp,dt);
+              else
+                add_ID_to_sym_table_node(node,inp,dt_unk);
+            }
+
+            if (!func_call_locn) {
+              func_call_locn = 1;
+              func_call = get_function_details(node,inp);
+            }
+
+            if (!is_in_function2 && is_in_function && func->num_args <= MAX_ARGS) {
+              func->arg_names[func->num_args-1] = (char *) malloc((strlen(inp) + 1) * sizeof(char));
+              strcpy(func->arg_names[func->num_args-1], inp);
+            }
 
             if (is_in_function3) {
               is_in_function3 = 0;
@@ -930,10 +1031,40 @@ enum Token lexer(FILE * ip, FILE * op)
           }
           else {
             writeTofile(op,tk_id); 
-            if (!is_at_assign && !is_at_bot_assign)
-              add_ID_to_sym_table_node(node,inp,dt);
-            else
-              add_ID_to_sym_table_node(node,inp,dt_unk);
+
+            if (func_call_locn == 2) {
+              func_call_locn = 3;
+
+              if (func_call != NULL) {
+                int la;
+                for (la=0; la<func_call->num_args; la++) {
+                  if (!strcmp(func_call->arg_names[la], inp))
+                    break;
+                }
+
+                if (la == func_call->num_args)
+                  printf("\nError: Unidentified named argument %s\n", inp);
+              }
+
+              insert_st(&st_lex_queue, NULL);
+            }
+
+            if (func_call == NULL || func_call_locn != 3) {
+              if (!is_at_assign && !is_at_bot_assign)
+                add_ID_to_sym_table_node(node,inp,dt);
+              else
+                add_ID_to_sym_table_node(node,inp,dt_unk);
+            }
+
+            if (!func_call_locn) {
+              func_call_locn = 1;
+              func_call = get_function_details(node,inp);
+            }
+
+            if (!is_in_function2 && is_in_function && func->num_args <= MAX_ARGS) {
+              func->arg_names[func->num_args-1] = (char *) malloc((strlen(inp) + 1) * sizeof(char));
+              strcpy(func->arg_names[func->num_args-1], inp);
+            }
 
             if (is_in_function3) {
               is_in_function3 = 0;
@@ -964,10 +1095,40 @@ enum Token lexer(FILE * ip, FILE * op)
         }
         else { 
           writeTofile(op,tk_id); 
-          if (!is_at_assign && !is_at_bot_assign)
-            add_ID_to_sym_table_node(node,inp,dt);
-          else
-            add_ID_to_sym_table_node(node,inp,dt_unk);
+
+          if (func_call_locn == 2) {
+            func_call_locn = 3;
+
+            if (func_call != NULL) {
+              int la;
+              for (la=0; la<func_call->num_args; la++) {
+                if (!strcmp(func_call->arg_names[la], inp))
+                  break;
+              }
+
+              if (la == func_call->num_args)
+                printf("\nError: Unidentified named argument %s\n", inp);
+            }
+
+            insert_st(&st_lex_queue, NULL);
+          }
+
+          if (func_call == NULL || func_call_locn != 3) {
+            if (!is_at_assign && !is_at_bot_assign)
+              add_ID_to_sym_table_node(node,inp,dt);
+            else
+              add_ID_to_sym_table_node(node,inp,dt_unk);
+          }
+
+          if (!func_call_locn) {
+            func_call_locn = 1;
+            func_call = get_function_details(node,inp);
+          }
+
+          if (!is_in_function2 && is_in_function && func->num_args <= MAX_ARGS) {
+              func->arg_names[func->num_args-1] = (char *) malloc((strlen(inp) + 1) * sizeof(char));
+              strcpy(func->arg_names[func->num_args-1], inp);
+          }
 
           if (is_in_function3) {
             is_in_function3 = 0;
@@ -1066,14 +1227,21 @@ enum Token lexer(FILE * ip, FILE * op)
         if (func->num_args > MAX_ARGS)
           printf("\nError: Function cannot accept more than %d arguments\n", MAX_ARGS);
 
+        
         node = add_new_node_to_parent(node);
       }
+
+      if (func_call_locn == 42 || func_call_locn == 1)
+        func_call_locn = 2;
+      
       continue;
     }
     if(input == ')'){ 
       writeTofile(op,tk_rpara);
       prev = '\0'; 
       dt = dt_unk; 
+      func_call_locn = 0;
+      func_call = NULL;
       continue;
     }
     if(input == '[') { writeTofile(op,tk_lsquare);prev = '\0'; continue;}
@@ -1087,6 +1255,10 @@ enum Token lexer(FILE * ip, FILE * op)
     }
     if(input == ',') { 
       writeTofile(op,tk_comma);
+
+      if (func_call_locn == 3) {
+        func_call_locn = 2;
+      }
 
       is_at_assign = 0;
       prev = '\0'; 

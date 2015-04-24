@@ -24,7 +24,7 @@ main()
   int x,y,k,l=3,m=4,n; 
   float z;
   Bot lab;
-  x,y,z = func1(b=5, c=3.0, a=12); 
+  x,y,z = func1(bwa=5, c=3.0, a=12); 
   func2();
   k = (int)(z);
   int a = 3, b[3] = {1,2,3}, c[2][3] = {{1,2,3}, {3,4,12}};

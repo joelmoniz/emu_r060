@@ -43,8 +43,9 @@ typedef enum _data_type { // the value of the enum represents the size of the da
 } data_type;
 
 struct _function_details {
-  data_type args[5];
-  data_type ret_vals[5];
+  data_type args[MAX_ARGS];
+  data_type ret_vals[MAX_RETURN_VALUES];
+  char *arg_names[MAX_ARGS];
   int num_args;
   int num_ret_vals;
 };
@@ -90,6 +91,7 @@ symbol_table_node *initialize_symbol_table_node(symbol_table_node *parent);
 symbol_table_node *add_new_node_to_parent(symbol_table_node *parent);
 void add_ID_to_sym_table_node(symbol_table_node *node, char *name, data_type dt);
 void update_st_function(char fn_name[], symbol_table_node *node, function_details *func_info);
+function_details *get_function_details(symbol_table_node *node, char *func_name);
 void init_symbol_table(symbol_entry *symbol_table_hash[]);
 void free_symbol_table(symbol_entry *symbol_table_hash[]);
 void print_symbol_table_tree(symbol_table_node *node);

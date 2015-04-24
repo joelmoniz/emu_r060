@@ -299,6 +299,14 @@ void update_st_function(char fn_name[], symbol_table_node *node, function_detail
   }
 }
 
+function_details *get_function_details(symbol_table_node *node, char *func_name) {
+  symbol_entry *s = node->symbol_table_hash[get_hash_value(func_name)];
+  if (s->dtype == function)
+    return s->dval->fn;
+  else 
+    return NULL;
+}
+
 void free_symbol_table(symbol_entry *symbol_table_hash[]) {
   int i;
   for (i = 0; i < HASH_SIZE; i++) {

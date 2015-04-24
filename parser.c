@@ -424,7 +424,12 @@ void print_parse_tree(parse_tree_node *node, int lv) {
   }
 
   switch (node->token_id) {
-    case tk_id: printf(" ==>  %s", node->value.id->name);break;
+    case tk_id: 
+    if (node->value.id != NULL)
+      printf(" ==>  %s", node->value.id->name);
+    else
+      printf(" ==>  (function argument)");
+    break;
     case tk_num: printf(" ==>  %d", node->value.num);break;
     case tk_rnum: printf(" ==>  %f", node->value.rnum);break;
   }

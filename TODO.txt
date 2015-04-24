@@ -8,7 +8,7 @@ Semantic
 [ ] Number of variables on LHS = Number of return values from function
 [ ] Number of return arguments from a function = Number specified in header 
 [ ] The corresponding return types match exactly
-[ ] Identifiers that serve to indicate the names in named parameter of a function call do not have to be declared
+[X] Identifiers that serve to indicate the names in named parameter of a function call do not have to be declared
 [X] Maximum of 5 arguments may be passed to a function
 [X] Maximum of 5 values may be returned from a function
 [X] Only one Bot may be defined per program

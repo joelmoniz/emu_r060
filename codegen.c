@@ -155,6 +155,74 @@ void codegen_from_ast(parse_tree_node* root, registers dest, FILE* f1)
 	if(dest!=source_reg)
 	fprintf(f1,"\tMOV %s, %s \n",print_register(dest),print_register(source_reg));
 }
+
+void create_bss_section_from_node(FILE *f1,symbol_entry *symbol_table_hash[]) {
+  int i = 0;
+  referred *r;
+  symbol_entry *s;
+
+  for (i = 0;i < HASH_SIZE; i++) {
+    if (symbol_table_hash[i] != NULL) {
+      
+      s = symbol_table_hash[i];
+      while (s != NULL) {
+
+        if (s->dtype == function) {
+        	s = s->next;
+        	continue;
+        }
+	fprintf(f1,"\t%s",s->name);
+		if(s->dtype == integer) //1 word long
+		{
+			fprintf(f1,"\t%s\t","resw");
+		}
+		else if(s->dtype == float_point)//2 word, double long
+		{
+			fprintf(f1,"\t%s\t","resd");
+		}
+		else if(s->dtype == boolean) //1 byte long
+		{
+			fprintf(f1,"\t%s\t","resb");
+		}
+
+		/*if(s->array_dim1[0] == 0 && s->array_dim1[1] == 0)
+		{
+			fprintf(f1,"%s","1");
+		}
+		else
+		{
+			fprintf(f1,"%d",s->array_dim1[0]*s->array_dim1[1]);
+		}*/
+
+		fprintf(f1,"%s\n","");
+
+
+
+        s = s->next;
+      }
+    }
+  }
+}
+
+
+void create_bss_section_from_tree(FILE* f1,symbol_table_node *node)
+{
+	if (node == NULL) {
+    // printf("Ouch\n");
+    return;
+  }
+
+  create_bss_section_from_node(f1,node->symbol_table_hash);
+
+  if (node->num_children == 0) {
+    return;
+  }
+  int i;
+  for (i=0; i < node->num_children; i++) {
+    create_bss_section_from_tree(f1,node->children[i]);
+  }
+
+}
 /*
 struct _id_type a[3] = {{integer,"a",{0,0}},{float_point,"b",{2,3}},{boolean,"c",{4,4}}};
 FILE *f1;

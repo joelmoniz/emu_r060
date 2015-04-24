@@ -7,6 +7,7 @@ clean:
 	rm -f ./test_cases/output*.txt
 	rm -f ./test_cases/*.lexer
 	rm -f ./test_cases/out_compare*.txt
+	rm -f ./test_cases/*.txtcodegen_output
 run:
 	make
 	./a.out test.txt > output.txt

@@ -604,8 +604,8 @@ void elevate_symbols(parse_tree_node *node) {
         position = i;
       }
     }
-    else if (is_bool_operator(node->children[i]->token_id)) {
-      if ((n == null || n == bool_operator || n== singleton_operator) && node->children[i]->num_child <= 1) {
+    else if (is_bool_operator(node->children[i]->token_id) && node->children[i]->num_child <= 1) {
+      if (n == null || n == bool_operator || n== singleton_operator) {
         n = bool_operator;
         position = i;
       }
@@ -682,7 +682,7 @@ void elevate_symbols(parse_tree_node *node) {
   
       for (j=position; j < node->num_child; j++)
         node->children[j] = node->children[j+1];
-      }
+    }
     else {
       parse_tree_node *get_col_eq1 = node->children[position]->children[0];
       int nc = 2;

@@ -740,7 +740,7 @@ enum Token lexer(FILE * ip, FILE * op)
           else {
             writeTofile(op,tk_id); 
             
-            if (func_call_locn == 2) {
+            if (!is_in_function && func_call_locn == 2) {
               func_call_locn = 3;
 
               if (func_call != NULL) {
@@ -757,7 +757,7 @@ enum Token lexer(FILE * ip, FILE * op)
               insert_st(&st_lex_queue, NULL);
             }
 
-            if (func_call == NULL || func_call_locn != 3) {
+            if (func_call == NULL || is_in_function || func_call_locn != 3) {
               if (!is_at_assign && !is_at_bot_assign)
                 add_ID_to_sym_table_node(node,inp,dt);
               else
@@ -874,7 +874,7 @@ enum Token lexer(FILE * ip, FILE * op)
           else {
             writeTofile(op,tk_id); 
 
-            if (func_call_locn == 2) {
+            if (!is_in_function && func_call_locn == 2) {
               func_call_locn = 3;
 
               if (func_call != NULL) {
@@ -891,7 +891,7 @@ enum Token lexer(FILE * ip, FILE * op)
               insert_st(&st_lex_queue, NULL);
             }
 
-            if (func_call == NULL || func_call_locn != 3) {
+            if (func_call == NULL || is_in_function || func_call_locn != 3) {
               if (!is_at_assign && !is_at_bot_assign)
                 add_ID_to_sym_table_node(node,inp,dt);
               else
@@ -943,7 +943,7 @@ enum Token lexer(FILE * ip, FILE * op)
           else {
             writeTofile(op,tk_id); 
 
-            if (func_call_locn == 2) {
+            if (!is_in_function && func_call_locn == 2) {
               func_call_locn = 3;
 
               if (func_call != NULL) {
@@ -960,7 +960,7 @@ enum Token lexer(FILE * ip, FILE * op)
               insert_st(&st_lex_queue, NULL);
             }
 
-            if (func_call == NULL || func_call_locn != 3) {
+            if (func_call == NULL || is_in_function || func_call_locn != 3) {
               if (!is_at_assign && !is_at_bot_assign)
                 add_ID_to_sym_table_node(node,inp,dt);
               else
@@ -1032,7 +1032,7 @@ enum Token lexer(FILE * ip, FILE * op)
           else {
             writeTofile(op,tk_id); 
 
-            if (func_call_locn == 2) {
+            if (!is_in_function && func_call_locn == 2) {
               func_call_locn = 3;
 
               if (func_call != NULL) {
@@ -1049,7 +1049,7 @@ enum Token lexer(FILE * ip, FILE * op)
               insert_st(&st_lex_queue, NULL);
             }
 
-            if (func_call == NULL || func_call_locn != 3) {
+            if (func_call == NULL || is_in_function || func_call_locn != 3) {
               if (!is_at_assign && !is_at_bot_assign)
                 add_ID_to_sym_table_node(node,inp,dt);
               else
@@ -1096,7 +1096,7 @@ enum Token lexer(FILE * ip, FILE * op)
         else { 
           writeTofile(op,tk_id); 
 
-          if (func_call_locn == 2) {
+          if (!is_in_function && func_call_locn == 2) {
             func_call_locn = 3;
 
             if (func_call != NULL) {
@@ -1113,7 +1113,7 @@ enum Token lexer(FILE * ip, FILE * op)
             insert_st(&st_lex_queue, NULL);
           }
 
-          if (func_call == NULL || func_call_locn != 3) {
+          if (func_call == NULL || is_in_function || func_call_locn != 3) {
             if (!is_at_assign && !is_at_bot_assign)
               add_ID_to_sym_table_node(node,inp,dt);
             else

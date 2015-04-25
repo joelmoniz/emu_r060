@@ -50,7 +50,7 @@ int isArithOper(int token)
 void codegen_from_ast(parse_tree_node* root, registers dest, FILE* f1)
 {
 	//printf("hello!\n");
-	print_token(root->token_id);
+	//print_token(root->token_id);
 	int i;
 	registers r,source_reg;
 	r = EAX;
@@ -140,6 +140,7 @@ void codegen_from_ast(parse_tree_node* root, registers dest, FILE* f1)
 			source_reg = EAX;
 		}
 	}
+	//else if(root->token_id == tk_primitive_declaration_stmt){/* do nothing*/}
 	else
 	{
 			for(i=0; i < root->num_child;i++)
@@ -152,8 +153,12 @@ void codegen_from_ast(parse_tree_node* root, registers dest, FILE* f1)
 			}
 
 	}
-	if(dest!=source_reg)
+	if(dest!=source_reg && root->num_child != 0)
+	{
+		fprintf(f1, "%s\n","here in gen" );
 	fprintf(f1,"\tMOV %s, %s \n",print_register(dest),print_register(source_reg));
+	}
+		
 }
 
 void create_bss_section_from_node(FILE *f1,symbol_entry *symbol_table_hash[]) {

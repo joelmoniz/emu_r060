@@ -8,6 +8,7 @@
 
 #define MAX_RETURN_VALUES 5
 #define MAX_ARGS 5
+#define MAX_LHS_ASSIGNMENTS 3
 
 typedef struct _function_details function_details;
 

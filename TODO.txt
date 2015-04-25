@@ -4,13 +4,14 @@ TODO
 Semantic
 --------
 [ ] Number of arguments passed = Number of arguments in function header
-[ ] Number of variables on LHS = Number of return values from function
+[X] Number of variables on LHS = Number of return values from function
 [X] Number of return arguments from a function = Number specified in header 
 [X] The corresponding return types match exactly
 [X] Function call inside an expression is supported only if the function returns a single value
 [X] Identifiers that serve to indicate the names in named parameter of a function call do not have to be declared
 [X] Maximum of 5 arguments may be passed to a function
 [X] Maximum of 5 values may be returned from a function
+[X] Maximum of 3 variables may be assigned simultaneously
 [X] Only one Bot may be defined per program
 [X] Function overloading is not allowed
 [X] An identifier can not be declared multiple times within the same scope. However, if it is declared in both a given block and, say its ancestor block, the ancestor block's variable will be hidden.

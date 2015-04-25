@@ -1,11 +1,12 @@
 1. Function call inside an expression is supported only if the function returns a single value
 2. Maximum of x values may be returned from a function (x=5)
 3. Maximum of y arguments may be passed to a function (y=5)
-4. Only one Bot may be defined per program
-5. Number of arguments passed = Number of arguments in function header
-6. Number of variables on LHS = Number of return values from function
-7. Number of return arguments from a function = Number specified in header, and the corresponding types match exactly
-8. All variables must be declared before use, in the same block, the parent block or in an ancestor block
-9. An identifier can not be declared multiple times within the same scope. However, if it is declared in both a given block and, say its ancestor block, the ancestor block's variable will be hidden.
-10. No identifier may have the same name as a function that has been declared, irrespective of where the identifier is to be declared
-11. Function overloading is not allowed
+4. Maximum of z variables may be present in the LHS of a simultaneous assignment (z=3)
+5. Only one Bot may be defined per program
+6. Number of arguments passed = Number of arguments in function header
+7. Number of variables on LHS = Number of return values from function
+8. Number of return arguments from a function = Number specified in header, and the corresponding types match exactly
+9. All variables must be declared before use, in the same block, the parent block or in an ancestor block
+10. An identifier can not be declared multiple times within the same scope. However, if it is declared in both a given block and, say its ancestor block, the ancestor block's variable will be hidden.
+11. No identifier may have the same name as a function that has been declared, irrespective of where the identifier is to be declared
+12. Function overloading is not allowed

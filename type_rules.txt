@@ -34,9 +34,10 @@
 	b. Coercion is not supported in the return statement of a function
 	c. Coercion is supported when the value returned by a function is used in an expresison or is assigned
 	d. Coercion is not supported when a function returns multiple values
-	e. Narrowing conversions, according to the rules specified in 8, are supported when passing an argument as input to a function
-	f. Narrowing conversion, according to the rules specified in 8, is supported in the function's return statement
-	g. Narrowing conversions, according to the rules specified in 8, are permitted when a function has a single return value
-	h. Narrowing conversions are not permitted when there are multiple values returned from a function
+	e. Explicit conversions, according to the rules specified in 8, are supported when passing an argument as input to a function
+	f. Explicit conversion, according to the rules specified in 8, is supported in the function's return statement
+	g. Explicit conversions, according to the rules specified in 8, are permitted when a function has a single return value
+	h. Explicit conversions are not permitted when there are multiple values returned from a function
 11. If statements and the conditional part of for loops may have only boolean types, or expressions that give rise to boolean types.
 12. Only integers may be used as is with unary increment and decrement operators, i.e., floating points will have to be explicitly typecasted to be used with a unary operator.
+13. Automatic widening conversions are not supported when assigning a set of values to a set of variables. However, explicit typecasting is permitted.

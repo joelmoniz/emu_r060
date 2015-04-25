@@ -14,6 +14,10 @@ echo "Done with 1m"
 echo "Done with 2m"
 ./a.out ./test_cases/misc_test3.txt > ./test_cases/output3m.txt
 echo "Done with 3m"
+./a.out ./test_cases/misc_test4.txt > ./test_cases/output4m.txt
+echo "Done with 4m"
+./a.out ./test_cases/misc_test5.txt > ./test_cases/output5m.txt
+echo "Done with 5m"
 sed -n -e '/Abstract Syntax tree:/,$p' ./test_cases/output1.txt > ./test_cases/out_compare.txt
 sed -n -e '/Abstract Syntax tree:/,$p' ./test_cases/output2.txt >> ./test_cases/out_compare.txt
 sed -n -e '/Abstract Syntax tree:/,$p' ./test_cases/output3.txt >> ./test_cases/out_compare.txt
@@ -21,3 +25,6 @@ sed -n -e '/Abstract Syntax tree:/,$p' ./test_cases/output4.txt >> ./test_cases/
 sed -n -e '/Abstract Syntax tree:/,$p' ./test_cases/output5.txt >> ./test_cases/out_compare.txt
 sed -n -e '/Abstract Syntax tree:/,$p' ./test_cases/output1m.txt > ./test_cases/out_compare_misc.txt
 sed -n -e '/Abstract Syntax tree:/,$p' ./test_cases/output2m.txt >> ./test_cases/out_compare_misc.txt
+sed -n -e '/Abstract Syntax tree:/,$p' ./test_cases/output3m.txt >> ./test_cases/out_compare_misc.txt
+sed -n -e '/Abstract Syntax tree:/,$p' ./test_cases/output4m.txt >> ./test_cases/out_compare_misc.txt
+sed -n -e '/Abstract Syntax tree:/,$p' ./test_cases/output5m.txt >> ./test_cases/out_compare_misc.txt

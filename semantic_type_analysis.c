@@ -316,13 +316,15 @@ data_type get_and_check_type(parse_tree_node *node, int is_an_expression) {
 void check_function_call_and_assignment(parse_tree_node *node) {
   int ret_n = 0;
   int arg_n = 0;
+  int rhs_n = 0;
   int is_assignment = 0;
   data_type ret_vals[MAX_RETURN_VALUES];
   data_type arg_vals[MAX_ARGS];
+  data_type rhs_vals[MAX_LHS_ASSIGNMENTS];
   parse_tree_node *arglist_node;
   parse_tree_node *temp = node;
   if (node->children[1]->token_id == tk_arg_list && node->children[0]->value.id->dtype == function) {
-    if (node->children[0]->value.id->dval->fn->num_args != 0) {
+    if (node->children[0]->value.id->dval->fn->num_ret_vals != 0) {
       printf("Error: The function %s returns %d values, but none of these values are assigned\n",
         temp->children[0]->value.id->name, temp->children[0]->value.id->dval->fn->num_ret_vals);
     }
@@ -331,6 +333,7 @@ void check_function_call_and_assignment(parse_tree_node *node) {
   else {
     if (temp->token_id == tk_col_assign)
       return;
+
     while (temp->children[0]->token_id == tk_id) {
       if (temp->children[0]->token_id == tk_col_assign || temp->children[1]->token_id == tk_col_assign)
         return;
@@ -338,44 +341,98 @@ void check_function_call_and_assignment(parse_tree_node *node) {
       ret_n++;
       temp = temp->children[1];
     }
-    if (temp->children[1]->token_id != tk_value)
+
+    if (temp->children[1]->token_id != tk_value) {
       is_assignment = 1;
-    temp = temp->children[1]->children[0];
+      temp = temp->children[1];//->children[1];
+    }
+    else
+      temp = temp->children[1]->children[0];
+
+    if (!is_assignment) {
+      if (ret_n != temp->value.id->dval->fn->num_ret_vals) {
+        printf("Error in function call %s: Returns %d value(s), but assigned to %d instead\n", 
+          temp->value.id->name, temp->value.id->dval->fn->num_ret_vals, ret_n);
+      }
+      else {
+        int i;
+        // temp = temp->children[0];
+        for (i=0; i<ret_n; i++) {
+          if (temp->value.id->dval->fn->ret_vals[i] != ret_vals[i]) {
+            printf("Error in function call %s: Return values are of type", 
+              temp->value.id->name);
+            int j;
+            for (j=0; j<ret_n-1; j++) {
+              print_data_type(temp->value.id->dval->fn->ret_vals[j]);
+              printf(",");
+            }
+            print_data_type(temp->value.id->dval->fn->ret_vals[j]);
+            printf(" but the variables they are assigned to are of the type\n");
+            for (j=0; j<ret_n-1; j++) {
+              print_data_type(ret_vals[j]);
+              printf(",");
+            }
+            print_data_type(ret_vals[j]);
+            printf("\n");
+            break;
+          }
+        }
+      }
+    }
+    else {
+      // if (temp->parent->token_id != tk_assign_op) 
+      //   return;
+      if (ret_n > MAX_LHS_ASSIGNMENTS) {
+        printf("Error: Too many variables (%d) on LHS: Maximum permissible number is %d\n", ret_n, MAX_LHS_ASSIGNMENTS);
+      }
+      else if (temp->token_id != tk_righHandSide) {
+        rhs_n = 1;
+        rhs_vals[0] = get_and_check_type(temp,1);
+      }
+      else {
+        // temp = temp->children[1];
+        printf("%d variable assignment\n",ret_n);
+        while (temp->children[1]->token_id == tk_righHandSide || temp->children[1]->token_id == tk_righHandSideMultiple) {
+          rhs_vals[rhs_n] = get_and_check_type(temp->children[0],1);
+          rhs_n++;
+          temp = temp->children[1];
+        }
+        rhs_vals[rhs_n] = get_and_check_type(temp->children[0],1);
+        rhs_n++;
+        rhs_vals[rhs_n] = get_and_check_type(temp->children[1],1);
+        rhs_n++;
+      }
+
+      if (ret_n != rhs_n) {
+        printf("Error in multiple assignment statement: %d value(s) found in LHS, but %d found on RHS\n", 
+          ret_n, rhs_n);
+      }
+      else {
+        int i;
+        // temp = temp->children[0];
+        for (i=0; i<ret_n; i++) {
+          if (rhs_vals[i] != ret_vals[i]) {
+            printf("Error in multiple assignment statement: Values are of type");
+            int j;
+            for (j=0; j<ret_n-1; j++) {
+              print_data_type(rhs_vals[j]);
+              printf(",");
+            }
+            print_data_type(rhs_vals[j]);
+            printf(" on the RHS, but they have been assigned to variables of the type");
+            for (j=0; j<ret_n-1; j++) {
+              print_data_type(ret_vals[j]);
+              printf(",");
+            }
+            print_data_type(ret_vals[j]);
+            printf(" on the LHS\n");
+            break;
+          }
+        }
+      }
+    }
+
   }
-
-  // if (!is_assignment) {
-  //   if (ret_n != temp->value.id->dval->fn->num_args) {
-  //     printf("Error in function %s: Returns %d value(s), but assigned to %d instead\n", 
-  //       temp->value.id->name, temp->value.id->dval->fn->num_ret_vals, ret_n);
-  //   }
-  //   else {
-  //     int i;
-  //     temp = temp->children[0];
-  //     for (i=0; i<ret_n; i++) {
-  //       if (temp->value.id->dval->fn->ret_vals[i] != ret_vals[i]) {
-  //         printf("Error in function %s: Expecting return values of type", 
-  //           temp->value.id->name);
-  //         int j;
-  //         for (j=0; j<ret_n-1; j++) {
-  //           print_data_type(temp->value.id->dval->fn->ret_vals[j]);
-  //           printf(",");
-  //         }
-  //         print_data_type(temp->value.id->dval->fn->ret_vals[j]);
-  //         printf(" but the values actually returned are of the type\n");
-  //         for (j=0; j<ret_n-1; j++) {
-  //           print_data_type(ret_vals[j]);
-  //           printf(",");
-  //         }
-  //         print_data_type(ret_vals[j]);
-  //         printf("\n");
-  //         break;
-  //       }
-  //     }
-  //   }
-  // }
-  // // else {
-
-  // // }
 }
 
 void check_expression_types(parse_tree_node *node) {
@@ -391,8 +448,8 @@ void check_expression_types(parse_tree_node *node) {
       print_data_type(d);
       printf("\n");
     }
-    else if (node->token_id == tk_gen_stmt) {
-      check_function_call_and_assignment(node);
+    else if (node->children[i]->token_id == tk_gen_stmt) {
+      check_function_call_and_assignment(node->children[i]);
     }
     else if (node->children[i]->token_id == tk_for) {
       data_type d = get_and_check_type(node->children[i]->children[1], 1);

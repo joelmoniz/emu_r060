@@ -15,6 +15,10 @@ debug:
 	make clean
 	gcc -g *.c *.h
 	gdb -tui ./a.out
+dnv:#non-visual debug
+	make clean
+	gcc -g *.c *.h
+	gdb ./a.out
 comp:
 	make
 	sh generate_output.sh

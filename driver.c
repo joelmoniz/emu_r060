@@ -26,8 +26,8 @@ int main(int argc, char*argv[])
          // printf("FATAL ERROR!! : No input specified or too many parameters \n");
          // exit(1);
 
-        ip = fopen("./test_cases/submitted_test1.txt","r");
-        strcpy(opf,"./test_cases/submitted_test1.txt");
+        ip = fopen("./test_cases/misc_test5.txt","r");
+        strcpy(opf,"./test_cases/misc_test5.txt");
     }
     else {
         ip = fopen(argv[1],"r");
@@ -65,7 +65,7 @@ int main(int argc, char*argv[])
 
     if (parse_root->children[0]->token_id == tk_otherFunctions || parse_root->children[1]->token_id == tk_otherFunctions
         || parse_root->children[0]->token_id == tk_func || parse_root->children[1]->token_id == tk_func) {
-      printf("\nFunctions detected in the program. emu_r060 does not support functions at present. Exiting...");
+      printf("\nFunctions detected in the program. emu_r060 does not support functions at present. Exiting...\n\n");
       return;
     }
 

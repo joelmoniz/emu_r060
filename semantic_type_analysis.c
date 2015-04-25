@@ -318,6 +318,7 @@ void check_function_call_and_assignment(parse_tree_node *node) {
   int arg_n = 0;
   int rhs_n = 0;
   int is_assignment = 0;
+  // int return_early = 0;
   data_type ret_vals[MAX_RETURN_VALUES];
   data_type arg_vals[MAX_ARGS];
   data_type rhs_vals[MAX_LHS_ASSIGNMENTS];
@@ -343,8 +344,15 @@ void check_function_call_and_assignment(parse_tree_node *node) {
     }
 
     if (temp->children[1]->token_id != tk_value) {
-      is_assignment = 1;
-      temp = temp->children[1];//->children[1];
+      // if (temp->children[1]->token_id == tk_id && temp->children[1]->value.id != NULL 
+      //   && temp->children[1]->value.id->dtype == function) {
+      //   temp = temp->children[1];
+      //   return_early = 1;
+      // }
+      // else {
+        is_assignment = 1;
+        temp = temp->children[1];//->children[1];
+      // }
     }
     else
       temp = temp->children[1]->children[0];
@@ -378,6 +386,56 @@ void check_function_call_and_assignment(parse_tree_node *node) {
           }
         }
       }
+
+      // if (return_early)
+      //   return;
+
+      // parse_tree_node *temp2 = temp;
+      // temp2 = temp2->parent;
+      // if (temp2->num_child <= 1 && temp2->children[0]->value.id->dval->fn->num_args != 0) {
+      //   printf("Error: The function %s expects %d arguments, but no arguments were passed\n",
+      //     temp2->children[0]->value.id->name, temp2->children[0]->value.id->dval->fn->num_args);
+      // }
+      // else if (temp2->num_child >= 1) {
+      //   temp2 = temp2->children[1];//->children[1];
+      //   while (temp2->num_child > 3) {
+      //     arg_vals[arg_n] = get_and_check_type(temp2->children[2],1);
+      //     arg_n++;
+      //     temp2 = temp2->children[3];
+      //   }
+      //   arg_vals[arg_n] = get_and_check_type(temp2->children[2],1);
+      //   arg_n++;
+
+      //   if (arg_n != temp->value.id->dval->fn->num_args) {
+      //     printf("Error in function call %s: Expects %d argument(s), but provided %d arguments instead\n", 
+      //       temp->value.id->name, temp->value.id->dval->fn->num_args, arg_n);
+      //   }
+      //   else {
+      //     int i;
+      //     // temp = temp->children[0];
+      //     for (i=0; i<arg_n; i++) {
+      //       if (temp->value.id->dval->fn->args[i] != arg_vals[i]) {
+      //         printf("Error in function call %s: Arguments expected are of type", 
+      //           temp->value.id->name);
+      //         int j;
+      //         for (j=0; j<arg_n-1; j++) {
+      //           print_data_type(temp->value.id->dval->fn->args[j]);
+      //           printf(",");
+      //         }
+      //         print_data_type(temp->value.id->dval->fn->args[j]);
+      //         printf(" but the arguments provided are of the type\n");
+      //         for (j=0; j<arg_n-1; j++) {
+      //           print_data_type(arg_vals[j]);
+      //           printf(",");
+      //         }
+      //         print_data_type(arg_vals[j]);
+      //         printf("\n");
+      //         break;
+      //       }
+      //     }
+      //   }
+      // }
+
     }
     else {
       // if (temp->parent->token_id != tk_assign_op) 
@@ -469,6 +527,14 @@ void check_expression_types(parse_tree_node *node) {
       }
       check_expression_types(node->children[i]);
     }
+    else if (node->token_id == tk_stmts && node->children[i]->token_id == tk_id) {
+      if (node->children[i]->value.id != NULL && node->children[i]->value.id->dtype == function 
+        && node->children[i]->value.id->dval->fn->num_ret_vals != 0) {
+        printf("Error: The function %s returns %d values, but none of these values are assigned\n",
+        node->children[i]->value.id->name, node->children[i]->value.id->dval->fn->num_ret_vals);
+      }
+      check_expression_types(node->children[i]);
+    }
     else
       check_expression_types(node->children[i]);
   }
@@ -514,7 +580,7 @@ void check_individ_function_return(parse_tree_node *node) {
           printf(",");
         }
         print_data_type(node->children[1]->value.id->dval->fn->ret_vals[j]);
-        printf(" but the values actually returned are of the type\n");
+        printf(" but the values actually returned are of the type");
         for (j=0; j<n-1; j++) {
           print_data_type(ret_vals[j]);
           printf(",");

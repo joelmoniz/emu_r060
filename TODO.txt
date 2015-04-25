@@ -67,3 +67,4 @@ Misc
 ----
 
 [ ] Handle array slicing everywhere
+[ ] Fix cases where assignment is to function without args (return_early flag)

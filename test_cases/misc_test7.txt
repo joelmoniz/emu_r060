@@ -1,0 +1,9 @@
+main() {
+  float b = 2.0;
+  int a=2, e=b, x=2+3+4,c=(int)(b),d=2,labla=2.0;
+  ++b;
+  boolean b2;
+  b = (2+a) > (2.0*b);
+  a = b + 3.0;
+  Point p := {2,3};
+}

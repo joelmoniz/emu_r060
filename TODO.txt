@@ -56,7 +56,7 @@ Type checking
 	[ ] Narrowing conversion, according to the rules specified in 8, is supported in the function's return statement
 	[ ] Narrowing conversions, according to the rules specified in 8, are permitted when a function has a single return value
 	[ ] Narrowing conversions are not permitted when there are multiple values returned from a function
-[ ] If statements and the conditional part of for loops may have only boolean types, or expressions that give rise to boolean types.
+[X] If statements and the conditional part of for loops may have only boolean types, or expressions that give rise to boolean types.
 [X] Only integers may be used as is with unary increment and decrement operators, i.e., floating points will have to be explicitly typecasted to be used with a unary operator.
 [X] The program follows static typing, i.e., the type of a variable has to be declared in advance, and may not change till the end of the variable's lifetime
 [X] RNUM is of type float

@@ -1,0 +1,24 @@
+function int,int,int,int,int f2() {
+  int x;
+  int b,c,d;
+  return a+b,c,d,3,4;
+}
+
+function int,int f3(int b,int c, int d) {
+  int x=3;
+  return x,x;
+}
+
+function int,int f4() {
+  int x=3;
+  return x;
+}
+
+main() {
+  int l,m,n,o,wa,ha;
+  ha = 5;
+  l,m,n,o,wa = f2(a=3);
+  f3(b=l, d=n);
+  f2(a=ha);
+  int ra = 5;
+}

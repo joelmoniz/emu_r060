@@ -534,6 +534,50 @@ void check_expression_types(parse_tree_node *node) {
         node->children[i]->value.id->name, node->children[i]->value.id->dval->fn->num_ret_vals);
       }
       check_expression_types(node->children[i]);
+    } 
+    else if (node->children[i]->token_id == tk_primitive_declaration_stmt) {
+      parse_tree_node *temp = node->children[i];
+      parse_tree_node *ident;
+      data_type dt, at;
+      switch(temp->children[0]->token_id) {
+        case tk_int: dt = integer; break;
+        case tk_float: dt = float_point; break;
+        case tk_boolean: dt = boolean; break;
+      }
+      ident = temp->children[1];
+
+      while(temp->children[temp->num_child-1]->token_id == tk_assign_more 
+        || temp->children[temp->num_child-1]->token_id == tk_assign_comma) {
+        temp = temp->children[temp->num_child-1];
+
+        if (temp->children[0]->token_id == tk_assign_op) {
+          at = get_and_check_type(temp->children[1],1);
+
+          if (at != dt) {
+            printf("Type Error: %s should be assigned to a(n)",ident->value.id->name);
+            print_data_type(dt);
+            printf(". Instead, it was assigned to a");
+            print_data_type(at);
+            printf("\n");
+          }
+        }
+        else if (temp->children[0]->token_id == tk_id) {
+          ident = temp->children[0];
+        }
+      }
+
+      // if(temp->children[0]->token_id == tk_assign_op) {
+      //   at = get_and_check_type(temp->children[1],1);
+
+      //   if (at != dt) {
+      //     printf("Type Error: %s should be assigned to a(n)",ident->value.id->name);
+      //     print_data_type(dt);
+      //     printf(". Instead, it was assigned to a");
+      //     print_data_type(at);
+      //     printf("\n");
+      //   }
+      // }
+
     }
     else
       check_expression_types(node->children[i]);

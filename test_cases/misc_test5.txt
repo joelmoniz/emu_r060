@@ -1,0 +1,23 @@
+function int,int,int,int,boolean f2(int a,int b) {
+  int x;
+  int b,c,d;
+  return a+b,c,d,3,true;
+}
+
+main() {
+ int a;
+ f2(a=a,b=t);
+ a = f2(a=a,b=t);
+ a,b,c = f2(a=a,b=t);
+ int b,i;
+ a,b,c = i,x,y;
+ for (i=0;i;++i;){
+ int x;
+ }
+if (i) {
+  a = i+13;
+}
+else {
+  a = 0;
+}
+}

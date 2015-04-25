@@ -63,11 +63,17 @@ int main(int argc, char*argv[])
       check_function_returns();
     }
 
+    if (parse_root->children[0]->token_id == tk_otherFunctions || parse_root->children[1]->token_id == tk_otherFunctions
+        || parse_root->children[0]->token_id == tk_func || parse_root->children[1]->token_id == tk_func) {
+      printf("\nFunctions detected in the program. emu_r060 does not support functions at present. Exiting...");
+      return;
+    }
+
     //codegen code
     int i;
     char codegen [100];
     strcpy(codegen,argv[1]);
-    strcat(codegen,"codegen_output");
+    strcat(codegen,".codegen_output");
     FILE* f1 = fopen(codegen,"w");
     struct _id_type a[3] = {{integer,"a",{0,0}},{float_point,"b",{2,3}},{boolean,"c",{4,4}}}; //dummy test
     if (f1==NULL)
@@ -90,6 +96,7 @@ int main(int argc, char*argv[])
     //parse_tree_node * arith_base = parse_root;
     registers r1 = EAX;
     //printf("here1");
+
     codegen_from_ast(parse_root, r1, f1);
     //printf("here");
     //the exit sys call to prevent segfaults

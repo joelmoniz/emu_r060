@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #ifndef PARSE_TABLE_H
 #define PARSE_TABLE_H
@@ -16,26 +17,33 @@ FILE* f1;
 
 char* print_register(registers r)
 {
+ 
+ printf("\n%d\n",r);
+ char *c = (char *) malloc(sizeof(char) * 4);
  if(r == EAX)
  {
- 	return "EAX";
+ 	strcpy(c,"EAX");
  }
- if(r == EBX)
+ else if(r == EBX)
  {
- 	return "EBX";
+ 	strcpy(c,"EBX");
  }
- if(r == ECX)
+ else if(r == ECX)
  {
- 	return "ECX";
+ 	strcpy(c,"ECX");
  }
- if(r == EDX)
+ else if(r == EDX)
  {
- 	return "EDX";
+ 	strcpy(c,"EDX");
  }
- if(r == UNK)
+ else if(r == UNK) {
  	printf("Error!! in register");
  	exit(5);
-
+ }
+ else {
+ 	strcpy(c,"OW");
+ }
+ return c;
 }
   
 int isArithOper(int token)
@@ -69,16 +77,18 @@ void codegen_from_ast(parse_tree_node* root, registers dest, FILE* f1)
 			fprintf(f1,"MOV %s, %f\n",print_register(dest),(root->value).rnum);
 		}
 	}
-
-	if (isArithOper(root->token_id))
+  else if (isArithOper(root->token_id))
 	{ //printf("arithmetic expr\n");
 		for(i=0; i < root->num_child;i++)
 		{
-			codegen_from_ast(root->children[i],r++,f1);
+			r++;
 			if (r > (EDX+1))
 			{
 				printf("registers overloaded\n");
 			} 
+			else {
+				codegen_from_ast(root->children[i],r,f1);
+			}
 		}
 		//source_reg = EAX;
 		if(root->token_id == tk_unary_inc)
@@ -128,13 +138,12 @@ void codegen_from_ast(parse_tree_node* root, registers dest, FILE* f1)
 				source_reg = EAX;
 			}
 		}
-
 		else if(root->token_id == tk_mul)
 		{
 			fprintf(f1,"MUL EBX\n"); //has DX:AX
 			source_reg = EAX;
 		}
-		if(root->token_id == tk_div)
+		else if(root->token_id == tk_div)
 		{
 			fprintf(f1,"DIV  BX\n"); //A / B , A is in EAX, B in BX+
 			source_reg = EAX;
@@ -145,18 +154,22 @@ void codegen_from_ast(parse_tree_node* root, registers dest, FILE* f1)
 	{
 			for(i=0; i < root->num_child;i++)
 			{
-				codegen_from_ast(root->children[i],r,f1);
-				/*if (r > (EDX+1))
+				r++;
+				if (r > (EDX+1))
 				{
 					printf("registers overloaded\n");
-				} */
+				} 
+				else {
+					codegen_from_ast(root->children[i],r,f1);
+				}
 			}
 
 	}
-	if(dest!=source_reg && root->num_child != 0)
+
+	if(dest!=source_reg && root->num_child != 0 && (root->num_child == 0 || isArithOper(root->token_id)))
 	{
-		fprintf(f1, "%s\n","here in gen" );
-	fprintf(f1,"\tMOV %s, %s \n",print_register(dest),print_register(source_reg));
+		// fprintf(f1, "%s\n","here in gen" );
+	  fprintf(f1,"\tMOV %s, %s \n",print_register(dest),print_register(source_reg));
 	}
 		
 }

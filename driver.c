@@ -26,8 +26,8 @@ int main(int argc, char*argv[])
          // printf("FATAL ERROR!! : No input specified or too many parameters \n");
          // exit(1);
 
-        ip = fopen("./test_cases/misc_test6.txt","r");
-        strcpy(opf,"./test_cases/misc_test6.txt");
+        ip = fopen("./test_cases/basic_test1.txt","r");
+        strcpy(opf,"./test_cases/basic_test1.txt");
     }
     else {
         ip = fopen(argv[1],"r");
@@ -72,7 +72,15 @@ int main(int argc, char*argv[])
     //codegen code
     int i;
     char codegen [100];
-    strcpy(codegen,argv[1]);
+
+    if(argc!=2)
+    {
+        strcpy(codegen,"./test_cases/basic_test1.txt");
+    }
+    else {
+        strcpy(codegen,argv[1]);
+    }
+
     strcat(codegen,".codegen_output");
     FILE* f1 = fopen(codegen,"w");
     struct _id_type a[3] = {{integer,"a",{0,0}},{float_point,"b",{2,3}},{boolean,"c",{4,4}}}; //dummy test

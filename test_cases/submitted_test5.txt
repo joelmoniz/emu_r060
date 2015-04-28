@@ -1,6 +1,6 @@
 main() 
 { 
-  Point v; 
+  int v; 
   Point p2 := {2,2}; 
   Point p; 
   Bot b := {p,v,1,true}; 

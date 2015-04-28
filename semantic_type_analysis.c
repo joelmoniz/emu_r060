@@ -579,6 +579,50 @@ void check_expression_types(parse_tree_node *node) {
       // }
 
     }
+    else if (node->children[i]->token_id == tk_col_assign) {
+      parse_tree_node *ca = node->children[i];
+      data_type ch;
+      if (ca->num_child == 2) {
+        ch = get_and_check_type(ca->children[0],1);
+        if (ch != integer) {
+          printf("Type Error when initializing Point %s: Cannot use a",node->children[i-1]->value.id->name);
+          print_data_type(ch);
+          printf(" for the first argument- expecting an integer\n");
+        }
+        ch = get_and_check_type(ca->children[1],1);
+        if (ch != integer) {
+          printf("Type Error when initializing Point %s: Cannot use a",node->children[i-1]->value.id->name);
+          print_data_type(ch);
+          printf(" for the second argument- expecting an integer\n");
+        }
+      }
+      else if (ca->num_child == 4) {
+        ch = get_and_check_type(ca->children[0],1);
+        if (ch != Point) {
+          printf("Type Error when initializing Bot %s: Cannot use a",node->children[i-1]->value.id->name);
+          print_data_type(ch);
+          printf(" for the first argument- expecting a Point type\n");
+        }
+        ch = get_and_check_type(ca->children[1],1);
+        if (ch != integer) {
+          printf("Type Error when initializing Bot %s: Cannot use a",node->children[i-1]->value.id->name);
+          print_data_type(ch);
+          printf(" for the second argument- expecting an integer\n");
+        }
+        ch = get_and_check_type(ca->children[2],1);
+        if (ch != integer) {
+          printf("Type Error when initializing Bot %s: Cannot use a",node->children[i-1]->value.id->name);
+          print_data_type(ch);
+          printf(" for the third argument- expecting an integer\n");
+        }
+        ch = get_and_check_type(ca->children[3],1);
+        if (ch != boolean) {
+          printf("Type Error when initializing Bot %s: Cannot use a",node->children[i-1]->value.id->name);
+          print_data_type(ch);
+          printf(" for the fourth argument- expecting a boolean\n");
+        }
+      }
+    }
     else
       check_expression_types(node->children[i]);
   }

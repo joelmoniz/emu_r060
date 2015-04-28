@@ -18,7 +18,7 @@ FILE* f1;
 char* print_register(registers r)
 {
  
- printf("\n%d\n",r);
+ // printf("\n%d\n",r);
  char *c = (char *) malloc(sizeof(char) * 4);
  if(r == EAX)
  {
@@ -37,7 +37,7 @@ char* print_register(registers r)
  	strcpy(c,"EDX");
  }
  else if(r == UNK) {
- 	printf("Error!! in register");
+ 	printf("Error!! in register\n");
  	exit(5);
  }
  else {
